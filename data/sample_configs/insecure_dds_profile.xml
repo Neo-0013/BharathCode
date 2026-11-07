@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- SROS2 DDS Security Governance Profile -->
+  <governance>
+    <domain_rule>
+      <domain_id>0</domain_id>
+      <!-- CRITICAL INSECURITY: Allows unauthenticated participants to join DDS domain -->
+      <allow_unauthenticated_participants>true</allow_unauthenticated_participants>
+      <enable_join_access_control>false</enable_join_access_control>
+      <!-- HIGH INSECURITY: Discovery metadata is broadcast in plaintext -->
+      <discovery_protection>NONE</discovery_protection>
+      <liveliness_protection>NONE</liveliness_protection>
+    </domain_rule>
+  </governance>
+
+  <!-- Permissions Policy -->
+  <permissions>
+    <grant name="insecure_default_grant">
+      <subject_name>CN=InsecureRobotNode</subject_name>
+      <validity>
+        <not_before>2026-01-01T00:00:00</not_before>
+        <not_after>2030-01-01T00:00:00</not_after>
+      </validity>
+      <allow_rule>
+        <domains><id>0</id></domains>
+        <!-- HIGH INSECURITY: Wildcard access to all topics violates least privilege -->
+        <publish><topic>*</topic></publish>
+        <subscribe><topic>*</topic></subscribe>
+      </allow_rule>
+    </grant>
+  </permissions>
+</dds>

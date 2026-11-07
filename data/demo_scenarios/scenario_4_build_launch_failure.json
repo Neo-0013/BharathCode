@@ -1,0 +1,15 @@
+{
+  "scenario_id": "SCENARIO-04",
+  "name": "Colcon Workspace Build & Launch Dependency Crash",
+  "description": "Colcon build compilation and Python launch failure caused by uninstalled Ament dependencies and missing Python modules.",
+  "raw_log": "Starting >>> roboguard_perception\n--- stderr: roboguard_perception\nCMake Error at CMakeLists.txt:24 (find_package):\n  By not providing \"Findament_cmake_python.cmake\" in CMAKE_MODULE_PATH this\n  project has asked CMake to find a package configuration file provided by\n  \"ament_cmake_python\", but CMake did not find one.\n---\nFailed   <<< roboguard_perception [1.24s, run with --debug to see all output]\n\n[ERROR] [launch]: Failed to run process: Package 'ros2_control_demo' not found in the search path\nTraceback (most recent call last):\n  File \"/opt/ros/jazzy/lib/python3.12/site-packages/nav_stack/costmap.py\", line 12, in <module>\n    import scipy.spatial\nModuleNotFoundError: No module named 'scipy'",
+  "nodes": [],
+  "topics": [],
+  "qos_pairs": [],
+  "tf_edges": [],
+  "security_env": {
+    "ROS_SECURITY_ENABLE": "false",
+    "ROS_DOMAIN_ID": "10",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST"
+  }
+}

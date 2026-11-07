@@ -1,0 +1,42 @@
+{
+  "scenario_id": "SCENARIO-01",
+  "name": "Autonomous Mobile Robot: Critical Topic Unconsumed & Missing Sensor",
+  "description": "A simulated warehouse AGV running Nav2 stack where /cmd_vel has 0 subscribers because diff_drive_controller crashed, and /scan lidar feed is unreceived.",
+  "raw_log": "[INFO] [1715420100.100] [nav2_bringup]: Starting Nav2 autonomous navigation...\n[WARN] [1715420102.340] [nav2_costmap_2d]: LaserScan topic '/scan' timed out. No sensor data received.\n[ERROR] [1715420105.890] [lifecycle_manager_navigation]: Lifecycle node /controller_server failed to transition from configuring to active\n[WARN] [1715420106.120] [teleop_twist_joy]: Published velocity on /cmd_vel but zero subscribers detected.",
+  "nodes": [
+    {"name": "/bt_navigator", "state": "active", "is_lifecycle": true},
+    {"name": "/planner_server", "state": "active", "is_lifecycle": true},
+    {"name": "/controller_server", "state": "inactive", "is_lifecycle": true},
+    {"name": "/teleop_twist_keyboard", "state": "active", "is_lifecycle": false}
+  ],
+  "topics": [
+    {
+      "name": "/cmd_vel",
+      "type": "geometry_msgs/msg/Twist",
+      "publishers": ["/teleop_twist_keyboard", "/controller_server"],
+      "subscribers": []
+    },
+    {
+      "name": "/scan",
+      "type": "sensor_msgs/msg/LaserScan",
+      "publishers": [],
+      "subscribers": ["/planner_server", "/controller_server"]
+    },
+    {
+      "name": "/odom",
+      "type": "nav_msgs/msg/Odometry",
+      "publishers": ["/odom_publisher"],
+      "subscribers": ["/controller_server"]
+    }
+  ],
+  "qos_pairs": [],
+  "tf_edges": [
+    {"parent": "odom", "child": "base_link"},
+    {"parent": "base_link", "child": "laser_frame"}
+  ],
+  "security_env": {
+    "ROS_SECURITY_ENABLE": "false",
+    "ROS_DOMAIN_ID": "0",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "SUBNET"
+  }
+}

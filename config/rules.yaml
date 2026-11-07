@@ -1,0 +1,212 @@
+# ROBOGUARD AI — Deterministic Engineering Diagnostic & Cybersecurity Rules
+# Target: ROS 2 Jazzy Jalisco & DDS Security Specification v1.1
+
+log_patterns:
+  - id: "LOG-TF-001"
+    category: "TF2_TRANSFORM"
+    severity: "HIGH"
+    status: "Confirmed"
+    regex: '(?i)(?:tf2\.LookupException|LookupException:)\s*"?([a-zA-Z0-9_/-]+)"?\s*passed to lookupTransform argument (?:target_frame|source_frame) does not exist'
+    title: "TF2 Frame Lookup Exception: Target Frame Missing"
+    root_cause: "The target frame is not being published to /tf or /tf_static, or robot state publisher has crashed."
+    troubleshooting:
+      - "Verify robot_state_publisher is active and publishing URDF transforms."
+      - "Check that static transform publisher is running for the frame."
+      - "Run 'ros2 run tf2_ros tf2_echo <source_frame> <target_frame>' to inspect real-time transform availability."
+    validation_commands:
+      - "ros2 run tf2_tools view_frames"
+      - "ros2 run tf2_ros tf2_monitor"
+
+  - id: "LOG-TF-002"
+    category: "TF2_TRANSFORM"
+    severity: "HIGH"
+    status: "Confirmed"
+    regex: '(?i)ExtrapolationException:\s*Lookup would require extrapolation into the (?:future|past)'
+    title: "TF2 Transform Extrapolation Exception (Clock Skew or Delay)"
+    root_cause: "Timestamp disparity between publisher and listener, simulation time (/use_sim_time) divergence, or network NTP clock skew."
+    troubleshooting:
+      - "Verify that all nodes share identical /use_sim_time configuration."
+      - "Inspect system clock synchronization (chrony/systemd-timesyncd) across distributed compute nodes."
+      - "Increase the transform lookup timeout in lookup_transform() call."
+    validation_commands:
+      - "ros2 param get /<node_name> use_sim_time"
+      - "ros2 topic hz /tf"
+
+  - id: "LOG-QOS-001"
+    category: "QOS_COMPATIBILITY"
+    severity: "CRITICAL"
+    status: "Confirmed"
+    regex: '(?i)New subscription discovered on topic [''"]([^''"]+)[''"] requesting (?P<sub_rel>RELIABLE|BEST_EFFORT) reliability.*(?:offering|offered) (?P<pub_rel>RELIABLE|BEST_EFFORT) reliability.*incompatible'
+    title: "ROS 2 QoS Reliability Policy Mismatch"
+    root_cause: "Subscriber requested RELIABLE communication, but the Publisher is offering BEST_EFFORT reliability. Messages will NOT be delivered."
+    troubleshooting:
+      - "Align the QoS reliability policy between the publisher and subscriber."
+      - "If data drop is acceptable (e.g. sensor point cloud), configure subscriber to BEST_EFFORT."
+      - "If guaranteed delivery is required, reconfigure publisher to RELIABLE."
+    validation_commands:
+      - "ros2 topic info -v <topic_name>"
+
+  - id: "LOG-QOS-002"
+    category: "QOS_COMPATIBILITY"
+    severity: "CRITICAL"
+    status: "Confirmed"
+    regex: '(?i)New subscription discovered on topic [''"]([^''"]+)[''"] requesting (?P<sub_dur>TRANSIENT_LOCAL|VOLATILE) durability.*(?:offering|offered) (?P<pub_dur>TRANSIENT_LOCAL|VOLATILE) durability.*incompatible'
+    title: "ROS 2 QoS Durability Policy Mismatch"
+    root_cause: "Subscriber requested TRANSIENT_LOCAL durability to receive past messages, but Publisher offers VOLATILE durability."
+    troubleshooting:
+      - "Configure publisher durability to TRANSIENT_LOCAL with a positive history depth if subscribers need initial state latched."
+      - "Or change subscriber durability to VOLATILE."
+    validation_commands:
+      - "ros2 topic info -v <topic_name>"
+
+  - id: "LOG-BUILD-001"
+    category: "BUILD_LAUNCH"
+    severity: "CRITICAL"
+    status: "Confirmed"
+    regex: '(?i)ModuleNotFoundError:\s*No module named ''([^'']+)'''
+    title: "Missing Python Dependency in ROS 2 Node"
+    root_cause: "The node execution failed because a required Python package or ROS 2 Python interface module is missing from the active environment."
+    troubleshooting:
+      - "Check package.xml for missing <exec_depend> tags."
+      - "Install the missing system dependency or pip package in the target Python environment."
+      - "Ensure workspace setup script has been sourced: source install/setup.bash."
+    validation_commands:
+      - "rosdep check --from-paths src --ignore-src"
+      - "pip list | grep <missing_module>"
+
+  - id: "LOG-BUILD-002"
+    category: "BUILD_LAUNCH"
+    severity: "CRITICAL"
+    status: "Confirmed"
+    regex: '(?i)Package ''([^'']+)'' not found|package ''([^'']+)'' not found in the search path'
+    title: "ROS 2 Package Not Found in Ament Index"
+    root_cause: "Package is not installed, not built, or workspace overlay is not sourced in the current terminal."
+    troubleshooting:
+      - "Verify that the package exists in the src/ directory and is registered in package.xml."
+      - "Rebuild the workspace using 'colcon build --packages-select <package_name>'."
+      - "Source the workspace overlay: source install/setup.bash."
+    validation_commands:
+      - "ros2 pkg list | grep <package_name>"
+      - "ros2 pkg prefix <package_name>"
+
+  - id: "LOG-BUILD-003"
+    category: "BUILD_LAUNCH"
+    severity: "HIGH"
+    status: "Confirmed"
+    regex: '(?i)CMake Error at.*find_package\(([a-zA-Z0-9_]+)\s+REQUIRED\)'
+    title: "CMake Missing Required Package Dependency"
+    root_cause: "Colcon build failed during CMake configuration because a required dependency declared in CMakeLists.txt cannot be resolved."
+    troubleshooting:
+      - "Run rosdep install to install all missing binary dependencies."
+      - "Verify AMENT_PREFIX_PATH contains the installation directory of the dependency."
+    validation_commands:
+      - "rosdep install --from-paths src --ignore-src -r -y"
+
+  - id: "LOG-NAV-001"
+    category: "SENSOR_NAV"
+    severity: "CRITICAL"
+    status: "Confirmed"
+    regex: '(?i)Lifecycle node\s+([a-zA-Z0-9_/-]+)\s+failed to transition from\s+([a-zA-Z0-9_]+)\s+to\s+([a-zA-Z0-9_]+)'
+    title: "Nav2 / ROS 2 Lifecycle Node Transition Failure"
+    root_cause: "The managed lifecycle node encountered an unhandled exception or failed pre-condition during configure or activate transition."
+    troubleshooting:
+      - "Inspect the node parameters and hardware interface connections."
+      - "Check that all dependent topics and sensor streams are publishing before transitioning to active."
+      - "Attempt manual lifecycle transition via ros2 lifecycle CLI."
+    validation_commands:
+      - "ros2 lifecycle get /<node_name>"
+      - "ros2 lifecycle set /<node_name> activate"
+
+  - id: "LOG-SENSOR-001"
+    category: "SENSOR_NAV"
+    severity: "HIGH"
+    status: "Confirmed"
+    regex: '(?i)(?:LaserScan|PointCloud2|Image)\s+topic\s+''?([a-zA-Z0-9_/-]+)''?\s+(?:not received|timed out|stalled)'
+    title: "Critical Sensor Data Stream Stalled or Timed Out"
+    root_cause: "Physical sensor disconnection, driver crash, transport bandwidth saturation, or incorrect topic remapping in launch file."
+    troubleshooting:
+      - "Inspect physical hardware connections (USB/Ethernet)."
+      - "Verify the sensor driver process is active."
+      - "Check topic frequency using ros2 topic hz."
+    validation_commands:
+      - "ros2 topic hz <topic_name>"
+      - "ros2 topic echo <topic_name> --once"
+
+security_rules:
+  - id: "SEC-SROS-001"
+    category: "CYBERSECURITY"
+    severity: "CRITICAL"
+    confidence: "Confirmed"
+    title: "SROS2 DDS Security Protection Disabled (Unauthenticated & Plaintext)"
+    check_type: "env_var"
+    target: "ROS_SECURITY_ENABLE"
+    condition: "equals_false_or_missing"
+    explanation: "ROS_SECURITY_ENABLE is set to false or unset. All ROS 2 DDS communications (telemetry, velocity commands, sensor streams) traverse the local network in plaintext without DDS authentication or cryptographic integrity protection."
+    impact: "An attacker on the same local network / WiFi can passively eavesdrop on telemetry, inject malicious /cmd_vel messages, spoof navigation goals, or execute denial-of-service against nodes."
+    mitigation: "Enable SROS2 security: export ROS_SECURITY_ENABLE=true, generate an SROS2 keystore with certificates using 'ros2 security create_keystore', and configure security enclaves."
+    verification: "ros2 security list_enclaves <keystore_path> && echo $ROS_SECURITY_ENABLE"
+
+  - id: "SEC-SROS-002"
+    category: "CYBERSECURITY"
+    severity: "HIGH"
+    confidence: "Confirmed"
+    title: "Permissive SROS2 Security Strategy Active"
+    check_type: "env_var"
+    target: "ROS_SECURITY_STRATEGY"
+    condition: "equals_permissive"
+    explanation: "ROS_SECURITY_STRATEGY is set to 'Permissive'. When set to Permissive, missing keys or non-compliant nodes fall back to unencrypted and unauthenticated communication instead of failing closed."
+    impact: "Rogue or compromised nodes without valid certificates can still join the ROS 2 graph and interact with critical topics, bypassing security governance."
+    mitigation: "Set ROS_SECURITY_STRATEGY=Enforce in production environments to ensure only authenticated nodes with valid certificates are admitted."
+    verification: "echo $ROS_SECURITY_STRATEGY"
+
+  - id: "SEC-DDS-001"
+    category: "CYBERSECURITY"
+    severity: "HIGH"
+    confidence: "Confirmed"
+    title: "Default ROS_DOMAIN_ID (0) in Use on Shared Subnet"
+    check_type: "env_var"
+    target: "ROS_DOMAIN_ID"
+    condition: "equals_zero_or_missing"
+    explanation: "ROS_DOMAIN_ID is unset or set to the default 0. In ROS 2, nodes on Domain 0 broadcast discovery packets over multicast (239.255.0.1) across the entire local subnet."
+    impact: "Crosstalk between different robots or developer laptops on the same LAN; potential accidental command injection or interference from unmanaged peers."
+    mitigation: "Assign a unique ROS_DOMAIN_ID (1-101 for standard DDS subnet discovery) for each isolated robotic system."
+    verification: "echo $ROS_DOMAIN_ID"
+
+  - id: "SEC-DDS-002"
+    category: "CYBERSECURITY"
+    severity: "MEDIUM"
+    confidence: "Confirmed"
+    title: "Unrestricted Subnet Automatic Discovery Range Active"
+    check_type: "env_var"
+    target: "ROS_AUTOMATIC_DISCOVERY_RANGE"
+    condition: "equals_subnet"
+    explanation: "ROS_AUTOMATIC_DISCOVERY_RANGE is set to SUBNET. ROS 2 nodes will discover and negotiate with all DDS participants across the entire network broadcast domain."
+    impact: "Unintended exposure to all devices on the same Wi-Fi/Ethernet subnet, increasing discovery overhead and expanding the attack surface."
+    mitigation: "Restrict discovery to localhost (ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST) during single-machine testing, or use explicit unicast DDS initial peers."
+    verification: "echo $ROS_AUTOMATIC_DISCOVERY_RANGE"
+
+  - id: "SEC-XML-001"
+    category: "CYBERSECURITY"
+    severity: "CRITICAL"
+    confidence: "Confirmed"
+    title: "DDS Governance Insecurity: Unauthenticated Participants Allowed"
+    check_type: "xml_governance"
+    target: "allow_unauthenticated_participants"
+    condition: "contains_true"
+    explanation: "DDS Governance XML file permits unauthenticated participants. Any rogue node without a valid certificate from the trust anchor can participate in DDS RTPS communication."
+    impact: "Complete bypass of cryptographic access control; attackers can inject data or eavesdrop."
+    mitigation: "Set <allow_unauthenticated_participants>false</allow_unauthenticated_participants> in the governance.xml file."
+    verification: "grep -n 'allow_unauthenticated_participants' <governance.xml>"
+
+  - id: "SEC-XML-002"
+    category: "CYBERSECURITY"
+    severity: "HIGH"
+    confidence: "Confirmed"
+    title: "DDS Permissions Policy Contains Unrestricted Topic Wildcard"
+    check_type: "xml_permissions"
+    target: "topic_wildcard"
+    condition: "wildcard_asterisk"
+    explanation: "The permissions.xml policy contains a wildcard '*' in topic publish or subscribe rules, granting the enclave authority over all current and future topics."
+    impact: "Violates the principle of least privilege. If a low-privilege node (e.g. diagnostics reporter) is compromised, the attacker inherits full write access to actuators and navigation."
+    mitigation: "Restrict topic rules in permissions.xml to explicitly scoped topic namespaces (e.g., /sensors/lidar/* or /robot1/telemetry)."
+    verification: "grep -n '<topic>\\*' <permissions.xml>"

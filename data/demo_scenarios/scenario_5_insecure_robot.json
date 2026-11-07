@@ -1,0 +1,36 @@
+{
+  "scenario_id": "SCENARIO-05",
+  "name": "Fleet Insecurity: Unencrypted DDS Multicast & Permissive SROS2 Governance",
+  "description": "Production autonomous forklift fleet operating on shared corporate Wi-Fi without SROS2 authentication, permitting eavesdropping, topic hijacking, and wildcard access.",
+  "raw_log": "[INFO] [1715420500.000] [fleet_manager]: Deploying AGV-04 to operational warehouse floor...\n[WARN] [1715420502.120] [sros2_loader]: Security keystore missing or empty. Fallback to Permissive mode enabled.\n[INFO] [1715420504.300] [dds_discovery]: Broadcasted Simple Participant Discovery packet on 239.255.0.1:7400 (Domain 0).",
+  "nodes": [
+    {"name": "/teleop_gateway", "state": "active", "is_lifecycle": false},
+    {"name": "/motor_controller", "state": "active", "is_lifecycle": false},
+    {"name": "/emergency_stop_node", "state": "active", "is_lifecycle": false}
+  ],
+  "topics": [
+    {
+      "name": "/cmd_vel",
+      "type": "geometry_msgs/msg/Twist",
+      "publishers": ["/teleop_gateway"],
+      "subscribers": ["/motor_controller"]
+    },
+    {
+      "name": "/e_stop",
+      "type": "std_msgs/msg/Bool",
+      "publishers": ["/emergency_stop_node"],
+      "subscribers": ["/motor_controller"]
+    }
+  ],
+  "qos_pairs": [],
+  "tf_edges": [
+    {"parent": "odom", "child": "base_link"}
+  ],
+  "security_env": {
+    "ROS_SECURITY_ENABLE": "false",
+    "ROS_SECURITY_STRATEGY": "Permissive",
+    "ROS_DOMAIN_ID": "0",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "SUBNET"
+  },
+  "security_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<dds xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n  <governance>\n    <domain_rule>\n      <domain_id>0</domain_id>\n      <allow_unauthenticated_participants>true</allow_unauthenticated_participants>\n      <discovery_protection>NONE</discovery_protection>\n    </domain_rule>\n  </governance>\n  <permissions>\n    <grant name=\"teleop_enclave\">\n      <allow_rule>\n        <domains><id>0</id></domains>\n        <publish><topic>*</topic></publish>\n        <subscribe><topic>*</topic></subscribe>\n      </allow_rule>\n    </grant>\n  </permissions>\n</dds>"
+}

@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+ENV/
+env/
+
+# Environment Variables & Secrets (CRITICAL: Never commit API keys)
+.env
+*.env.local
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Generated Exports / Temporary reports
+reports/*.pdf
+reports/*.md
+!reports/.gitkeep

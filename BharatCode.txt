@@ -1,0 +1,31 @@
+================================================================================
+BHARATCODE BUILD LEAGUE 2026 — OFFICIAL PROJECT SUBMISSION
+================================================================================
+
+Project Name: ROBOGUARD AI
+Category: AI-Powered Robotics Diagnostics & Defensive Cybersecurity Copilot
+Tagline: "Understand your robot. Diagnose its failures. Strengthen its security."
+Target ROS Distribution: ROS 2 Jazzy Jalisco
+AI Model Integration: BharatCode Model API (https://bharatcode.ai/api/model/v1)
+Supported Models: deepseek-v4.1-flash, qwen-3.8-27b
+
+Core Capabilities:
+1. Deterministic ROS 2 Log & Terminal Error Parsing
+2. Strict ROS 2 Jazzy QoS Compatibility Matrix Verification
+3. TF2 Coordinate Frame & Transform Lookup Diagnostic Engine
+4. Colcon Build, CMake, and Launch File Failure Detection
+5. SROS2 & DDS Defensive Security Posture Analysis (Access Control, Governance, Keystore)
+6. Interactive NetworkX & Plotly Communication Architecture Graph Explorer
+7. Grounded AI Explanations & Actionable Troubleshooting Runbooks
+8. Automated Downloadable Engineering Reports (Markdown & PDF)
+9. Offline-Resilient Diagnostic Execution (100% functional without cloud credentials)
+10. Built-in Interactive Demonstration Scenarios for Autonomous Mobile Robots
+
+Security & Privacy Compliance:
+- No hardcoded API keys or private tokens are contained in this repository.
+- Sensitive environment variables are read via BHARATCODE_API_KEY.
+- Uploaded logs and configurations are parsed locally; external AI calls require explicit user action.
+
+Repository Root: /
+Entrypoint: app.py
+================================================================================

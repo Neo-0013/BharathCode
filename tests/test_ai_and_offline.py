@@ -1,0 +1,53 @@
+"""
+Unit tests for AI client, safety validator, and offline explanation engine.
+"""
+
+import pytest
+from ai.client import BharatCodeClient
+from ai.response_validator import ResponseValidator
+from ai.explanation_engine import ExplanationEngine
+
+def test_response_validator_blocks_dangerous_commands():
+    validator = ResponseValidator()
+    dangerous_text = "To fix this issue, run: rm -rf / and recompile."
+    is_safe, sanitized, warnings = validator.validate_and_sanitize(dangerous_text, "TEST-01")
+    assert is_safe is False
+    assert "[BLOCKED DANGEROUS COMMAND]" in sanitized
+    assert len(warnings) > 0
+
+def test_response_validator_permits_safe_ros2_commands():
+    validator = ResponseValidator()
+    safe_text = (
+        "Finding TEST-01 shows missing topic.\n"
+        "Run the following verification:\n"
+        "ros2 topic info /cmd_vel\n"
+        "ros2 node list"
+    )
+    is_safe, sanitized, warnings = validator.validate_and_sanitize(safe_text, "TEST-01")
+    assert is_safe is True
+    assert "ros2 topic info" in sanitized
+
+def test_offline_explanation_generation():
+    engine = ExplanationEngine()
+    mock_finding = {
+        "id": "ROBO-TF-001",
+        "title": "Disconnected TF2 Tree",
+        "category": "TF2 Coordinate Transforms",
+        "severity": "CRITICAL",
+        "evidence": "Multiple root frames: map, odom",
+        "root_cause": "Missing localization transform",
+        "troubleshooting": ["Check AMCL node", "Inspect URDF"],
+        "validation_commands": ["ros2 run tf2_tools view_frames"]
+    }
+    res = engine.explain_finding(mock_finding, force_offline=True)
+    assert res["offline"] is True
+    assert "ROBO-TF-001" in res["explanation"]
+    assert "Deterministic Engineering Engine" in res["source"]
+    assert "view_frames" in res["explanation"]
+
+def test_client_unconfigured_offline():
+    client = BharatCodeClient(api_key="")
+    assert client.is_configured() is False
+    res = client.generate_chat_completion([{"role": "user", "content": "hi"}])
+    assert res["success"] is False
+    assert "not configured" in res["error"]

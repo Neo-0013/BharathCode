@@ -1,0 +1,7 @@
+[INFO] [1715420600.123] [nav2_bringup]: Starting Navigation2 Jazzy Stack...
+[INFO] [1715420601.450] [robot_state_publisher]: Parsing robot URDF and broadcasting TF static transforms.
+[WARN] [1715420602.890] [nav2_costmap_2d]: LaserScan topic '/scan' not received within timeout window (2.0s).
+[ERROR] [1715420604.110] [amcl]: tf2.LookupException: "base_link" passed to lookupTransform argument target_frame does not exist
+[ERROR] [1715420605.340] [rmw_fastrtps_cpp]: New subscription discovered on topic '/cmd_vel' requesting RELIABLE reliability but offered BEST_EFFORT reliability. QoS profiles are incompatible.
+[ERROR] [1715420606.780] [lifecycle_manager_navigation]: Lifecycle node /controller_server failed to transition from configuring to active
+[FATAL] [1715420608.010] [nav2_bringup]: Failed to bring up navigation stack. One or more critical lifecycle nodes stalled.

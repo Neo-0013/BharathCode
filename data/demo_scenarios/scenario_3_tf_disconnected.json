@@ -1,0 +1,37 @@
+{
+  "scenario_id": "SCENARIO-03",
+  "name": "SLAM & Manipulation: Disconnected TF2 Tree & Extrapolation Crash",
+  "description": "AMCL / SLAM failed to publish the map->odom transform, creating disjoint TF trees and causing trajectory planners to crash with lookup exceptions.",
+  "raw_log": "[INFO] [1715420300.000] [robot_state_publisher]: Published URDF transforms successfully.\n[ERROR] [1715420302.210] [amcl]: tf2.LookupException: \"base_link\" passed to lookupTransform argument target_frame does not exist\n[ERROR] [1715420304.550] [planner_server]: ExtrapolationException: Lookup would require extrapolation into the future. Requested time 1715420304.540 but latest data is at time 1715420304.410",
+  "nodes": [
+    {"name": "/robot_state_publisher", "state": "active", "is_lifecycle": false},
+    {"name": "/amcl", "state": "active", "is_lifecycle": true},
+    {"name": "/slam_toolbox", "state": "inactive", "is_lifecycle": true},
+    {"name": "/arm_controller", "state": "active", "is_lifecycle": false}
+  ],
+  "topics": [
+    {
+      "name": "/tf",
+      "type": "tf2_msgs/msg/TFMessage",
+      "publishers": ["/robot_state_publisher"],
+      "subscribers": ["/amcl", "/arm_controller"]
+    },
+    {
+      "name": "/tf_static",
+      "type": "tf2_msgs/msg/TFMessage",
+      "publishers": ["/robot_state_publisher"],
+      "subscribers": ["/amcl"]
+    }
+  ],
+  "qos_pairs": [],
+  "tf_edges": [
+    {"parent": "odom", "child": "base_footprint"},
+    {"parent": "base_footprint", "child": "chassis_link"},
+    {"parent": "map", "child": "map_anchor"}
+  ],
+  "security_env": {
+    "ROS_SECURITY_ENABLE": "false",
+    "ROS_DOMAIN_ID": "0",
+    "ROS_AUTOMATIC_DISCOVERY_RANGE": "SUBNET"
+  }
+}
