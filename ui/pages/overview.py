@@ -6,9 +6,10 @@ AI Copilot insight banners, demonstration scenario launcher, and quick actions.
 
 import streamlit as st
 import json
+import plotly.graph_objects as go
 from pathlib import Path
 from config.settings import DEMO_DIR, UI_THEME, APP_NAME, APP_TAGLINE
-from ui.components import render_header, render_stat_strip, render_severity_badge
+from ui.components import render_header, render_stat_strip, render_severity_badge, render_copilot_chat_drawer
 
 def render_overview_page(diagnostic_engine, explanation_engine):
     render_header("Command Center", "Real-time robotics diagnostic health, QoS telemetry, and cybersecurity posture.")
@@ -144,3 +145,53 @@ def render_overview_page(diagnostic_engine, explanation_engine):
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+    # Real-Time Telemetry & Observability Charts (Matching Reference Image 1)
+    st.markdown("---")
+    st.markdown("### Real-Time ROS 2 Middleware Observability Telemetry")
+    st.caption("Active DDS message rate and transport error rate time-series across critical robot topics.")
+
+    col_ch1, col_ch2 = st.columns(2)
+
+    # Time series points
+    timestamps = ["14:30", "14:35", "14:40", "14:45", "14:50", "14:55", "15:00", "15:05", "15:10", "15:15", "15:20", "15:25"]
+
+    with col_ch1:
+        fig_hz = go.Figure()
+        fig_hz.add_trace(go.Scatter(x=timestamps, y=[28, 30, 29, 31, 15, 0, 0, 10, 28, 30, 30, 31], name="/scan (LiDAR)", line=dict(color="#00E5FF", width=2)))
+        fig_hz.add_trace(go.Scatter(x=timestamps, y=[48, 50, 50, 49, 50, 51, 48, 49, 50, 50, 49, 50], name="/odom", line=dict(color="#10B981", width=2)))
+        fig_hz.add_trace(go.Scatter(x=timestamps, y=[10, 10, 12, 10, 5, 0, 0, 0, 8, 10, 10, 10], name="/cmd_vel", line=dict(color="#F59E0B", width=2)))
+        fig_hz.update_layout(
+            template="plotly_dark",
+            paper_bgcolor=UI_THEME["bg_surface"],
+            plot_bgcolor=UI_THEME["bg_surface"],
+            title=dict(text="<b>Topic Publishing Frequency (Hz)</b>", font=dict(size=13, color="#F8FAFC")),
+            height=280,
+            margin=dict(l=30, r=20, t=35, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        st.plotly_chart(fig_hz, use_container_width=True)
+
+    with col_ch2:
+        fig_err = go.Figure()
+        fig_err.add_trace(go.Scatter(
+            x=timestamps, y=[0, 0, 2, 0, 78, 95, 90, 45, 5, 0, 0, 0],
+            name="DDS QoS Drops (%)",
+            line=dict(color="#EF4444", width=2.5),
+            fill='tozeroy',
+            fillcolor='rgba(239, 68, 68, 0.15)'
+        ))
+        fig_err.update_layout(
+            template="plotly_dark",
+            paper_bgcolor=UI_THEME["bg_surface"],
+            plot_bgcolor=UI_THEME["bg_surface"],
+            title=dict(text="<b>DDS Transport Error & Packet Drop Rate (%)</b>", font=dict(size=13, color="#F8FAFC")),
+            height=280,
+            margin=dict(l=30, r=20, t=35, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        st.plotly_chart(fig_err, use_container_width=True)
+
+    # Conversational Robotics Copilot Drawer
+    st.markdown("<br>", unsafe_allow_html=True)
+    render_copilot_chat_drawer(explanation_engine)

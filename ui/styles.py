@@ -32,18 +32,68 @@ def inject_custom_styles():
         font-family: 'Inter', sans-serif !important;
     }}
 
-    /* Top Header Bar */
-    header[data-testid="stHeader"] {{
-        background-color: {UI_THEME['bg_base']} !important;
-        border-bottom: 1px solid {UI_THEME['border_subtle']} !important;
-    }}
+    /* Top Header Bar & Streamlit Chrome Purge */
+    #MainMenu { visibility: hidden !important; display: none !important; }
+    header[data-testid="stHeader"] { 
+        background-color: transparent !important;
+        height: 0px !important;
+        min-height: 0px !important;
+        padding: 0px !important;
+        visibility: hidden !important;
+    }
+    div[data-testid="stToolbar"] { visibility: hidden !important; display: none !important; }
+    .stDeployButton { display: none !important; visibility: hidden !important; }
+    footer { visibility: hidden !important; display: none !important; }
 
     /* Main Container Padding */
-    .block-container {{
-        padding-top: 1.5rem !important;
-        padding-bottom: 3rem !important;
-        max-width: 1300px !important;
-    }}
+    .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 2.5rem !important;
+        max-width: 1350px !important;
+    }
+
+    /* Transform Streamlit Radio into Linear-Style Navigation Items */
+    div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        background-color: #11141E !important;
+        border: 1px solid #1E2330 !important;
+        border-radius: 6px !important;
+        padding: 0.6rem 0.85rem !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease-in-out !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+        background-color: #1A1F2D !important;
+        border-color: #38BDF8 !important;
+    }
+    /* Hide the ugly circular radio input dot completely */
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child {
+        display: none !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label div[data-testid="stMarkdownContainer"] p {
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        color: #94A3B8 !important;
+        margin: 0 !important;
+    }
+    /* Active selected radio item */
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+        background: linear-gradient(90deg, rgba(2, 132, 199, 0.25) 0%, rgba(0, 229, 255, 0.15) 100%) !important;
+        border-color: #00E5FF !important;
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.2) !important;
+    }
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) div[data-testid="stMarkdownContainer"] p {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+    }
 
     /* Reusable Card */
     .rg-card {{
@@ -170,52 +220,161 @@ def inject_custom_styles():
         border-color: {UI_THEME['border_strong']};
     }}
 
-    /* Buttons */
-    .stButton > button {{
-        background-color: #1E2330 !important;
-        color: #F1F5F9 !important;
-        border: 1px solid {UI_THEME['border_strong']} !important;
+    /* High-Contrast Interactive Buttons (All variants & download buttons) */
+    .stButton > button,
+    .stDownloadButton > button,
+    .stFormSubmitButton > button,
+    button[data-testid^="baseButton-"] {
+        background-color: #161A26 !important;
+        color: #F8FAFC !important;
+        border: 1px solid #334155 !important;
         border-radius: 6px !important;
-        font-weight: 500 !important;
-        padding: 0.45rem 1rem !important;
+        font-weight: 600 !important;
+        font-size: 0.875rem !important;
+        padding: 0.55rem 1.15rem !important;
         transition: all 0.2s ease !important;
-    }}
-    .stButton > button:hover {{
-        background-color: #272F42 !important;
-        border-color: {UI_THEME['accent_primary']} !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
+    }
+    .stButton > button:hover,
+    .stDownloadButton > button:hover,
+    .stFormSubmitButton > button:hover,
+    button[data-testid^="baseButton-"]:hover {
+        background-color: #22293B !important;
+        border-color: #38BDF8 !important;
         color: #FFFFFF !important;
-        box-shadow: 0 0 10px rgba(0, 229, 255, 0.15) !important;
-    }}
-
-    /* Primary Accent Button */
-    .stButton > button[kind="primary"] {{
-        background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
-        border: 1px solid #38BDF8 !important;
-        color: #FFFFFF !important;
-    }}
-    .stButton > button[kind="primary"]:hover {{
-        background: linear-gradient(135deg, #0369A1 0%, #075985 100%) !important;
         box-shadow: 0 0 12px rgba(56, 189, 248, 0.3) !important;
-    }}
+    }
+
+    /* Primary Accent Button with Cyan Pulse */
+    .stButton > button[kind="primary"],
+    .stDownloadButton > button[kind="primary"],
+    button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #0284C7 0%, #00E5FF 100%) !important;
+        border: 1px solid #38BDF8 !important;
+        color: #0B0D13 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 0 14px rgba(0, 229, 255, 0.4) !important;
+    }
+    .stButton > button[kind="primary"]:hover,
+    .stDownloadButton > button[kind="primary"]:hover,
+    button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%) !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.6) !important;
+    }
+
+    /* Input and Selectbox Customization */
+    div[data-baseweb="select"] > div,
+    div[data-testid="stTextInput"] input,
+    div[data-testid="stTextArea"] textarea {
+        background-color: #0F121C !important;
+        color: #F8FAFC !important;
+        border: 1px solid #1E2330 !important;
+        border-radius: 6px !important;
+    }
+    div[data-baseweb="select"] > div:hover,
+    div[data-testid="stTextInput"] input:focus,
+    div[data-testid="stTextArea"] textarea:focus {
+        border-color: #00E5FF !important;
+        box-shadow: 0 0 8px rgba(0, 229, 255, 0.2) !important;
+    }
+    div[data-baseweb="popover"], div[data-baseweb="menu"] {
+        background-color: #0F121C !important;
+        border: 1px solid #1E2330 !important;
+    }
+    li[role="option"] {
+        background-color: #0F121C !important;
+        color: #CBD5E1 !important;
+    }
+    li[role="option"]:hover, li[aria-selected="true"] {
+        background-color: #1E2433 !important;
+        color: #00E5FF !important;
+    }
+
+    /* Expanders & Chat Components */
+    div[data-testid="stExpander"] {
+        background-color: #0E111A !important;
+        border: 1px solid #1E2330 !important;
+        border-radius: 8px !important;
+        margin-bottom: 0.75rem !important;
+    }
+    div[data-testid="stExpander"] summary {
+        color: #E2E8F0 !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stExpander"] summary:hover {
+        color: #00E5FF !important;
+    }
+    div[data-testid="stChatInput"] {
+        background-color: #0E111A !important;
+        border: 1px solid #1E2330 !important;
+        border-radius: 8px !important;
+    }
+    div[data-testid="stChatInput"] textarea {
+        color: #F8FAFC !important;
+    }
+    div[data-testid="stChatMessage"] {
+        background-color: #11141E !important;
+        border: 1px solid #1E2330 !important;
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem !important;
+    }
 
     /* Streamlit Tabs Customization */
-    .stTabs [data-baseweb="tab-list"] {{
-        gap: 8px;
-        background-color: transparent;
-        border-bottom: 1px solid {UI_THEME['border_subtle']};
-        padding-bottom: 4px;
-    }}
-    .stTabs [data-baseweb="tab"] {{
-        border-radius: 6px 6px 0px 0px;
-        color: {UI_THEME['text_secondary']};
-        font-weight: 500;
-        padding: 8px 16px;
-    }}
-    .stTabs [aria-selected="true"] {{
-        background-color: {UI_THEME['bg_surface']} !important;
-        color: {UI_THEME['accent_primary']} !important;
-        border-bottom: 2px solid {UI_THEME['accent_primary']} !important;
-    }}
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px !important;
+        background-color: #0F121C !important;
+        border: 1px solid #1E2330 !important;
+        border-radius: 8px !important;
+        padding: 4px 6px !important;
+        margin-bottom: 1rem !important;
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 6px !important;
+        color: #94A3B8 !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        padding: 8px 16px !important;
+        background-color: transparent !important;
+        border: 1px solid transparent !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #F8FAFC !important;
+        background-color: #161A26 !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #1E2433 !important;
+        color: #00E5FF !important;
+        border: 1px solid rgba(0, 229, 255, 0.4) !important;
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.15) !important;
+    }
+
+    /* Unified Code Diff Box */
+    .rg-diff-box {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        background-color: #06070A;
+        border: 1px solid #1E2330;
+        border-radius: 6px;
+        padding: 0.85rem 1rem;
+        color: #CBD5E1;
+        overflow-x: auto;
+        line-height: 1.5;
+    }
+    .diff-line-add {
+        color: #10B981;
+        background-color: rgba(16, 185, 129, 0.12);
+        display: block;
+        padding: 0.1rem 0.3rem;
+        border-radius: 2px;
+    }
+    .diff-line-del {
+        color: #EF4444;
+        background-color: rgba(239, 68, 68, 0.12);
+        display: block;
+        padding: 0.1rem 0.3rem;
+        border-radius: 2px;
+    }
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)

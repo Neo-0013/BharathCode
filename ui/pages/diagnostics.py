@@ -106,31 +106,9 @@ def render_diagnostics_page(diagnostic_engine, explanation_engine):
         cat = f.get("category", "General")
 
         with st.expander(f"[{fid}] {title} — {sev}", expanded=idx == 0):
-            render_finding_detail(f)
+            render_finding_detail(f, explanation_engine)
 
-            st.markdown("<br>", unsafe_allow_html=True)
-            col_ai, col_copy = st.columns([1.5, 1.0])
-
-            with col_ai:
-                ai_key = f"ai_expl_{fid}"
-                if st.button(f"✨ Generate Grounded AI Copilot Runbook", key=f"btn_ai_{fid}"):
-                    with st.spinner("BharatCode AI Copilot synthesizing evidence-grounded runbook..."):
-                        is_offline = st.session_state.get("force_offline", False)
-                        expl = explanation_engine.explain_finding(f, force_offline=is_offline)
-                        st.session_state[ai_key] = expl
-
-                if ai_key in st.session_state:
-                    expl_data = st.session_state[ai_key]
-                    st.markdown(f"""
-                    <div class="rg-ai-banner" style="margin-top: 1rem;">
-                        <div class="rg-ai-header">
-                            <span>✨ {expl_data.get('source', 'AI Copilot')} ({expl_data.get('model', 'Model')})</span>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    if expl_data.get("api_error"):
-                        st.info(f"ℹ️ BharatCode Cloud API Note: {expl_data['api_error']}\n\n**ROBOGUARD AI seamlessly generated this complete runbook using its built-in deterministic engineering engine.**")
-                    st.markdown(expl_data.get("explanation", ""))
-                    if expl_data.get("warnings"):
-                        for w in expl_data["warnings"]:
-                            st.caption(f"⚠️ Guardrail note: {w}")
+    # Persistent Interactive Copilot Assistant Drawer
+    st.markdown("<br>", unsafe_allow_html=True)
+    from ui.components import render_copilot_chat_drawer
+    render_copilot_chat_drawer(explanation_engine)

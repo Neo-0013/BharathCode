@@ -32,60 +32,103 @@ def render_graph_explorer_page(diagnostic_engine):
         """, unsafe_allow_html=True)
         return
 
-    # Build NetworkX graph
-    builder = ROSGraphBuilder()
-    
-    # Filter for QoS errors
-    qos_errors = []
-    if current_analysis:
-        for f in current_analysis.get("findings", []):
-            if f.get("category") == "QoS Profile Compatibility" and f.get("severity") == "CRITICAL":
-                entities = f.get("entities", [])
-                if len(entities) >= 3:
-                    qos_errors.append({"topic": entities[0], "publisher": entities[1], "subscriber": entities[2]})
+    tab_comp, tab_tf = st.tabs([
+        "🌐 Computational Node & Topic Graph",
+        "📐 TF2 Coordinate Frame Hierarchy (REP-105)"
+    ])
 
-    builder.build_from_data(nodes, topics, qos_errors)
-    stats = builder.get_topology_statistics()
+    with tab_comp:
+        # Build NetworkX graph
+        builder = ROSGraphBuilder()
+        
+        # Filter for QoS errors
+        qos_errors = []
+        if current_analysis:
+            for f in current_analysis.get("findings", []):
+                if f.get("category") == "QoS Profile Compatibility" and f.get("severity") == "CRITICAL":
+                    entities = f.get("entities", [])
+                    if len(entities) >= 3:
+                        qos_errors.append({"topic": entities[0], "publisher": entities[1], "subscriber": entities[2]})
 
-    # Metric Row
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Total Nodes", stats.get("total_nodes", 0))
-    with col2:
-        st.metric("Total Topics", stats.get("total_topics", 0))
-    with col3:
-        st.metric("Communication Edges", stats.get("total_edges", 0))
-    with col4:
-        st.metric("Connected Subgraphs", stats.get("connected_components_count", 0))
+        builder.build_from_data(nodes, topics, qos_errors)
+        stats = builder.get_topology_statistics()
 
-    # Render Plotly interactive graph
-    fig = builder.render_plotly()
-    st.plotly_chart(fig, use_container_width=True)
+        # Metric Row
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Total Nodes", stats.get("total_nodes", 0))
+        with col2:
+            st.metric("Total Topics", stats.get("total_topics", 0))
+        with col3:
+            st.metric("Communication Edges", stats.get("total_edges", 0))
+        with col4:
+            st.metric("Connected Subgraphs", stats.get("connected_components_count", 0))
 
-    # Graph Legend & Inspector
-    col_leg, col_insp = st.columns([1.2, 1.8])
+        # Render Plotly interactive graph
+        fig = builder.render_plotly()
+        st.plotly_chart(fig, use_container_width=True)
 
-    with col_leg:
-        st.markdown("### Topology Legend")
-        st.markdown("""
-        - 🟢 **Green Circle:** Active ROS 2 Node
-        - 🟡 **Amber Circle:** Inactive / Unconfigured Lifecycle Node
-        - 🔴 **Red Circle:** Crashed / Failed Node
-        - 🔷 **Cyan Diamond:** ROS 2 Topic
-        - ⚪ **Gray Line:** Healthy Pub/Sub Edge
-        - 🔴 **Red Dotted Line:** QoS Incompatible Communication Path
-        """)
+        # Graph Legend & Inspector
+        col_leg, col_insp = st.columns([1.2, 1.8])
 
-        orphans = stats.get("orphaned_entities", [])
-        if orphans:
-            st.warning(f"⚠️ Detected {len(orphans)} orphaned entities: {', '.join(orphans)}")
+        with col_leg:
+            st.markdown("### Topology Legend")
+            st.markdown("""
+            - 🟢 **Green Circle:** Active ROS 2 Node
+            - 🟡 **Amber Circle:** Inactive / Unconfigured Lifecycle Node
+            - 🔴 **Red Circle:** Crashed / Failed Node
+            - 🔷 **Cyan Diamond:** ROS 2 Topic
+            - ⚪ **Gray Line:** Healthy Pub/Sub Edge
+            - 🔴 **Red Dotted Line:** QoS Incompatible Communication Path
+            """)
 
-    with col_insp:
-        st.markdown("### Endpoint Inspector")
-        node_names = [n.get("name") for n in nodes if n.get("name")]
-        selected_node = st.selectbox("Inspect Node Details", ["-- Select Node --"] + node_names)
+            orphans = stats.get("orphaned_entities", [])
+            if orphans:
+                st.warning(f"⚠️ Detected {len(orphans)} orphaned entities: {', '.join(orphans)}")
 
-        if selected_node != "-- Select Node --":
-            node_info = next((n for n in nodes if n.get("name") == selected_node), None)
-            if node_info:
-                st.json(node_info)
+        with col_insp:
+            st.markdown("### Endpoint Inspector")
+            node_names = [n.get("name") for n in nodes if n.get("name")]
+            selected_node = st.selectbox("Inspect Node Details", ["-- Select Node --"] + node_names)
+
+            if selected_node != "-- Select Node --":
+                node_info = next((n for n in nodes if n.get("name") == selected_node), None)
+                if node_info:
+                    st.json(node_info)
+
+    with tab_tf:
+        tf_edges = scenario_data.get("tf_edges", [])
+        if not tf_edges:
+            # Fallback to standard mobile robot tree if not explicitly defined
+            tf_edges = [
+                {"parent": "map", "child": "odom"},
+                {"parent": "odom", "child": "base_link"},
+                {"parent": "base_link", "child": "base_footprint"},
+                {"parent": "base_link", "child": "laser_frame"},
+                {"parent": "base_link", "child": "camera_optical_frame"}
+            ]
+
+        from core.tf_analyzer import TFAnalyzer
+        tf_analyzer = TFAnalyzer()
+        tf_tree_fig = tf_analyzer.render_plotly_tree(tf_edges)
+        st.plotly_chart(tf_tree_fig, use_container_width=True)
+
+        col_tf_info, col_tf_cmd = st.columns([1.4, 1.0])
+        with col_tf_info:
+            tree_eval = tf_analyzer.analyze_tf_tree(tf_edges)
+            st.markdown(f"""
+            <div class="rg-card">
+                <div style="font-weight: 600; color: #F8FAFC; font-size: 0.9rem;">REP-105 Coordinate Framework Conformance</div>
+                <div style="font-size: 0.8rem; color: #CBD5E1; margin-top: 0.35rem;">
+                    Canonical Root Frames: <code>{', '.join(tree_eval['roots'])}</code><br>
+                    Leaf Frames: <code>{', '.join(tree_eval['leaves'])}</code><br>
+                    Total Frames: <b>{tree_eval['total_frames']}</b>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if len(tree_eval['roots']) > 1:
+                st.error(f"🚨 Disconnected TF2 Tree! Multiple roots detected: {', '.join(tree_eval['roots'])}. Localization requires a connected path from map to odom.")
+
+        with col_tf_cmd:
+            st.markdown("**TF2 Verification Commands:**")
+            st.code("ros2 run tf2_tools view_frames\nros2 run tf2_ros tf2_echo map odom\nros2 run tf2_ros tf2_monitor", language="bash")
