@@ -3,10 +3,10 @@
 *Official Submission for the BharatCode Build League 2026*
 
 [![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy%20Jalisco-326CE5?style=flat-square&logo=ros)](https://docs.ros.org/en/jazzy/)
-[![BharatCode](https://img.shields.io/badge/BharatCode-Model%20API-00E5FF?style=flat-square)](https://bharatcode.ai/)
+[![AI Providers](https://img.shields.io/badge/AI%20Providers-Ollama%20%7C%20Gemini%20%7C%20BharatCode-00E5FF?style=flat-square)](config/settings.py)
 [![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat-square&logo=python)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B?style=flat-square&logo=streamlit)](https://streamlit.io)
-[![Tests](https://img.shields.io/badge/Tests-28%2F28%20Passing-10B981?style=flat-square)](tests/)
+[![Streamlit](https://img.shields.io/badge/UI-Linear%20Dark%20System-FF4B4B?style=flat-square&logo=streamlit)](ui/)
+[![Tests](https://img.shields.io/badge/Tests-34%2F34%20Passing-10B981?style=flat-square)](tests/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](LICENSE)
 
 > **"Understand your robot. Diagnose its failures. Strengthen its security."**
@@ -15,11 +15,11 @@
 
 ## 1. Project Introduction
 
-**ROBOGUARD AI** is an intelligent, commercial-grade engineering diagnostics and defensive cybersecurity platform for autonomous mobile robots (AMRs), robotic manipulators, and autonomous systems running **ROS 2 Jazzy**.
+**ROBOGUARD AI** is an intelligent, commercial-grade engineering diagnostics, auto-remediation, and defensive cybersecurity platform for autonomous mobile robots (AMRs), robotic manipulators, and autonomous systems running **ROS 2 Jazzy**.
 
 ROBOGUARD AI introduces a **Dual-Engine Reasoning Architecture**:
-1. **Deterministic Engineering Engine:** Mathematical QoS compatibility matrices, acyclic TF2 coordinate transform tree validation, log regex error signature parsing, and SROS2/DDS XML security auditing.
-2. **Explainable AI Copilot:** Powered by the official **BharatCode Model API** (`deepseek-v4.1-flash` and `qwen-3.8-27b`), transforming cryptic DDS errors and stack traces into grounded, evidence-backed root cause explanations and copy-pasteable ROS 2 verification runbooks.
+1. **Deterministic Engineering Engine:** Mathematical OMG DDS v1.4 QoS compatibility matrices, acyclic TF2 coordinate transform tree validation against REP-105, log regex error signature parsing, and SROS2/DDS XML security auditing.
+2. **Explainable AI Copilot:** Multi-provider architecture powered by **Local Ollama** (zero-cost / private `qwen2.5-coder:3b`), **Google Gemini API**, and the official **BharatCode Model API** (`deepseek-v4.1-flash` and `qwen-3.8-27b`), transforming cryptic DDS errors and stack traces into grounded, evidence-backed root cause explanations and copy-pasteable ROS 2 verification runbooks.
 
 ---
 
@@ -28,7 +28,7 @@ ROBOGUARD AI introduces a **Dual-Engine Reasoning Architecture**:
 Autonomous robotics software is notoriously complex and fragile:
 - **Silent QoS Mismatches:** ROS 2 DDS middleware silently drops messages when publisher and subscriber Quality of Service (QoS) policies disagree (e.g., Best Effort publisher offering data to a Reliable subscriber), leaving robot navigation blind without clear error messages.
 - **Coordinate Frame Disconnections:** In autonomous mobile robots (REP-105), a missing transform in the TF tree (`map` ➔ `odom` ➔ `base_link`) triggers `LookupException` and `ExtrapolationException`, halting motion planners.
-- **Critical Cybersecurity Exposure:** Default ROS 2 deployments communicate via unencrypted, unauthenticated UDP multicast (`ROS_SECURITY_ENABLE=false`, Domain 0). Anyone on the local Wi-Fi can eavesdrop on sensor streams or inject malicious velocity commands (`/cmd_vel`).
+- **Critical Cybersecurity Exposure:** Default ROS 2 deployments communicate via unencrypted, unauthenticated UDP multicast (`ROS_SECURITY_ENABLE=false`, Domain 0). Anyone on the local network can eavesdrop on sensor streams or inject malicious velocity commands (`/cmd_vel`).
 - **High Cognitive Burden:** Engineers spend hours manually combing through gigabytes of unstructured logs and juggling fragmented CLI tools (`ros2 doctor`, `tf2_tools`, `rqt_graph`).
 
 ---
@@ -37,17 +37,21 @@ Autonomous robotics software is notoriously complex and fragile:
 
 ROBOGUARD AI bridges the gap between low-level middleware telemetry and high-level engineering decisions:
 - **Evidence-Based:** Deterministic checks establish empirical facts first; the AI never hallucinates measurements or unverified outcomes.
-- **Enterprise Dark-First UI:** Inspired by leading observability dashboards (Datadog/Grafana) and Linear ergonomics, featuring telemetry stat strips, interactive topology graphs, and collapsible detail drawers.
-- **100% Offline-Resilient:** Fully operational in air-gapped robotics facilities; when cloud connectivity is unavailable, the deterministic explanation engine provides comprehensive local troubleshooting runbooks.
+- **1-Click Auto-Fix Git Patches:** Generates real unified diffs (`--- a/ +++ b/`) with a 1-click download button (`.patch`) ready for immediate `git apply`.
+- **Interactive Attack Surface Simulator:** Simulates real-world cyberattacks (e.g. Rogue `/cmd_vel` injection, LiDAR spoofing) comparing Insecure ROS 2 vs Hardened SROS2 enclaves in real time.
+- **Plotly TF2 REP-105 Frame Tree:** Interactive hierarchical coordinate graph visualizing transform trees and highlighting disconnected sensor links.
+- **Enterprise Dark-First UI:** Inspired by Linear ergonomics and modern AI developer tools, featuring high-contrast glowing action buttons, telemetry stat strips, and collapsible 4-tab finding drawers.
+- **100% Offline-Resilient:** Operates seamlessly in air-gapped robotics facilities; when cloud connectivity is unavailable, Local Ollama or the deterministic offline runbook engine ensures zero downtime.
 
 ---
 
-## 4. Key Capabilities
+## 4. Key Capabilities & Winning Features
 
 - **Multi-Format Ingestion:** Accepts uploaded ROS 2 console logs (`.log`, `.txt`), pasted terminal logs, JSON diagnostic dumps, YAML launch parameters, and DDS XML security profiles.
-- **DDS QoS Compatibility Engine:** Evaluates Reliability, Durability, and Depth compatibility with full violation explanations.
-- **TF2 Coordinate Validator:** Identifies disconnected coordinate trees, multiple roots, and REP-105 standard frame absence (`base_link`).
-- **Node & Topic Architecture Audit:** Flags unconsumed critical topics (`/cmd_vel` with 0 subscribers), starved subscribers, and inactive lifecycle nodes.
+- **DDS QoS Compatibility Engine:** Evaluates Reliability, Durability, and Depth compatibility with full violation explanations based on OMG DDS specifications.
+- **Plotly TF2 Coordinate Validator:** Identifies disconnected coordinate trees, multiple roots, and REP-105 standard frame absence (`base_link`), rendering interactive trees.
+- **1-Click Auto-Fix Patch Generator:** Instant generation and download of Git patches for QoS parameters, TF2 static broadcasters, SROS2 governance XML, and Python dependencies.
+- **Interactive Attack Surface Simulator:** Interactive cyberattack simulator modeling Rogue `/cmd_vel` velocity injection, fake obstacle LiDAR spoofing, and DDS discovery floods with hardware damage prevention verification.
 - **Defensive SROS2 Security Center:** Audits keystores, `ROS_SECURITY_ENABLE`, `ROS_SECURITY_STRATEGY`, and inspects DDS XML governance for unauthenticated participants and wildcard topic permissions.
 - **Interactive ROS Graph Explorer:** NetworkX & Plotly directed graph visualization highlighting nodes, topics, isolated subgraphs, and QoS error edges.
 - **Automated Engineering Reports:** One-click generation of Markdown runbooks and publication-grade PDF audit reports via ReportLab.
@@ -57,12 +61,12 @@ ROBOGUARD AI bridges the gap between low-level middleware telemetry and high-lev
 ## 5. Technology Stack
 
 - **Primary Language:** Python 3.12
-- **Application Framework:** Streamlit (customized with token-based anti-AI-slop CSS)
-- **AI Integration:** BharatCode Model API (`deepseek-v4.1-flash`, `qwen-3.8-27b`)
+- **Application Framework:** Streamlit (customized with high-contrast Linear dark-mode CSS tokens)
+- **AI Integration:** Multi-provider engine supporting Local Ollama (`qwen2.5-coder:3b`), Google Gemini (`gemini-1.5-flash`), and BharatCode (`deepseek-v4.1-flash`, `qwen-3.8-27b`)
 - **Graph & Visualization:** NetworkX 3.7, Plotly 7.1.0
 - **Data & Config Processing:** PyYAML 6.0.1, Pandas 3.1.1, JSON, Regex
 - **Report Generation:** ReportLab 5.0.1 (PDF compilation) & Markdown
-- **Testing & Verification:** Pytest 7.4.4 (28/28 unit and integration tests passing)
+- **Testing & Verification:** Pytest 7.4.4 (**34/34 unit and integration tests passing**)
 - **Robotics Target:** ROS 2 Jazzy Jalisco (DDS / SROS2 / REP-105)
 
 ---
@@ -79,23 +83,25 @@ ROBOGUARD AI bridges the gap between low-level middleware telemetry and high-lev
 │  - QoSAnalyzer (Offered >= Requested matrix) │
 │  - TFAnalyzer (REP-105 frame acyclic tree)   │
 │  - SecurityEngine (SROS2 & DDS XML audit)    │
+│  - PatchGenerator (Unified Git diffs)        │
 └──────────────────────┬───────────────────────┘
                        │ (Structured Findings & Evidence)
                        ▼
 ┌──────────────────────────────────────────────┐
 │           AI Copilot & Guardrails            │
-│  - BharatCode Client (deepseek-v4.1-flash)   │
+│  - Multi-Provider (Ollama / Gemini / BC)     │
 │  - ResponseValidator (Blocks unsafe cmds)    │
 │  - Deterministic Offline Fallback            │
 └──────────────────────┬───────────────────────┘
                        │
                        ▼
 ┌──────────────────────────────────────────────┐
-│        Presentation & Reporting Layer         │
+│        Presentation & Simulation Layer       │
 │  - Command Center & Telemetry Stat Strips    │
-│  - Diagnostics Workspace & Detail Drawers    │
-│  - Cybersecurity Center (Transparent Score)  │
-│  - Interactive Plotly Topology Explorer      │
+│  - Diagnostics Workspace & 4-Tab Drawers     │
+│  - 1-Click .patch File Downloads             │
+│  - Interactive Attack Surface Simulator      │
+│  - Plotly TF2 & Topology Graph Visualizers   │
 │  - Markdown & ReportLab PDF Export           │
 └──────────────────────────────────────────────┘
 ```
@@ -119,11 +125,17 @@ cd BharathCode
 pip install -r requirements.txt
 ```
 
-### Step 3: Configure Environment Variables (Optional)
+### Step 3: Configure AI Provider (Optional)
 ```bash
 cp .env.example .env
-# Edit .env to add your BHARATCODE_API_KEY
-# If left empty, ROBOGUARD AI automatically runs in 100% Deterministic Offline Mode!
+# Option A: Local Ollama (Recommended — 100% Free & Private)
+# Pre-installed Ollama on localhost:11434 with qwen2.5-coder:3b works instantly!
+
+# Option B: Google Gemini API (Free Tier)
+# export GEMINI_API_KEY="your-gemini-key"
+
+# Option C: BharatCode API
+# export BHARATCODE_API_KEY="your-bharatcode-key"
 ```
 
 ### Step 4: Run the Application
@@ -150,7 +162,7 @@ ROBOGUARD AI includes **5 pre-configured synthetic demonstration scenarios** for
 
 ## 9. Automated Testing Suite
 
-ROBOGUARD AI includes a comprehensive Pytest test suite covering log parsing, QoS matrices, TF validation, cybersecurity posture scoring, and report generation:
+ROBOGUARD AI includes a comprehensive Pytest test suite covering log parsing, QoS matrices, TF validation, cybersecurity posture scoring, patch generation, and report generation:
 
 ```bash
 python3 -m pytest -v tests/
@@ -158,7 +170,7 @@ python3 -m pytest -v tests/
 
 **Results:**
 ```text
-============================== 28 passed in 0.82s ==============================
+============================== 34 passed in 1.18s ==============================
 ```
 
 ---
@@ -166,9 +178,9 @@ python3 -m pytest -v tests/
 ## 10. Security & Privacy
 
 - **Safe Local Analysis:** Log parsing and security evaluation occur strictly on your local machine.
-- **Zero Hardcoded Secrets:** Credentials are read from `BHARATCODE_API_KEY` or stored in volatile session memory.
+- **Zero Hardcoded Secrets:** Credentials are read from environment variables or stored in volatile session memory.
 - **Safety Guardrails:** All AI Copilot responses pass through a strict `ResponseValidator` that blocks dangerous shell commands (`rm -rf`, raw socket floods) and ensures suggested troubleshooting commands adhere to standard ROS 2 CLI tools.
-- **Air-Gapped Capable:** Fully functional without internet connectivity or API keys.
+- **Air-Gapped Capable:** Fully functional without internet connectivity or external API keys.
 
 ---
 
@@ -176,7 +188,7 @@ python3 -m pytest -v tests/
 
 In compliance with the **BharatCode Build League 2026** submission guidelines:
 - `BharatCode.txt` is located in the repository root directory.
-- Model API client directly integrates with `https://bharatcode.ai/api/model/v1` supporting `deepseek-v4.1-flash` and `qwen-3.8-27b`.
+- Model API client directly integrates with `https://bharatcode.ai/api/model/v1` supporting `deepseek-v4.1-flash` and `qwen-3.8-27b`, with seamless multi-provider fallbacks to Local Ollama and Google Gemini.
 - Tested and verified on **ROS 2 Jazzy Jalisco**.
 
 ---
