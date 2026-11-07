@@ -29,8 +29,8 @@ TARGET_ROS_DISTRO = "ROS 2 Jazzy"
 BHARATCODE_API_BASE = os.getenv("BHARATCODE_API_BASE", "https://bharatcode.ai/api/model/v1")
 BHARATCODE_DEFAULT_MODEL = os.getenv("BHARATCODE_MODEL", "deepseek-v4.1-flash")
 BHARATCODE_AVAILABLE_MODELS = [
-    {"id": "deepseek-v4.1-flash", "name": "BharatCode DeepSeek V4.1 Flash (Recommended for Diagnostics)", "context_window": "128k"},
-    {"id": "qwen-3.8-27b", "name": "BharatCode Qwen 3.8 27B (High-Precision Reasoning)", "context_window": "32k"}
+    {"id": "qwen-3.8-27b", "name": "BharatCode Qwen 3.8 27B (Free 10M tokens for verified students / Lite tier)", "context_window": "32k"},
+    {"id": "deepseek-v4.1-flash", "name": "BharatCode DeepSeek V4.1 Flash (Pro tier ₹999/month)", "context_window": "128k"}
 ]
 
 # Diagnostic Severity

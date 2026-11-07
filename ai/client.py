@@ -57,6 +57,22 @@ class BharatCodeClient:
                     "status_code": 200,
                     "raw_response": content
                 }
+            elif resp.status_code == 402:
+                err_msg = ""
+                try:
+                    err_json = resp.json()
+                    err_msg = err_json.get("error", {}).get("message", "")
+                except Exception:
+                    pass
+                if not err_msg:
+                    err_msg = resp.text[:250]
+                return {
+                    "success": False,
+                    "status_code": 402,
+                    "is_payment_required": True,
+                    "message": f"BharatCode Plan Required (HTTP 402): {err_msg}",
+                    "raw_error": err_msg
+                }
             else:
                 return {
                     "success": False,
@@ -113,6 +129,21 @@ class BharatCodeClient:
                         "content": content,
                         "model": data.get("model", self.model),
                         "usage": data.get("usage", {})
+                    }
+                elif resp.status_code == 402:
+                    err_msg = ""
+                    try:
+                        err_json = resp.json()
+                        err_msg = err_json.get("error", {}).get("message", "")
+                    except Exception:
+                        pass
+                    if not err_msg:
+                        err_msg = resp.text[:250]
+                    return {
+                        "success": False,
+                        "status_code": 402,
+                        "is_payment_required": True,
+                        "error": f"BharatCode Subscription Required (HTTP 402): {err_msg}"
                     }
                 elif resp.status_code in [429, 500, 502, 503, 504]:
                     last_error = f"HTTP {resp.status_code}: {resp.text[:150]}"

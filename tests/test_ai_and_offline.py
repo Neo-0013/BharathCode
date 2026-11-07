@@ -51,3 +51,20 @@ def test_client_unconfigured_offline():
     res = client.generate_chat_completion([{"role": "user", "content": "hi"}])
     assert res["success"] is False
     assert "not configured" in res["error"]
+
+def test_client_http_402_handling(monkeypatch):
+    class MockResponse:
+        status_code = 402
+        text = '{"error":{"message":"Coding and API use need BharatCode Lite (₹399/month, Qwen 3.8 27B) or Pro (₹999/month, Qwen and DeepSeek)."}}'
+        def json(self):
+            return {"error": {"message": "Coding and API use need BharatCode Lite (₹399/month, Qwen 3.8 27B) or Pro (₹999/month, Qwen and DeepSeek)."}}
+
+    import requests
+    monkeypatch.setattr(requests, "post", lambda *args, **kwargs: MockResponse())
+
+    client = BharatCodeClient(api_key="mock_key")
+    res = client.test_connection()
+    assert res["success"] is False
+    assert res["status_code"] == 402
+    assert res["is_payment_required"] is True
+    assert "BharatCode Plan Required" in res["message"]

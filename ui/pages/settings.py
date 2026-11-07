@@ -66,6 +66,22 @@ def render_settings_page(explanation_engine):
                     res = client.test_connection()
                     if res["success"]:
                         st.success(f"✅ {res['message']}")
+                    elif res.get("status_code") == 402 or res.get("is_payment_required"):
+                        st.warning(f"⚠️ {res['message']}")
+                        st.markdown(f"""
+                        <div class="rg-card" style="border-color: #F59E0B; margin-top: 0.75rem;">
+                            <div style="font-weight: 600; color: #F59E0B; font-size: 0.85rem;">🎓 BharatCode Plan & Student Tier Guidance</div>
+                            <div style="font-size: 0.8rem; color: #CBD5E1; margin-top: 0.4rem; line-height: 1.45;">
+                                BharatCode API access requires an active plan or student verification:
+                                <ul>
+                                    <li><b>Student Free Tier:</b> Students with a verified college email (<code>.edu</code> or <code>.ac.in</code>) get <b>10M free tokens</b> on <b>Qwen 3.8 27B</b>. Select <code>qwen-3.8-27b</code> above!</li>
+                                    <li><b>BharatCode Lite:</b> ₹399/month (Qwen 3.8 27B)</li>
+                                    <li><b>BharatCode Pro:</b> ₹999/month (Qwen and DeepSeek)</li>
+                                    <li><b>Deterministic Offline Mode:</b> Don't have a plan yet? No problem! ROBOGUARD AI includes a complete built-in deterministic engineering copilot that requires <b>zero API costs</b> and runs 100% offline.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
                     else:
                         st.error(f"❌ {res['message']}")
 

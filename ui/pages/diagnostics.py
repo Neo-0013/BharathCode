@@ -128,6 +128,8 @@ def render_diagnostics_page(diagnostic_engine, explanation_engine):
                         </div>
                     </div>
                     """, unsafe_allow_html=True)
+                    if expl_data.get("api_error"):
+                        st.info(f"ℹ️ BharatCode Cloud API Note: {expl_data['api_error']}\n\n**ROBOGUARD AI seamlessly generated this complete runbook using its built-in deterministic engineering engine.**")
                     st.markdown(expl_data.get("explanation", ""))
                     if expl_data.get("warnings"):
                         for w in expl_data["warnings"]:
