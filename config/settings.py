@@ -25,13 +25,46 @@ APP_VERSION = "1.0.0"
 APP_TAGLINE = "Understand your robot. Diagnose its failures. Strengthen its security."
 TARGET_ROS_DISTRO = "ROS 2 Jazzy"
 
-# BharatCode Model API Configuration
-BHARATCODE_API_BASE = os.getenv("BHARATCODE_API_BASE", "https://bharatcode.ai/api/model/v1")
-BHARATCODE_DEFAULT_MODEL = os.getenv("BHARATCODE_MODEL", "deepseek-v4.1-flash")
-BHARATCODE_AVAILABLE_MODELS = [
-    {"id": "qwen-3.8-27b", "name": "BharatCode Qwen 3.8 27B (Free 10M tokens for verified students / Lite tier)", "context_window": "32k"},
-    {"id": "deepseek-v4.1-flash", "name": "BharatCode DeepSeek V4.1 Flash (Pro tier ₹999/month)", "context_window": "128k"}
-]
+# AI Provider Configurations
+AI_PROVIDERS = {
+    "ollama": {
+        "name": "Local Ollama (100% Free / Localhost)",
+        "base_url": os.getenv("OLLAMA_API_BASE", "http://localhost:11434/v1"),
+        "default_model": "qwen2.5-coder:3b",
+        "requires_key": False,
+        "models": [
+            {"id": "qwen2.5-coder:3b", "name": "Qwen 2.5 Coder 3B (Pre-installed & Active)", "context_window": "32k"},
+            {"id": "nemotron-mini:latest", "name": "NVIDIA Nemotron Mini 4.2B (Pre-installed)", "context_window": "4k"},
+            {"id": "llama3:latest", "name": "Meta Llama 3 (Local)", "context_window": "8k"}
+        ]
+    },
+    "gemini": {
+        "name": "Google Gemini API (Generous Free Tier)",
+        "base_url": os.getenv("GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta/openai"),
+        "default_model": "gemini-1.5-flash",
+        "requires_key": True,
+        "models": [
+            {"id": "gemini-1.5-flash", "name": "Gemini 1.5 Flash (Fast, Free Tier 15 RPM)", "context_window": "1M"},
+            {"id": "gemini-2.0-flash", "name": "Gemini 2.0 Flash (Next-Gen Fast Reasoning)", "context_window": "1M"},
+            {"id": "gemini-1.5-pro", "name": "Gemini 1.5 Pro (Deep Engineering Analysis)", "context_window": "2M"}
+        ]
+    },
+    "bharatcode": {
+        "name": "BharatCode Model API (Competition Official)",
+        "base_url": os.getenv("BHARATCODE_API_BASE", "https://bharatcode.ai/api/model/v1"),
+        "default_model": "deepseek-v4.1-flash",
+        "requires_key": True,
+        "models": [
+            {"id": "qwen-3.8-27b", "name": "BharatCode Qwen 3.8 27B (Free for verified students)", "context_window": "32k"},
+            {"id": "deepseek-v4.1-flash", "name": "BharatCode DeepSeek V4.1 Flash (Pro tier)", "context_window": "128k"}
+        ]
+    }
+}
+
+# Legacy BharatCode aliases for backwards compatibility
+BHARATCODE_API_BASE = AI_PROVIDERS["bharatcode"]["base_url"]
+BHARATCODE_DEFAULT_MODEL = AI_PROVIDERS["bharatcode"]["default_model"]
+BHARATCODE_AVAILABLE_MODELS = AI_PROVIDERS["bharatcode"]["models"]
 
 # Diagnostic Severity
 class Severity(str, Enum):

@@ -32,8 +32,10 @@ if "current_analysis" not in st.session_state:
     st.session_state["current_analysis"] = None
 if "current_scenario_meta" not in st.session_state:
     st.session_state["current_scenario_meta"] = {}
+if "selected_provider" not in st.session_state:
+    st.session_state["selected_provider"] = "ollama"
 if "selected_model" not in st.session_state:
-    st.session_state["selected_model"] = BHARATCODE_DEFAULT_MODEL
+    st.session_state["selected_model"] = "qwen2.5-coder:3b"
 if "force_offline" not in st.session_state:
     st.session_state["force_offline"] = False
 if "nav_selection" not in st.session_state:
@@ -44,15 +46,24 @@ if "nav_selection" not in st.session_state:
 def get_engines():
     diag_engine = DiagnosticEngine()
     sec_engine = SecurityEngine()
-    ai_client = BharatCodeClient(model=st.session_state.get("selected_model", BHARATCODE_DEFAULT_MODEL))
+    ai_client = BharatCodeClient(
+        provider=st.session_state.get("selected_provider", "ollama"),
+        model=st.session_state.get("selected_model", "qwen2.5-coder:3b")
+    )
     expl_engine = ExplanationEngine(client=ai_client)
     return diag_engine, sec_engine, expl_engine
 
 diagnostic_engine, security_engine, explanation_engine = get_engines()
 
-# Sync API key if updated in session state
-if "bharatcode_api_key" in st.session_state:
-    explanation_engine.client.api_key = st.session_state["bharatcode_api_key"]
+# Sync active provider credentials from session state
+explanation_engine.client.provider = st.session_state.get("selected_provider", "ollama")
+explanation_engine.client.model = st.session_state.get("selected_model", "qwen2.5-coder:3b")
+if st.session_state.get("selected_provider") == "gemini":
+    explanation_engine.client.api_key = st.session_state.get("gemini_api_key", os.getenv("GEMINI_API_KEY", ""))
+elif st.session_state.get("selected_provider") == "bharatcode":
+    explanation_engine.client.api_key = st.session_state.get("bharatcode_api_key", os.getenv("BHARATCODE_API_KEY", ""))
+else:
+    explanation_engine.client.api_key = "ollama"
 
 # Sidebar Navigation (Linear Ergonomics)
 with st.sidebar:
@@ -118,10 +129,13 @@ with st.sidebar:
         """, unsafe_allow_html=True)
 
     # Bottom Footer
+    curr_prov = st.session_state.get("selected_provider", "ollama")
+    curr_model = st.session_state.get("selected_model", "qwen2.5-coder:3b")
+    prov_label = "Local Ollama" if curr_prov == "ollama" else ("Google Gemini" if curr_prov == "gemini" else "BharatCode Model API")
     st.markdown(f"""
     <div style="font-size: 0.7rem; color: {UI_THEME['text_muted']}; margin-top: 2rem;">
-        Powered by <b>BharatCode Model API</b><br>
-        <code>deepseek-v4.1-flash</code> & <code>qwen-3.8-27b</code>
+        Active AI Copilot: <b>{prov_label}</b><br>
+        <code>{curr_model}</code>
     </div>
     """, unsafe_allow_html=True)
 

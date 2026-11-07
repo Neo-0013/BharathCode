@@ -35,8 +35,9 @@ class ExplanationEngine:
             if api_res.get("success"):
                 raw_content = api_res["content"]
                 is_safe, sanitized, warnings = self.validator.validate_and_sanitize(raw_content, finding_id)
+                prov_title = "Ollama Local AI" if getattr(self.client, "provider", "") == "ollama" else ("Google Gemini AI" if getattr(self.client, "provider", "") == "gemini" else "BharatCode AI Copilot")
                 return {
-                    "source": "BharatCode AI Copilot",
+                    "source": prov_title,
                     "model": api_res.get("model", self.client.model),
                     "explanation": sanitized,
                     "is_safe": is_safe,

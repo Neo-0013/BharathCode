@@ -68,3 +68,15 @@ def test_client_http_402_handling(monkeypatch):
     assert res["status_code"] == 402
     assert res["is_payment_required"] is True
     assert "BharatCode Plan Required" in res["message"]
+
+def test_ollama_provider_configuration():
+    client = BharatCodeClient(provider="ollama", model="qwen2.5-coder:3b")
+    assert client.is_configured() is True
+    assert "11434" in client.base_url
+    assert client.model == "qwen2.5-coder:3b"
+
+def test_gemini_provider_configuration():
+    client = BharatCodeClient(provider="gemini", api_key="test_gemini_key", model="gemini-1.5-flash")
+    assert client.is_configured() is True
+    assert "generativelanguage.googleapis.com" in client.base_url
+    assert client.model == "gemini-1.5-flash"

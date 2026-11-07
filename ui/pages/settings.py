@@ -9,60 +9,114 @@ import sys
 import streamlit as st
 from config.settings import (
     BHARATCODE_API_BASE, BHARATCODE_DEFAULT_MODEL,
-    BHARATCODE_AVAILABLE_MODELS, TARGET_ROS_DISTRO, UI_THEME, APP_VERSION
+    BHARATCODE_AVAILABLE_MODELS, TARGET_ROS_DISTRO, UI_THEME, APP_VERSION,
+    AI_PROVIDERS
 )
 from ai.client import BharatCodeClient
 from ui.components import render_header
 
 def render_settings_page(explanation_engine):
-    render_header("Settings & Connectivity", "Configure BharatCode API credentials, test model endpoints, and audit host ROS 2 environment.")
+    render_header("Settings & Connectivity", "Configure AI Copilot providers (Local Ollama, Gemini API, BharatCode), test connectivity, and audit ROS 2 Jazzy environment.")
 
-    tab_api, tab_env, tab_privacy = st.tabs(["🤖 BharatCode AI Model API", "⚙️ ROS 2 Jazzy Host Environment", "🔒 Privacy & Security"])
+    tab_api, tab_env, tab_privacy = st.tabs(["🤖 AI Model Providers", "⚙️ ROS 2 Jazzy Host Environment", "🔒 Privacy & Security"])
 
     with tab_api:
-        st.markdown("### BharatCode Model API Credentials")
-        st.caption("Official model API endpoint for the BharatCode Build League 2026 hackathon.")
+        st.markdown("### AI Copilot Engine Provider")
+        st.caption("Select your preferred AI engine: Run 100% free locally with Ollama, connect via Google Gemini, or use the official BharatCode API.")
 
-        # API Base
-        api_base = st.text_input("API Base URL", value=BHARATCODE_API_BASE, disabled=True)
+        # Provider Selection
+        prov_keys = ["ollama", "gemini", "bharatcode"]
+        prov_labels = [
+            "🟢 Local Ollama (100% Free / Localhost — Recommended)",
+            "🔷 Google Gemini API (Generous Free Tier)",
+            "🇮🇳 BharatCode Model API (Competition Official)"
+        ]
 
-        # Model Selector
-        model_options = [m["id"] for m in BHARATCODE_AVAILABLE_MODELS]
-        model_names = [f"{m['name']} — {m['context_window']} context" for m in BHARATCODE_AVAILABLE_MODELS]
-        
-        current_model = st.session_state.get("selected_model", BHARATCODE_DEFAULT_MODEL)
-        current_idx = model_options.index(current_model) if current_model in model_options else 0
+        current_prov = st.session_state.get("selected_provider", "ollama")
+        prov_idx = prov_keys.index(current_prov) if current_prov in prov_keys else 0
 
-        selected_idx = st.selectbox(
-            "Target AI Model",
-            range(len(model_options)),
-            format_func=lambda i: model_names[i],
-            index=current_idx
+        selected_prov_label = st.radio(
+            "Select AI Provider",
+            prov_labels,
+            index=prov_idx,
+            label_visibility="collapsed"
         )
-        selected_model_id = model_options[selected_idx]
-        st.session_state["selected_model"] = selected_model_id
-        explanation_engine.client.model = selected_model_id
+        selected_prov = prov_keys[prov_labels.index(selected_prov_label)]
+        st.session_state["selected_provider"] = selected_prov
+        explanation_engine.client.provider = selected_prov
 
-        # API Key
-        current_key = st.session_state.get("bharatcode_api_key", os.getenv("BHARATCODE_API_KEY", ""))
-        api_key = st.text_input(
-            "BharatCode API Key (Bearer Token)",
-            value=current_key,
-            type="password",
-            placeholder="Enter your BharatCode API key...",
-            help="Stored only in session memory or read from BHARATCODE_API_KEY environment variable."
-        )
+        prov_info = AI_PROVIDERS[selected_prov]
+        available_models = prov_info.get("models", [])
+        model_ids = [m["id"] for m in available_models]
+        model_names = [f"{m['name']} ({m.get('context_window', '32k')})" for m in available_models]
 
-        if api_key != current_key:
-            st.session_state["bharatcode_api_key"] = api_key
-            explanation_engine.client.api_key = api_key
+        st.markdown("<br>", unsafe_allow_html=True)
+        col_url, col_model = st.columns([1.2, 1.8])
+
+        with col_url:
+            api_base = st.text_input("Endpoint Base URL", value=prov_info["base_url"])
+            explanation_engine.client.base_url = api_base
+
+        with col_model:
+            current_model = st.session_state.get("selected_model", prov_info["default_model"])
+            current_model_idx = model_ids.index(current_model) if current_model in model_ids else 0
+            
+            selected_model_idx = st.selectbox(
+                "Model Identifier",
+                range(len(model_ids)),
+                format_func=lambda i: model_names[i],
+                index=current_model_idx
+            )
+            selected_model_id = model_ids[selected_model_idx]
+            st.session_state["selected_model"] = selected_model_id
+            explanation_engine.client.model = selected_model_id
+
+        # API Key Input (if required)
+        api_key = ""
+        if prov_info.get("requires_key", True):
+            if selected_prov == "gemini":
+                saved_key = st.session_state.get("gemini_api_key", os.getenv("GEMINI_API_KEY", ""))
+                api_key = st.text_input(
+                    "Google Gemini API Key",
+                    value=saved_key,
+                    type="password",
+                    placeholder="AIzaSy...",
+                    help="Get a free Gemini API key from Google AI Studio: https://aistudio.google.com/app/apikey"
+                )
+                if api_key != saved_key:
+                    st.session_state["gemini_api_key"] = api_key
+                explanation_engine.client.api_key = api_key
+
+                st.caption("👉 Need a free Gemini API key? [Get one in 10 seconds at Google AI Studio](https://aistudio.google.com/app/apikey)")
+
+            elif selected_prov == "bharatcode":
+                saved_key = st.session_state.get("bharatcode_api_key", os.getenv("BHARATCODE_API_KEY", ""))
+                api_key = st.text_input(
+                    "BharatCode API Key (Bearer Token)",
+                    value=saved_key,
+                    type="password",
+                    placeholder="Enter your BharatCode API key...",
+                    help="From bharatcode.ai platform"
+                )
+                if api_key != saved_key:
+                    st.session_state["bharatcode_api_key"] = api_key
+                explanation_engine.client.api_key = api_key
+        else:
+            api_key = "ollama"
+            explanation_engine.client.api_key = "ollama"
+            st.info("💡 **Local Ollama detected at localhost:11434.** Zero API key required, zero external network traffic, zero payment errors.")
 
         col_test, col_mode = st.columns([1.0, 1.2])
 
         with col_test:
             if st.button("🧪 Test API Connection", type="primary"):
-                client = BharatCodeClient(api_key=api_key, model=selected_model_id)
-                with st.spinner("Pinging BharatCode model endpoint..."):
+                client = BharatCodeClient(
+                    api_key=api_key,
+                    base_url=api_base,
+                    model=selected_model_id,
+                    provider=selected_prov
+                )
+                with st.spinner(f"Testing connectivity to {prov_info['name']}..."):
                     res = client.test_connection()
                     if res["success"]:
                         st.success(f"✅ {res['message']}")
@@ -75,9 +129,8 @@ def render_settings_page(explanation_engine):
                                 BharatCode API access requires an active plan or student verification:
                                 <ul>
                                     <li><b>Student Free Tier:</b> Students with a verified college email (<code>.edu</code> or <code>.ac.in</code>) get <b>10M free tokens</b> on <b>Qwen 3.8 27B</b>. Select <code>qwen-3.8-27b</code> above!</li>
-                                    <li><b>BharatCode Lite:</b> ₹399/month (Qwen 3.8 27B)</li>
-                                    <li><b>BharatCode Pro:</b> ₹999/month (Qwen and DeepSeek)</li>
-                                    <li><b>Deterministic Offline Mode:</b> Don't have a plan yet? No problem! ROBOGUARD AI includes a complete built-in deterministic engineering copilot that requires <b>zero API costs</b> and runs 100% offline.</li>
+                                    <li><b>Switch to Local Ollama:</b> Select <b>Local Ollama</b> above to run 100% free on your local machine with pre-installed <code>qwen2.5-coder:3b</code>!</li>
+                                    <li><b>Switch to Gemini API:</b> Select <b>Google Gemini API</b> for 15 RPM free cloud inference.</li>
                                 </ul>
                             </div>
                         </div>
