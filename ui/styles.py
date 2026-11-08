@@ -527,13 +527,24 @@ def inject_custom_styles():
     }
 
     /* Floating Popover Trigger Styling */
-    div[data-testid="stPopover"] {
+    div[data-testid="stPopover"],
+    .stPopover {
         position: fixed !important;
         bottom: 24px !important;
         right: 24px !important;
         z-index: 99999 !important;
+        width: auto !important;
     }
-    div[data-testid="stPopover"] > button {
+    div:has(> div[data-testid="stPopover"]) {
+        position: fixed !important;
+        bottom: 24px !important;
+        right: 24px !important;
+        z-index: 99999 !important;
+        width: auto !important;
+    }
+    div[data-testid="stPopover"] button,
+    button[data-testid="stPopoverButton"],
+    .stPopover button {
         background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%) !important;
         color: #FFFFFF !important;
         border: 2px solid #FFFFFF !important;
@@ -547,19 +558,96 @@ def inject_custom_styles():
         display: flex !important;
         align-items: center !important;
         gap: 0.5rem !important;
+        width: auto !important;
     }
-    div[data-testid="stPopover"] > button:hover {
+    button[data-testid="stPopoverButton"] *,
+    div[data-testid="stPopover"] button * {
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+    }
+    button[data-testid="stPopoverButton"]:hover,
+    div[data-testid="stPopover"] button:hover {
         transform: scale(1.06) translateY(-3px) !important;
         box-shadow: 0 12px 30px rgba(29, 78, 216, 0.5) !important;
     }
     div[data-testid="stPopoverBody"] {
-        width: 380px !important;
-        max-width: 90vw !important;
+        width: 420px !important;
+        max-width: 92vw !important;
         border-radius: 14px !important;
         border: 1px solid #CBD5E1 !important;
         box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.15) !important;
         padding: 1.15rem !important;
         background-color: #FFFFFF !important;
+        color: #0F172A !important;
+    }
+    div[data-testid="stPopoverBody"] * {
+        color: #0F172A !important;
+    }
+
+    /* High-Contrast Chat Messages & Sentinel AI Widget (WCAG AAA) */
+    [data-testid="stChatMessage"], .stChatMessage {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 10px !important;
+        padding: 0.75rem 1rem !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        color: #0F172A !important;
+    }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+        background-color: #F1F5F9 !important;
+        border-color: #CBD5E1 !important;
+    }
+    [data-testid="stChatMessageContent"],
+    [data-testid="stChatMessageContent"] * {
+        color: #0F172A !important;
+        font-size: 0.85rem !important;
+        line-height: 1.55 !important;
+    }
+    [data-testid="stChatMessageContent"] p,
+    [data-testid="stChatMessageContent"] span,
+    [data-testid="stChatMessageContent"] li,
+    [data-testid="stChatMessageContent"] div {
+        color: #0F172A !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stChatMessageContent"] strong,
+    [data-testid="stChatMessageContent"] b {
+        color: #0F172A !important;
+        font-weight: 800 !important;
+    }
+    [data-testid="stChatMessageContent"] code {
+        background-color: #0F172A !important;
+        color: #38BDF8 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.78rem !important;
+        padding: 0.15rem 0.4rem !important;
+        border-radius: 4px !important;
+        border: 1px solid #1E293B !important;
+    }
+    [data-testid="stChatMessageContent"] pre {
+        background-color: #0F172A !important;
+        border: 1px solid #1E293B !important;
+        border-radius: 8px !important;
+        padding: 0.75rem 1rem !important;
+        margin: 0.5rem 0 !important;
+    }
+    [data-testid="stChatMessageContent"] pre code {
+        color: #F8FAFC !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+    div[data-testid="stPopoverBody"] [data-testid="stChatMessage"] {
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+    }
+    div[data-testid="stPopoverBody"] [data-testid="stChatMessageContent"] p {
+        color: #0F172A !important;
+        font-weight: 500 !important;
+    }
+    div[data-testid="stPopoverBody"] [data-testid="stChatMessageContent"] code {
+        background-color: #0F172A !important;
+        color: #38BDF8 !important;
     }
     </style>
     """

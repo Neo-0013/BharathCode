@@ -772,10 +772,20 @@
       max-width: 88%;
     }
     .chat-bubble.bot {
-      background: var(--bg-elevated);
-      color: var(--text-main);
+      background: #FFFFFF;
+      color: #0F172A;
+      font-weight: 500;
       align-self: flex-start;
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .chat-bubble.bot code {
+      background: #0F172A;
+      color: #38BDF8;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
     }
     .chat-bubble.user {
       background: var(--primary);
@@ -1377,24 +1387,35 @@
       clock: new THREE.Clock(),
 
       init() {
-        const container = document.getElementById('heroCanvas3D').parentElement;
-        const width = container.clientWidth;
-        const height = container.clientHeight;
+        const canvasEl = document.getElementById('heroCanvas3D');
+        if (!canvasEl) return;
+        const container = canvasEl.parentElement;
+        const width = (container && container.clientWidth > 0) ? container.clientWidth : 720;
+        const height = (container && container.clientHeight > 0) ? container.clientHeight : 540;
 
         // Scene with Classic Light Off-White Background
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xF1F5F9);
         this.scene.fog = new THREE.FogExp2(0xF1F5F9, 0.035);
 
-        // Camera
-        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        // Camera with guaranteed valid aspect ratio
+        const aspect = (width > 0 && height > 0) ? (width / height) : (720 / 540);
+        this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
         this.camera.position.set(3.4, 2.4, 4.4);
 
         // Renderer
-        this.renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('heroCanvas3D'), antialias: true });
+        this.renderer = new THREE.WebGLRenderer({ canvas: canvasEl, antialias: true });
         this.renderer.setSize(width, height);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         this.renderer.shadowMap.enabled = true;
+
+        // Auto-Resize Observer for Tab Switching
+        if (window.ResizeObserver && container) {
+          const ro = new ResizeObserver(() => {
+            this.onWindowResize();
+          });
+          ro.observe(container);
+        }
 
         // Controls
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
@@ -1910,12 +1931,16 @@
       },
 
       onWindowResize() {
-        const container = document.getElementById('heroCanvas3D').parentElement;
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(width, height);
+        const canvasEl = document.getElementById('heroCanvas3D');
+        if (!canvasEl || !this.camera || !this.renderer) return;
+        const container = canvasEl.parentElement;
+        const width = (container && container.clientWidth > 0) ? container.clientWidth : 720;
+        const height = (container && container.clientHeight > 0) ? container.clientHeight : 540;
+        if (width > 0 && height > 0) {
+          this.camera.aspect = width / height;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize(width, height);
+        }
       },
 
       animate() {
