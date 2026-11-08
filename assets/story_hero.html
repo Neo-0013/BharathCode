@@ -3,1642 +3,2140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ROBOGUARD AI — Autonomous Robotics 3D Digital Twin &amp; Storytelling Journey</title>
-  
-  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <title>ROBOGUARD AI — Autonomous Robotics Security Platform</title>
+
+  <!-- Google Fonts: Inter + JetBrains Mono (premium enterprise feel) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Three.js & OrbitControls -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  
+
   <!-- GSAP 3.12.5 + ScrollTrigger + ScrollToPlugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
   <style>
-    /* ==========================================================================
-       CLASSIC TREMOR LIGHT THEME & AEROSPACE DESIGN TOKENS
-       ========================================================================== */
+    /* =========================================================
+       DESIGN TOKENS — DARK ENTERPRISE THEME (Enode / Linear)
+       ========================================================= */
     :root {
-      --bg-page: #F8FAFC;
-      --bg-surface: #FFFFFF;
-      --bg-subtle: #F1F5F9;
-      --border-subtle: #E2E8F0;
-      --border-strong: #CBD5E1;
-      
-      --text-primary: #0F172A;
-      --text-secondary: #334155;
-      --text-muted: #64748B;
-      
-      --primary: #1D4ED8;
-      --primary-hover: #1E40AF;
-      --primary-subtle: #EFF6FF;
-      --primary-border: #BFDBFE;
+      /* Background palette */
+      --bg-void:    #07080F;
+      --bg-deep:    #0A0D1A;
+      --bg-surface: #0F1424;
+      --bg-card:    #141926;
+      --bg-hover:   #1A2033;
 
-      --emerald: #059669;
-      --emerald-subtle: #ECFDF5;
-      --emerald-border: #A7F3D0;
+      /* Borders */
+      --border-dim:    rgba(255,255,255,0.06);
+      --border-subtle: rgba(255,255,255,0.10);
+      --border-mid:    rgba(255,255,255,0.14);
 
-      --rose: #DC2626;
-      --rose-subtle: #FEF2F2;
-      --rose-border: #FECACA;
+      /* Text */
+      --text-primary:   #FFFFFF;
+      --text-secondary: rgba(255,255,255,0.72);
+      --text-muted:     rgba(255,255,255,0.42);
+      --text-dim:       rgba(255,255,255,0.28);
 
-      --amber: #D97706;
-      --cyan: #0284C7;
+      /* Accent — electric blue */
+      --accent:        #3B82F6;
+      --accent-glow:   rgba(59,130,246,0.25);
+      --accent-bright: #60A5FA;
 
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      /* Success / warning / danger */
+      --green:    #22C55E;
+      --green-glow: rgba(34,197,94,0.20);
+      --amber:    #F59E0B;
+      --red:      #EF4444;
+      --cyan:     #06B6D4;
+      --violet:   #8B5CF6;
+
+      /* Fonts */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+
+      /* Sizing */
+      --radius-sm:  6px;
+      --radius-md:  12px;
+      --radius-lg:  18px;
+      --radius-xl:  24px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* =========================================================
+       GLOBAL RESET
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; font-size: 16px; }
 
     body {
-      background-color: var(--bg-page);
+      background: var(--bg-void);
       color: var(--text-primary);
       font-family: var(--font-sans);
-      overflow-x: hidden;
-      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Top Aerospace Sticky Navigation Bar */
-    .hero-navbar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 0.75rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+    /* =========================================================
+       GLOBAL BACKGROUND — animated gradient mesh
+       ========================================================= */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 15% 10%, rgba(59,130,246,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 85% 85%, rgba(139,92,246,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(6,182,212,0.04) 0%, transparent 60%),
+        var(--bg-void);
     }
-    .brand-wrap {
+
+    /* Subtle dot-grid overlay */
+    .bg-dots {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 40%, transparent 90%);
+    }
+
+    /* =========================================================
+       TOP NAVIGATION BAR
+       ========================================================= */
+    .topnav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 60px;
+      background: rgba(7,8,15,0.80);
+      backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .topnav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(59,130,246,0.40);
+    }
+
+    .brand-name {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-name span { color: var(--accent-bright); }
+
+    .topnav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .topnav-links a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topnav-links a:hover { color: var(--text-primary); }
+
+    .topnav-cta {
       display: flex;
       align-items: center;
       gap: 0.75rem;
     }
-    .brand-logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%);
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.28);
+
+    .btn-nav-ghost {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.42rem 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-sans);
     }
-    .brand-title {
-      font-size: 1.05rem;
-      font-weight: 800;
+    .btn-nav-ghost:hover {
       color: var(--text-primary);
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .brand-pill {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      padding: 0.15rem 0.5rem;
-      background: var(--primary-subtle);
-      border: 1px solid var(--primary-border);
-      color: var(--primary);
-      border-radius: 9999px;
-      font-weight: 700;
+      border-color: var(--border-mid);
+      background: var(--bg-hover);
     }
 
-    .nav-actions {
+    .btn-nav-primary {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.42rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-sans);
+      box-shadow: 0 0 16px rgba(59,130,246,0.30);
+    }
+    .btn-nav-primary:hover {
+      background: var(--accent-bright);
+      box-shadow: 0 0 24px rgba(59,130,246,0.50);
+    }
+
+    /* =========================================================
+       HERO SECTION — SPLIT LAYOUT (enode-style)
+       ========================================================= */
+    #hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 60px; /* account for fixed nav */
+    }
+
+    .hero-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 4rem 2.5rem;
+      display: grid;
+      grid-template-columns: 55fr 45fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    /* ===== LEFT COLUMN ===== */
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* Status badge pill */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem 0.35rem 0.6rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      background: rgba(59,130,246,0.08);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-bright);
+      width: fit-content;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* shimmer sweep on badge */
+    .hero-badge::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(96,165,250,0.15) 50%, transparent 100%);
+      transform: translateX(-100%);
+      animation: badge-shimmer 3s ease-in-out infinite;
+    }
+    @keyframes badge-shimmer {
+      0%   { transform: translateX(-100%); }
+      50%  { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      animation: pulse-dot 2s ease-in-out infinite;
+      box-shadow: 0 0 6px var(--green);
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    /* Hero headline */
+    .hero-headline {
+      font-size: clamp(2.6rem, 5vw, 4.4rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      color: var(--text-primary);
+    }
+
+    .hero-headline .hl-gradient {
+      background: linear-gradient(135deg, #60A5FA 0%, #34D399 50%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Hero sub-text */
+    .hero-subtext {
+      font-size: 1.08rem;
+      font-weight: 400;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-width: 500px;
+    }
+
+    /* CTA row */
+    .hero-cta-row {
       display: flex;
       align-items: center;
       gap: 0.85rem;
+      flex-wrap: wrap;
     }
-    .nav-btn-mode {
-      background: #FFFFFF;
-      border: 1px solid var(--border-strong);
-      color: var(--text-primary);
-      font-size: 0.8rem;
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      padding: 0.45rem 0.85rem;
-      border-radius: 7px;
+      color: #fff;
+      background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.5rem;
       cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 4px 24px rgba(59,130,246,0.35);
+      font-family: var(--font-sans);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 100%);
+      border-radius: inherit;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 36px rgba(59,130,246,0.55);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s;
+      font-family: var(--font-sans);
+    }
+    .btn-outline:hover {
+      color: var(--text-primary);
+      border-color: var(--border-mid);
+      background: var(--bg-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Trust metric pills row */
+    .hero-metrics {
       display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .metric-pill {
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      transition: all 0.15s ease;
-    }
-    .nav-btn-mode:hover {
-      background: var(--bg-subtle);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    .nav-btn-mode.active {
-      background: var(--primary-subtle);
-      border-color: var(--primary);
-      color: var(--primary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      white-space: nowrap;
     }
 
-    .btn-launch-soc {
-      background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
-      color: #FFFFFF;
-      font-weight: 700;
-      font-size: 0.85rem;
-      padding: 0.55rem 1.25rem;
-      border-radius: 8px;
-      border: 1px solid #1E40AF;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.28);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    .metric-pill .mp-icon { font-size: 0.75rem; }
+
+    .metric-pill.green  { color: var(--green);  border-color: rgba(34,197,94,0.25);  background: rgba(34,197,94,0.07); }
+    .metric-pill.cyan   { color: var(--cyan);   border-color: rgba(6,182,212,0.25);  background: rgba(6,182,212,0.07); }
+    .metric-pill.violet { color: var(--violet); border-color: rgba(139,92,246,0.25); background: rgba(139,92,246,0.07); }
+    .metric-pill.amber  { color: var(--amber);  border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.07); }
+
+    /* Scroll indicator */
+    .scroll-hint {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      animation: scroll-bounce 2.5s ease-in-out infinite;
     }
-    .btn-launch-soc:hover {
-      background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.38);
+    .scroll-hint-arrow { font-size: 0.9rem; }
+    @keyframes scroll-bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50%       { transform: translateY(4px); opacity: 1; }
     }
 
-    /* ==========================================================================
-       SCROLL-DRIVEN PINNED 3D STAGE & STORY ENGINE
-       ========================================================================== */
-    .story-viewport {
+    /* ===== RIGHT COLUMN — 3D scene card ===== */
+    .hero-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene-card {
       position: relative;
       width: 100%;
-      min-height: 100vh;
+      aspect-ratio: 4/3;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(59,130,246,0.08),
+        0 20px 80px rgba(0,0,0,0.60),
+        inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
-    /* Fixed 3D Canvas Background Viewport */
-    .stage-3d-wrapper {
-      position: fixed;
-      top: 55px;
-      left: 0;
-      width: 100vw;
-      height: calc(100vh - 55px);
-      z-index: 1;
-      overflow: hidden;
-      pointer-events: none; /* Let clicks pass to scroll track unless Orbit mode active */
+    /* Loading shimmer */
+    .scene-loader {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: var(--bg-surface);
+      z-index: 10;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
     }
-    .stage-3d-wrapper.interactive {
-      pointer-events: auto;
+    .scene-loader.hidden { opacity: 0; visibility: hidden; }
+
+    .loader-ring {
+      width: 44px; height: 44px;
+      border: 2px solid var(--border-dim);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin-ring 0.9s linear infinite;
     }
-    #hero3dCanvas {
+    @keyframes spin-ring { to { transform: rotate(360deg); } }
+
+    .loader-text {
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* Three.js canvas */
+    #robot-canvas {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    /* Floating 3D Telemetry HUD (Top Left & Bottom Center) */
-    .hud-top-strip {
-      position: fixed;
-      top: 75px;
-      left: 2rem;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      pointer-events: auto;
+    /* HUD overlays on the scene card */
+    .scene-hud {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
     }
+
     .hud-badge {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--border-strong);
-      padding: 0.45rem 0.9rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--text-primary);
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.65rem;
+      background: rgba(10,13,26,0.82);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .hud-badge.top-left    { top: 1rem;    left: 1rem; }
+    .hud-badge.top-right   { top: 1rem;    right: 1rem; }
+    .hud-badge.bot-left    { bottom: 1rem; left: 1rem; }
+    .hud-badge.bot-right   { bottom: 1rem; right: 1rem; }
+
+    .hud-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .hud-dot.green  { background: var(--green); box-shadow: 0 0 5px var(--green); animation: pulse-dot 2s ease-in-out infinite; }
+    .hud-dot.cyan   { background: var(--cyan);  box-shadow: 0 0 5px var(--cyan); }
+    .hud-dot.amber  { background: var(--amber); box-shadow: 0 0 5px var(--amber); animation: pulse-dot 1.5s ease-in-out infinite; }
+    .hud-val { color: var(--text-primary); }
+    .hud-label { color: var(--text-muted); }
+
+    /* Gradient corners on the scene card */
+    .scene-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px; right: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+      z-index: 6;
+      opacity: 0.6;
+    }
+
+    /* Glow halo behind the card */
+    .scene-glow {
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59,130,246,0.14) 0%, transparent 70%);
+      border-radius: var(--radius-xl);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* =========================================================
+       SECTION: FEATURES (scroll-reveal)
+       ========================================================= */
+    #features {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 2.5rem 5rem;
+    }
+
+    .section-label {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      width: fit-content;
-    }
-    .hud-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 8px var(--emerald);
-      animation: pulseDot 1.6s infinite;
-    }
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.35; transform: scale(0.8); }
-    }
-
-    .hud-bottom-telemetry {
-      position: fixed;
-      bottom: 24px;
-      left: 2rem;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--border-strong);
-      padding: 0.5rem 1.15rem;
-      border-radius: 8px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-      pointer-events: auto;
-    }
-    .hud-tele-item {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-    .hud-tele-val {
-      color: var(--primary);
-      font-weight: 800;
-    }
-
-    /* Right Margin Chapter Scrubber Dots */
-    .chapter-scrubber-nav {
-      position: fixed;
-      right: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid var(--border-strong);
-      padding: 0.75rem 0.6rem;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-    }
-    .scrub-dot {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
       font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent-bright);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
       font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 3.5rem;
+    }
+
+    .features-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .feat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: border-color 0.25s, transform 0.25s;
+      cursor: default;
+    }
+    .feat-card:hover {
+      border-color: rgba(59,130,246,0.30);
+      transform: translateY(-3px);
+    }
+
+    .feat-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
+      font-size: 1.3rem;
+      margin-bottom: 1.1rem;
     }
-    .scrub-dot:hover {
-      background: var(--primary-subtle);
-      color: var(--primary);
-      border-color: var(--primary);
-      transform: scale(1.08);
-    }
-    .scrub-dot.active {
-      background: var(--primary);
-      color: #FFFFFF;
-      border-color: var(--primary-hover);
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-    }
-    .scrub-tooltip {
-      position: absolute;
-      right: 42px;
-      background: #0F172A;
-      color: #FFFFFF;
-      padding: 0.3rem 0.65rem;
-      border-radius: 6px;
-      font-family: var(--font-sans);
-      font-size: 0.72rem;
+
+    .feat-icon.blue   { background: rgba(59,130,246,0.14); }
+    .feat-icon.cyan   { background: rgba(6,182,212,0.14);  }
+    .feat-icon.green  { background: rgba(34,197,94,0.14);  }
+    .feat-icon.violet { background: rgba(139,92,246,0.14); }
+    .feat-icon.amber  { background: rgba(245,158,11,0.14); }
+    .feat-icon.red    { background: rgba(239,68,68,0.14);  }
+
+    .feat-title {
+      font-size: 1rem;
       font-weight: 700;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transform: translateX(6px);
-      transition: all 0.15s ease;
-    }
-    .scrub-dot:hover .scrub-tooltip {
-      opacity: 1;
-      transform: translateX(0);
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
     }
 
-    /* ==========================================================================
-       SCROLL TRACK & CHAPTER STORY CARDS
-       ========================================================================== */
-    .story-scroll-track {
+    .feat-desc {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .feat-tag {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent-bright);
+      background: rgba(59,130,246,0.10);
+      border: 1px solid rgba(59,130,246,0.20);
+      border-radius: 9999px;
+      padding: 0.2rem 0.6rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* =========================================================
+       SECTION: STATS BAR
+       ========================================================= */
+    #stats-bar {
       position: relative;
-      z-index: 10;
-      width: 100%;
+      z-index: 1;
+      border-top: 1px solid var(--border-dim);
+      border-bottom: 1px solid var(--border-dim);
+      padding: 3rem 2.5rem;
+      background: var(--bg-surface);
     }
 
-    /* Each chapter occupies a full viewport scroll block */
-    .story-chapter-section {
-      min-height: 100vh;
+    .stats-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-item {}
+    .stat-num {
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-num .num-accent { color: var(--accent-bright); }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    /* =========================================================
+       SECTION: ARCHITECTURE (Scroll-animated diagram)
+       ========================================================= */
+    #architecture {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 2.5rem;
+    }
+
+    .arch-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .arch-diagram {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .arch-layer {
       display: flex;
       align-items: center;
-      padding: 4rem 4rem 4rem 5rem;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      transition: border-color 0.3s;
+    }
+    .arch-layer:hover { border-color: rgba(59,130,246,0.30); }
+
+    .arch-layer-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .arch-layer-info {}
+    .arch-layer-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.15rem;
+    }
+    .arch-layer-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .arch-connector {
+      width: 2px;
+      height: 1rem;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      margin-left: 2.1rem;
+      opacity: 0.5;
+    }
+
+    .arch-text {}
+
+    /* =========================================================
+       SECTION: CTA BOTTOM
+       ========================================================= */
+    #cta-section {
       position: relative;
+      z-index: 1;
+      padding: 7rem 2.5rem;
+      text-align: center;
+    }
+
+    .cta-card {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 4rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    }
+
+    .cta-card-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(59,130,246,0.09) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    .chapter-card {
-      pointer-events: auto;
-      max-width: 520px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid var(--border-strong);
-      border-radius: 16px;
-      padding: 2.25rem;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-      backdrop-filter: blur(14px);
-      position: relative;
-      transition: transform 0.3s ease, border-color 0.3s ease;
-    }
-    .chapter-card:hover {
-      border-color: #94A3B8;
-    }
-    .chapter-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 9999px;
-      font-family: var(--font-mono);
+    .cta-eyebrow {
       font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent-bright);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-bottom: 1rem;
     }
-    .tag-blue { background: var(--primary-subtle); color: var(--primary); border: 1px solid var(--primary-border); }
-    .tag-emerald { background: var(--emerald-subtle); color: var(--emerald); border: 1px solid var(--emerald-border); }
-    .tag-rose { background: var(--rose-subtle); color: var(--rose); border: 1px solid var(--rose-border); }
-    .tag-purple { background: #FAF5FF; color: #7E22CE; border: 1px solid #E9D5FF; }
 
-    .chapter-title {
-      font-size: 1.85rem;
-      font-weight: 800;
+    .cta-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
       color: var(--text-primary);
-      line-height: 1.25;
-      letter-spacing: -0.025em;
-      margin-bottom: 0.85rem;
+      margin-bottom: 1rem;
     }
-    .chapter-desc {
+
+    .cta-sub {
       font-size: 0.95rem;
       color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
+      line-height: 1.65;
+      margin-bottom: 2.25rem;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .chapter-specs-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-    .spec-item {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0.65rem 0.85rem;
-    }
-    .spec-label {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      color: var(--text-muted);
-      margin-bottom: 0.2rem;
-    }
-    .spec-value {
-      font-size: 0.88rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-    }
-
-    /* Chapter 4 Finale CTA Card */
-    .finale-card {
-      max-width: 680px;
-      margin: 0 auto;
-      text-align: center;
-      background: #FFFFFF;
-      border: 2px solid var(--primary-border);
-      box-shadow: 0 20px 45px -10px rgba(29, 78, 216, 0.18);
-    }
-    .finale-cta-group {
+    .cta-btns {
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 1rem;
-      margin-top: 1.75rem;
+      gap: 0.85rem;
+      flex-wrap: wrap;
     }
-    .btn-big-soc {
-      background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
-      color: #FFFFFF;
-      font-size: 1.05rem;
-      font-weight: 800;
-      padding: 0.9rem 2.2rem;
-      border-radius: 10px;
-      border: 1px solid #1E40AF;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      display: inline-flex;
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border-dim);
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      display: flex;
       align-items: center;
       gap: 0.6rem;
-    }
-    .btn-big-soc:hover {
-      background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
-    }
-    .btn-secondary-replay {
-      background: #FFFFFF;
-      color: var(--text-primary);
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      padding: 0.9rem 1.6rem;
-      border-radius: 10px;
-      border: 1px solid var(--border-strong);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .btn-secondary-replay:hover {
-      background: var(--bg-subtle);
-      border-color: var(--text-muted);
+      color: var(--text-secondary);
     }
 
-    /* ==========================================================================
-       FLOATING AI SENTINEL COPILOT WIDGET (WCAG AAA HIGH CONTRAST)
-       ========================================================================== */
-    .floating-ai-sentinel {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-    }
-    @keyframes sentinelFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    @keyframes sentinelPulseRing {
-      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45); }
-      70% { box-shadow: 0 0 0 16px rgba(37, 99, 235, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-    }
-    .sentinel-trigger-btn {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%);
-      border: 3px solid #FFFFFF;
-      box-shadow: 0 8px 24px rgba(29, 78, 216, 0.35);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: #FFFFFF;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      animation: sentinelFloat 3.5s ease-in-out infinite, sentinelPulseRing 4s infinite;
-    }
-    .sentinel-trigger-btn:hover {
-      transform: scale(1.1) translateY(-3px);
-      box-shadow: 0 12px 30px rgba(29, 78, 216, 0.5);
-    }
-    .sentinel-badge-count {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      background: var(--rose);
-      color: #FFFFFF;
+    .footer-info {
+      font-size: 0.75rem;
+      color: var(--text-dim);
       font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 800;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #FFFFFF;
     }
 
-    /* Expanded High-Contrast Chat Drawer */
-    .sentinel-chat-box {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      width: 380px;
-      height: 500px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-strong);
-      border-radius: 14px;
-      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      animation: slideUp 0.25s ease;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .chat-header {
-      background: #F8FAFC;
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 0.85rem 1rem;
+    .footer-links {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
     }
-    .chat-messages-scroll {
-      flex: 1;
-      padding: 1rem;
+    .footer-links a {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-secondary); }
+
+    /* =========================================================
+       FLOATING AI SENTINEL BOT
+       ========================================================= */
+    #ai-sentinel {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.75rem;
+    }
+
+    .sentinel-panel {
+      width: 320px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.60), 0 0 0 1px rgba(59,130,246,0.08);
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+      transform-origin: bottom right;
+    }
+
+    .sentinel-panel.collapsed {
+      transform: scale(0.95) translateY(8px);
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .sentinel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-dim);
+      background: var(--bg-card);
+    }
+
+    .sentinel-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sentinel-status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+      box-shadow: 0 0 6px var(--green);
+    }
+
+    .sentinel-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0.2rem;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .sentinel-close:hover { color: var(--text-primary); background: var(--bg-hover); }
+
+    .sentinel-msgs {
+      padding: 0.85rem 1rem;
+      max-height: 220px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      background: #FFFFFF;
-    }
-    .chat-bubble {
-      padding: 0.75rem 0.95rem;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      line-height: 1.5;
-      max-width: 88%;
-    }
-    .chat-bubble.bot {
-      background: #FFFFFF;
-      color: #0F172A;
-      font-weight: 500;
-      align-self: flex-start;
-      border: 1px solid var(--border-strong);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    }
-    .chat-bubble.bot code {
-      background: #0F172A;
-      color: #38BDF8;
-      padding: 0.15rem 0.35rem;
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-    }
-    .chat-bubble.user {
-      background: var(--primary);
-      color: #FFFFFF;
-      align-self: flex-end;
-      font-weight: 600;
-    }
-    .chat-input-bar {
-      padding: 0.75rem;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      gap: 0.5rem;
-      background: #FFFFFF;
-    }
-    .chat-input-field {
-      flex: 1;
-      padding: 0.55rem 0.75rem;
-      border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-family: var(--font-sans);
-      color: #0F172A;
-      background: #FFFFFF;
-    }
-    .chat-input-field:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .chat-send-btn {
-      background: var(--primary);
-      color: #FFFFFF;
-      border: none;
-      border-radius: 6px;
-      padding: 0.55rem 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
+      gap: 0.65rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-dim) transparent;
     }
 
-    /* Proactive Floating Alert Box */
-    .proactive-alert-bubble {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      width: 320px;
-      background: #FFFFFF;
-      border: 1px solid var(--rose-border);
-      border-left: 4px solid var(--rose);
+    .msg-bubble {
+      max-width: 90%;
+      padding: 0.55rem 0.8rem;
       border-radius: 12px;
-      padding: 1rem 1.15rem;
-      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.2);
-      display: none;
-      animation: slideUp 0.3s ease;
+      font-size: 0.78rem;
+      line-height: 1.5;
     }
-    .alert-head {
+    .msg-bubble.bot {
+      align-self: flex-start;
+      background: var(--bg-hover);
+      border: 1px solid var(--border-dim);
+      color: var(--text-secondary);
+      border-bottom-left-radius: 4px;
+    }
+    .msg-bubble.bot strong { color: var(--accent-bright); }
+    .msg-bubble.user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: rgba(255,255,255,0.95);
+      border-bottom-right-radius: 4px;
+    }
+
+    .sentinel-input-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.35rem;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border-dim);
     }
-    .alert-tag {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: var(--rose);
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-    .alert-text {
+
+    .sentinel-input {
+      flex: 1;
+      background: var(--bg-hover);
+      border: 1px solid var(--border-dim);
+      border-radius: 9999px;
+      padding: 0.42rem 0.9rem;
       font-size: 0.78rem;
       color: var(--text-primary);
-      line-height: 1.45;
-      margin-bottom: 0.75rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color 0.2s;
     }
-    .btn-alert-tackle {
-      background: var(--emerald);
-      color: #FFFFFF;
+    .sentinel-input::placeholder { color: var(--text-dim); }
+    .sentinel-input:focus { border-color: var(--accent); }
+
+    .sentinel-send {
+      width: 32px; height: 32px;
+      background: var(--accent);
       border: none;
-      border-radius: 6px;
-      padding: 0.45rem 0.85rem;
-      font-size: 0.75rem;
-      font-weight: 800;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.85rem;
       cursor: pointer;
-      width: 100%;
-      text-align: center;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .sentinel-send:hover { background: var(--accent-bright); transform: scale(1.07); }
+
+    /* Alert pulse on the FAB trigger */
+    .sentinel-fab {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(59,130,246,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .sentinel-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 32px rgba(59,130,246,0.65);
+    }
+
+    .fab-alert-ring {
+      position: absolute;
+      inset: -4px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s;
+      animation: ring-pulse 1.5s ease-in-out infinite;
+    }
+    .fab-alert-ring.active { opacity: 1; }
+    @keyframes ring-pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50%       { transform: scale(1.15); opacity: 0.3; }
+    }
+
+    .fab-notif-dot {
+      position: absolute;
+      top: 2px; right: 2px;
+      width: 12px; height: 12px;
+      background: var(--red);
+      border: 2px solid var(--bg-void);
+      border-radius: 50%;
+      font-size: 0.55rem;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .fab-notif-dot.active { opacity: 1; }
+
+    /* Attack alert banner injected into chat */
+    .alert-banner {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.35);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.75rem;
+      color: #FECACA;
+      line-height: 1.5;
+    }
+    .alert-banner strong { color: #EF4444; }
+
+    /* =========================================================
+       SCROLL-REVEAL HELPERS (initial states, GSAP sets them)
+       ========================================================= */
+    .reveal { opacity: 0; transform: translateY(28px); }
+
+    /* =========================================================
+       HIDDEN CTA PROXY (Streamlit bridge)
+       ========================================================= */
+    #st-cta-proxy {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      border: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+    @media (max-width: 1024px) {
+      .hero-container { grid-template-columns: 1fr; gap: 2.5rem; padding: 3rem 1.5rem; }
+      .features-grid  { grid-template-columns: 1fr 1fr; }
+      .stats-inner    { grid-template-columns: repeat(2, 1fr); }
+      .arch-inner     { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+    @media (max-width: 640px) {
+      .topnav-links { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .stats-inner   { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP STICKY AEROSPACE NAVIGATION -->
-  <header class="hero-navbar">
-    <div class="brand-wrap">
-      <div class="brand-logo-icon">🛡️</div>
-      <div>
-        <div class="brand-title">
-          ROBOGUARD AI <span class="brand-pill">ROS 2 JAZZY</span>
+<!-- ================================================================
+     BACKGROUND LAYERS
+     ================================================================ -->
+<div class="bg-mesh" aria-hidden="true"></div>
+<div class="bg-dots" aria-hidden="true"></div>
+
+<!-- ================================================================
+     TOP NAVIGATION
+     ================================================================ -->
+<nav class="topnav" id="topnav">
+  <a class="topnav-brand" href="#">
+    <div class="brand-icon">🤖</div>
+    <span class="brand-name">ROBO<span>GUARD</span></span>
+  </a>
+  <ul class="topnav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#stats-bar">Metrics</a></li>
+    <li><a href="#cta-section">Get Started</a></li>
+  </ul>
+  <div class="topnav-cta">
+    <button class="btn-nav-ghost" onclick="scrollToSection('architecture')">View Docs</button>
+    <button class="btn-nav-primary" onclick="launchSOC()">🚀 Open SOC</button>
+  </div>
+</nav>
+
+<!-- ================================================================
+     HERO SECTION
+     ================================================================ -->
+<section id="hero">
+  <div class="hero-container">
+
+    <!-- LEFT: Text content -->
+    <div class="hero-left">
+
+      <div class="hero-badge" id="hero-badge">
+        <span class="badge-dot"></span>
+        ROS 2 Jazzy · SROS2 Enabled · Live System
+      </div>
+
+      <h1 class="hero-headline" id="hero-headline">
+        Autonomous Robot<br>
+        <span class="hl-gradient">Security Command</span><br>
+        at Enterprise Scale
+      </h1>
+
+      <p class="hero-subtext" id="hero-subtext">
+        Real-time SOC for AMR fleets. Detect behavioral anomalies, 
+        replay ROSBAG attacks, and enforce node-level zero-trust policies — 
+        all from a single operational dashboard.
+      </p>
+
+      <div class="hero-cta-row" id="hero-cta-row">
+        <button class="btn-primary" onclick="launchSOC()">
+          🚀 Enter SOC Dashboard
+        </button>
+        <button class="btn-outline" onclick="scrollToSection('architecture')">
+          📐 View Architecture
+        </button>
+      </div>
+
+      <div class="hero-metrics" id="hero-metrics">
+        <span class="metric-pill green"><span class="mp-icon">✓</span> 53 Tests Passing</span>
+        <span class="metric-pill cyan"><span class="mp-icon">⚡</span> Zero CDN Deps</span>
+        <span class="metric-pill violet"><span class="mp-icon">🔒</span> SROS2 Ready</span>
+        <span class="metric-pill amber"><span class="mp-icon">🤖</span> ROS 2 Jazzy</span>
+      </div>
+
+      <div class="scroll-hint" id="scroll-hint">
+        <span class="scroll-hint-arrow">↓</span> Scroll to explore the platform
+      </div>
+
+    </div><!-- /hero-left -->
+
+    <!-- RIGHT: 3D scene card -->
+    <div class="hero-right" id="hero-right">
+      <div class="scene-glow"></div>
+      <div class="scene-card" id="scene-card">
+
+        <!-- Loading shimmer -->
+        <div class="scene-loader" id="scene-loader">
+          <div class="loader-ring"></div>
+          <div class="loader-text">INITIALIZING 3D ENGINE…</div>
+        </div>
+
+        <!-- Three.js canvas -->
+        <canvas id="robot-canvas"></canvas>
+
+        <!-- HUD overlays -->
+        <div class="scene-hud">
+          <div class="hud-badge top-left">
+            <span class="hud-dot green"></span>
+            <span class="hud-val">ONLINE</span>
+            <span class="hud-label">· AMR-01</span>
+          </div>
+          <div class="hud-badge top-right">
+            <span class="hud-dot cyan"></span>
+            <span class="hud-val">360°</span>
+            <span class="hud-label">LiDAR Active</span>
+          </div>
+          <div class="hud-badge bot-left" id="hud-threat">
+            <span class="hud-dot amber"></span>
+            <span class="hud-val" id="hud-threat-text">Nominal</span>
+            <span class="hud-label">· Threat</span>
+          </div>
+          <div class="hud-badge bot-right">
+            <span class="hud-dot cyan"></span>
+            <span class="hud-val" id="hud-fps">60</span>
+            <span class="hud-label">fps · WebGL</span>
+          </div>
+        </div>
+
+      </div><!-- /scene-card -->
+    </div><!-- /hero-right -->
+
+  </div><!-- /hero-container -->
+</section><!-- /#hero -->
+
+<!-- ================================================================
+     STATS BAR
+     ================================================================ -->
+<section id="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-num"><span class="num-accent" data-count="53">0</span></div>
+      <div class="stat-label">Unit Tests Passing</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num"><span class="num-accent" data-count="12">0</span>+</div>
+      <div class="stat-label">Attack Vectors Simulated</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num"><span class="num-accent" data-count="4">0</span></div>
+      <div class="stat-label">Mecanum Wheels Tracked</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-num"><span class="num-accent" data-count="360">0</span>°</div>
+      <div class="stat-label">LiDAR Coverage</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FEATURES
+     ================================================================ -->
+<section id="features">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-label reveal">⬡ Platform Capabilities</div>
+    <h2 class="section-title reveal">Built for the age of <br>autonomous fleets</h2>
+    <p class="section-sub reveal">
+      From ROSBAG forensic replay to real-time DDS anomaly detection — 
+      ROBOGUARD AI gives your SOC team complete visibility.
+    </p>
+
+    <div class="features-grid">
+
+      <div class="feat-card reveal">
+        <div class="feat-icon blue">🛡️</div>
+        <div class="feat-title">Real-Time Threat Detection</div>
+        <div class="feat-desc">Graph-based anomaly detection on ROS 2 DDS topic flows. Detect tampering, spoofing, and denial-of-service in milliseconds.</div>
+        <span class="feat-tag">SROS2</span>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-icon cyan">📡</div>
+        <div class="feat-title">360° LiDAR Digital Twin</div>
+        <div class="feat-desc">Live Three.js WebGL twin of your AMR fleet. Visualize sensor streams, path planning, and obstacle maps in browser.</div>
+        <span class="feat-tag">Three.js · WebGL</span>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-icon green">🔁</div>
+        <div class="feat-title">ROSBAG Attack Replay</div>
+        <div class="feat-desc">Load and replay recorded attack scenarios against your navigation stack. Test defenses with real attacker payloads.</div>
+        <span class="feat-tag">ROS 2 Bag</span>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-icon violet">🕸️</div>
+        <div class="feat-title">Computational Graph SOC</div>
+        <div class="feat-desc">NetworkX-powered node graph overlay. See every publisher, subscriber, and service relationship live with anomaly edges highlighted.</div>
+        <span class="feat-tag">NetworkX · Plotly</span>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-icon amber">📋</div>
+        <div class="feat-title">Forensic PDF Reporting</div>
+        <div class="feat-desc">One-click incident reports with timeline, graph snapshots, and CVSS scores. Audit-ready PDFs generated with ReportLab.</div>
+        <span class="feat-tag">ReportLab</span>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-icon red">⚡</div>
+        <div class="feat-title">AI Sentinel Chatbot</div>
+        <div class="feat-desc">Gemini-powered floating AI assistant. Auto-surfaces threat context, recommends mitigations, and answers SOC queries in natural language.</div>
+        <span class="feat-tag">Gemini AI</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     ARCHITECTURE
+     ================================================================ -->
+<section id="architecture">
+  <div class="arch-inner">
+
+    <div class="arch-diagram reveal">
+      <div class="arch-layer">
+        <div class="arch-layer-icon">🤖</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-name">AMR Hardware Layer</div>
+          <div class="arch-layer-desc">4× Mecanum wheels · LiDAR · IMU · Stereo Cameras · Edge Compute</div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-icon">📡</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-name">ROS 2 Jazzy Middleware</div>
+          <div class="arch-layer-desc">DDS fast-RTPS · SROS2 node auth · Topic access control</div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-icon">🕸️</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-name">Computational Graph Engine</div>
+          <div class="arch-layer-desc">NetworkX topology · Anomaly edge scoring · Attack path tracing</div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+
+      <div class="arch-layer">
+        <div class="arch-layer-icon">🖥️</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-name">SOC Dashboard (Streamlit)</div>
+          <div class="arch-layer-desc">Three.js Digital Twin · ROSBAG replay · AI Sentinel · PDF reports</div>
         </div>
       </div>
     </div>
 
-    <div class="nav-actions">
-      <button class="nav-btn-mode" id="btnOrbitMode" onclick="StoryApp.toggleOrbitMode()">
-        <span>🎮 Free Orbit 3D</span>
+    <div class="arch-text">
+      <div class="section-label reveal">🔧 Stack & Architecture</div>
+      <h2 class="section-title reveal">Defense-in-depth<br>for robot fleets</h2>
+      <p class="section-sub reveal" style="margin-bottom:1.5rem;">
+        ROBOGUARD AI follows a layered security model — hardware telemetry flows 
+        up through ROS 2 middleware, into our anomaly detection graph engine, 
+        and surfaces insights in a real-time SOC dashboard.
+      </p>
+      <div class="hero-metrics reveal">
+        <span class="metric-pill green">🐍 Python 3.12</span>
+        <span class="metric-pill cyan">📊 Streamlit</span>
+        <span class="metric-pill violet">🌐 Three.js</span>
+        <span class="metric-pill amber">📈 Plotly</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     CTA SECTION
+     ================================================================ -->
+<section id="cta-section">
+  <div class="cta-card reveal">
+    <div class="cta-card-glow"></div>
+    <div class="cta-eyebrow">🚀 Get Started</div>
+    <h2 class="cta-title">Ready to secure your<br>robot fleet?</h2>
+    <p class="cta-sub">
+      Launch the SOC dashboard and experience real-time 
+      robot security monitoring with live 3D visualization.
+    </p>
+    <div class="cta-btns">
+      <button class="btn-primary" onclick="launchSOC()" style="font-size:0.95rem;padding:0.85rem 1.75rem;">
+        🚀 Launch SOC Dashboard
       </button>
-      <button class="btn-launch-soc" onclick="StoryApp.launchDashboard()">
-        <span>🚀 Enter Enterprise Robotics SOC</span>
-        <span>→</span>
+      <button class="btn-outline" onclick="scrollToSection('features')" style="font-size:0.95rem;padding:0.85rem 1.75rem;">
+        📐 Explore Features
       </button>
     </div>
-  </header>
+  </div>
+</section>
 
-  <!-- FIXED 3D WEBGL STAGE (VIEWPORT) -->
-  <div class="stage-3d-wrapper" id="stage3dWrapper">
-    <canvas id="hero3dCanvas"></canvas>
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer>
+  <div class="footer-brand">
+    <div class="brand-icon" style="width:24px;height:24px;font-size:0.75rem;">🤖</div>
+    ROBOGUARD AI
+  </div>
+  <div class="footer-info">v1.0 · ROS 2 Jazzy · SROS2</div>
+  <ul class="footer-links">
+    <li><a href="#hero">Top</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+  </ul>
+</footer>
+
+<!-- ================================================================
+     FLOATING AI SENTINEL
+     ================================================================ -->
+<div id="ai-sentinel">
+
+  <div class="sentinel-panel collapsed" id="sentinel-panel">
+    <div class="sentinel-header">
+      <div class="sentinel-title">
+        <span class="sentinel-status-dot"></span>
+        🤖 AI Sentinel
+      </div>
+      <button class="sentinel-close" onclick="toggleSentinel()" aria-label="Close">✕</button>
+    </div>
+    <div class="sentinel-msgs" id="sentinel-msgs">
+      <div class="msg-bubble bot">
+        👋 Hi! I'm your <strong>ROBOGUARD AI Sentinel</strong>. 
+        I monitor threats and answer security questions in real time.
+      </div>
+      <div class="msg-bubble bot">
+        Try asking: <strong>"What is SROS2?"</strong> or <strong>"Simulate an attack."</strong>
+      </div>
+    </div>
+    <div class="sentinel-input-row">
+      <input class="sentinel-input" id="sentinel-input" type="text" 
+             placeholder="Ask about robot security…" 
+             onkeydown="handleSentinelKey(event)">
+      <button class="sentinel-send" onclick="sendSentinelMsg()" aria-label="Send">➤</button>
+    </div>
   </div>
 
-  <!-- FLOATING 3D TELEMETRY OVERLAYS -->
-  <div class="hud-top-strip">
-    <div class="hud-badge">
-      <div class="hud-dot"></div>
-      <span>TARGET: <b>AMR ROVER (ROBOGUARD-X1)</b></span>
-    </div>
-    <div class="hud-badge" id="hudChapterBadge">
-      <span>CHAPTER 01: <b>HARDWARE PLATFORM</b></span>
-    </div>
-  </div>
+  <button class="sentinel-fab" id="sentinel-fab" onclick="toggleSentinel()" aria-label="Open AI Sentinel">
+    <div class="fab-alert-ring" id="fab-alert-ring"></div>
+    <div class="fab-notif-dot" id="fab-notif-dot">!</div>
+    🤖
+  </button>
 
-  <div class="hud-bottom-telemetry">
-    <div class="hud-tele-item">
-      <span>VELOCITY:</span>
-      <span class="hud-tele-val" id="hudVel">0.0 m/s</span>
-    </div>
-    <div class="hud-tele-item">
-      <span>HEADING:</span>
-      <span class="hud-tele-val" id="hudHeading">0.0°</span>
-    </div>
-    <div class="hud-tele-item">
-      <span>LiDAR:</span>
-      <span class="hud-tele-val" id="hudLidar" style="color: var(--emerald);">15.0 Hz</span>
-    </div>
-    <div class="hud-tele-item">
-      <span>SECURITY:</span>
-      <span class="hud-tele-val" id="hudSecurity" style="color: var(--emerald);">SROS2 ENCLAVE ACTIVE</span>
-    </div>
-  </div>
+</div>
 
-  <!-- RIGHT MARGIN CHAPTER SCRUBBER DOTS -->
-  <nav class="chapter-scrubber-nav">
-    <div class="scrub-dot active" id="dotCh1" onclick="StoryApp.jumpToChapter(1)">
-      01
-      <span class="scrub-tooltip">01 Hardware Architecture</span>
-    </div>
-    <div class="scrub-dot" id="dotCh2" onclick="StoryApp.jumpToChapter(2)">
-      02
-      <span class="scrub-tooltip">02 Perception Teardown</span>
-    </div>
-    <div class="scrub-dot" id="dotCh3" onclick="StoryApp.jumpToChapter(3)">
-      03
-      <span class="scrub-tooltip">03 Cyberattack Vector</span>
-    </div>
-    <div class="scrub-dot" id="dotCh4" onclick="StoryApp.jumpToChapter(4)">
-      04
-      <span class="scrub-tooltip">04 Autonomous Tackling</span>
-    </div>
-  </nav>
+<!-- Streamlit CTA bridge (hidden) -->
+<div id="st-cta-proxy" aria-hidden="true"></div>
 
-  <!-- ==========================================================================
-       SCROLL TRACK & 4 NARRATIVE CHAPTERS
-       ========================================================================== -->
-  <main class="story-scroll-track" id="storyScrollTrack">
+<!-- ================================================================
+     SCRIPTS
+     ================================================================ -->
+<script>
+/* ================================================================
+   GSAP: Register plugins
+   ================================================================ */
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-    <!-- CHAPTER 1: HARDWARE PLATFORM & KINEMATICS -->
-    <section class="story-chapter-section" id="sectionChapter1">
-      <div class="chapter-card" id="cardCh1">
-        <span class="chapter-tag tag-blue">● CHAPTER 01 / HARDWARE PLATFORM</span>
-        <h2 class="chapter-title">Industrial Autonomous Mobile Robot (AMR)</h2>
-        <p class="chapter-desc">
-          Engineered for mission-critical logistics and warehouse orchestration. Built on a rigid 6061 CNC machined aluminum chassis with 4 independent high-torque Mecanum drive wheels providing full 3-DOF holonomic locomotion.
-        </p>
+/* ================================================================
+   UTILITY FUNCTIONS
+   ================================================================ */
+function launchSOC() {
+  // Send message to Streamlit parent frame
+  try {
+    window.parent.postMessage({ type: 'streamlit:setComponentValue', value: 'launch_soc' }, '*');
+  } catch(e) {}
+  // Also try clicking the hidden proxy button
+  const proxy = document.querySelector('.st-key-hero_cta_proxy button');
+  if (proxy) proxy.click();
+}
 
-        <div class="chapter-specs-grid">
-          <div class="spec-item">
-            <div class="spec-label">Chassis Frame</div>
-            <div class="spec-value">6061 Machined Extrusion</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Locomotion</div>
-            <div class="spec-value">4x 45° Mecanum Rollers</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Battery Capacity</div>
-            <div class="spec-value">48V 60Ah LiFePO4</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Safety Envelope</div>
-            <div class="spec-value">ISO 3691-4 Dual E-Stop</div>
-          </div>
-        </div>
+function scrollToSection(id) {
+  gsap.to(window, { duration: 1.2, scrollTo: { y: '#' + id, offsetY: 70 }, ease: 'power3.inOut' });
+}
 
-        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
-          <span>↓ Scroll down to explore Perception Teardown</span>
-        </div>
-      </div>
-    </section>
+/* ================================================================
+   GSAP ENTRANCE TIMELINE — hero elements
+   ================================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    <!-- CHAPTER 2: PERCEPTION ENCLAVE & TEARDOWN -->
-    <section class="story-chapter-section" id="sectionChapter2">
-      <div class="chapter-card" id="cardCh2">
-        <span class="chapter-tag tag-purple">● CHAPTER 02 / SENSOR TEARDOWN</span>
-        <h2 class="chapter-title">Zero-Trust Perception Enclave &amp; Compute</h2>
-        <p class="chapter-desc">
-          High-fidelity multi-sensor fusion. The upper sensor tower features a 360° rotating LiDAR scanning at 15 Hz, synchronized stereo depth cameras, and an ultrasonic sonar perimeter. The edge compute enclosure houses an NVIDIA Jetson Orin with tamper-proof cryptographic HSM.
-        </p>
+  // Nav entrance
+  tl.from('#topnav', { autoAlpha: 0, y: -20, duration: 0.6 }, 0);
 
-        <div class="chapter-specs-grid">
-          <div class="spec-item">
-            <div class="spec-label">Primary LiDAR</div>
-            <div class="spec-value">16-Channel 360° (15 Hz)</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Stereo Vision</div>
-            <div class="spec-value">Dual RGB-D Depth Eyes</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Edge Compute</div>
-            <div class="spec-value">NVIDIA Jetson AGX Orin</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Coord Tree</div>
-            <div class="spec-value">REP-105 Compliant (base_link)</div>
-          </div>
-        </div>
+  // Hero badge slides in from left
+  tl.from('#hero-badge', { autoAlpha: 0, x: -20, duration: 0.5 }, 0.3);
 
-        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
-          <span>↓ Scroll down to trigger Cyberattack Vector</span>
-        </div>
-      </div>
-    </section>
+  // Headline words stagger up
+  tl.from('#hero-headline', { autoAlpha: 0, y: 32, duration: 0.75, clearProps: 'all' }, 0.5);
 
-    <!-- CHAPTER 3: CYBERATTACK VECTOR -->
-    <section class="story-chapter-section" id="sectionChapter3">
-      <div class="chapter-card" id="cardCh3">
-        <span class="chapter-tag tag-rose">● CHAPTER 03 / THREAT VECTOR</span>
-        <h2 class="chapter-title">Rogue DDS Injection: Unauthorized Velocity</h2>
-        <p class="chapter-desc">
-          In standard ROS 2 without SROS2 enclaves, the DDS RTPS network operates in plaintext without node authentication. An adversary injects rogue <code>/cmd_vel</code> packets, overriding safe Nav2 planner trajectories and creating severe physical hazard.
-        </p>
+  // Subtext
+  tl.from('#hero-subtext', { autoAlpha: 0, y: 24, duration: 0.6 }, 0.75);
 
-        <div class="chapter-specs-grid">
-          <div class="spec-item" style="border-color: var(--rose-border); background: var(--rose-subtle);">
-            <div class="spec-label" style="color: var(--rose);">Attack Vector</div>
-            <div class="spec-value" style="color: var(--rose);">Rogue /cmd_vel Spoofing</div>
-          </div>
-          <div class="spec-item" style="border-color: var(--rose-border); background: var(--rose-subtle);">
-            <div class="spec-label" style="color: var(--rose);">Packet Override</div>
-            <div class="spec-value" style="color: var(--rose);">linear.x = +3.5 m/s</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Transport Domain</div>
-            <div class="spec-value">DDS Domain 0 (Plaintext)</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Physical Impact</div>
-            <div class="spec-value">Chassis Instability &amp; Drift</div>
-          </div>
-        </div>
+  // CTA buttons
+  tl.from('#hero-cta-row', { autoAlpha: 0, y: 20, duration: 0.5 }, 0.95);
 
-        <div style="font-size: 0.8rem; color: var(--rose); font-weight: 700;">
-          <span>⚠️ Chassis disturbance active. Scroll down to deploy Defense!</span>
-        </div>
-      </div>
-    </section>
+  // Metric pills stagger
+  tl.from('.metric-pill', { autoAlpha: 0, y: 12, stagger: 0.08, duration: 0.4 }, 1.1);
 
-    <!-- CHAPTER 4: SROS2 AUTONOMOUS DEFENSE & FINALE -->
-    <section class="story-chapter-section" id="sectionChapter4" style="justify-content: center; width: 100%;">
-      <div class="chapter-card finale-card" id="cardCh4">
-        <span class="chapter-tag tag-emerald">● CHAPTER 04 / SROS2 AUTONOMOUS DEFENSE</span>
-        <h2 class="chapter-title" style="font-size: 2.2rem; margin-bottom: 0.85rem;">
-          Geodesic Shield Deployed: Threat Tackled in 12ms
-        </h2>
-        <p class="chapter-desc" style="max-width: 580px; margin: 0 auto 1.5rem auto;">
-          Roboguard AI Sentinel intercepts the malicious RTPS injection in real-time. SROS2 cryptographic enclaves drop unauthorized participants at the transport layer. The geodesic cyber-shield deflects attack packet energy into harmless sparks.
-        </p>
+  // Scroll hint
+  tl.from('#scroll-hint', { autoAlpha: 0, y: 10, duration: 0.4 }, 1.5);
 
-        <div class="chapter-specs-grid" style="max-width: 520px; margin: 0 auto 1.75rem auto;">
-          <div class="spec-item" style="border-color: var(--emerald-border); background: var(--emerald-subtle);">
-            <div class="spec-label" style="color: var(--emerald);">Mitigation Time</div>
-            <div class="spec-value" style="color: var(--emerald);">12ms Real-Time</div>
-          </div>
-          <div class="spec-item" style="border-color: var(--emerald-border); background: var(--emerald-subtle);">
-            <div class="spec-label" style="color: var(--emerald);">Authentication</div>
-            <div class="spec-value" style="color: var(--emerald);">X.509 PKI Signed</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Kinematic State</div>
-            <div class="spec-value">Stabilized &amp; Re-aligned</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">SOC Integration</div>
-            <div class="spec-value">Live Telemetry Synchronized</div>
-          </div>
-        </div>
+  // Hero right card — scales in from slight zoom
+  tl.from('#hero-right', { autoAlpha: 0, scale: 0.94, duration: 0.9, ease: 'power2.out' }, 0.4);
 
-        <div class="finale-cta-group">
-          <button class="btn-big-soc" onclick="StoryApp.launchDashboard()">
-            <span>🚀 Enter Enterprise Robotics SOC</span>
-            <span>→</span>
-          </button>
-          <button class="btn-secondary-replay" onclick="StoryApp.jumpToChapter(1)">
-            <span>↺ Replay Story</span>
-          </button>
-        </div>
-      </div>
-    </section>
+  // Floating HUD badges stagger in
+  tl.from('.hud-badge', { autoAlpha: 0, scale: 0.85, stagger: 0.12, duration: 0.4 }, 1.2);
+});
 
-  </main>
-
-  <!-- ==========================================================================
-       PERSISTENT FLOATING LIVE AI SENTINEL BOT (WCAG AAA HIGH CONTRAST)
-       ========================================================================== */ -->
-  <div class="floating-ai-sentinel">
-    <!-- Proactive Alert -->
-    <div class="proactive-alert-bubble" id="proactiveAlert">
-      <div class="alert-head">
-        <span class="alert-tag">🚨 ATTACK DETECTED</span>
-        <button onclick="StoryApp.closeAlert()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">✕</button>
-      </div>
-      <div class="alert-text" id="alertText">
-        Rogue <code>/cmd_vel</code> injection detected! Plaintext RTPS node override active.
-      </div>
-      <button class="btn-alert-tackle" onclick="StoryApp.tackleAttack()">
-        🛡️ Engage SROS2 Shield Countermeasure
-      </button>
-    </div>
-
-    <!-- Floating Chat Drawer -->
-    <div class="sentinel-chat-box" id="sentinelChat">
-      <div class="chat-header">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="font-size: 1.1rem;">🛡️</span>
-          <div>
-            <div style="font-size: 0.85rem; font-weight: 800; color: #0F172A;">ROBOGUARD AI Sentinel</div>
-            <div style="font-size: 0.68rem; color: var(--emerald); font-weight: 700;">● Online · ROS 2 Jazzy SROS2</div>
-          </div>
-        </div>
-        <button onclick="StoryApp.toggleChat()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #64748B;">✕</button>
-      </div>
-
-      <div class="chat-messages-scroll" id="chatThread">
-        <div class="chat-bubble bot">
-          👋 Hello Operator! I am your <b>Roboguard AI Sentinel</b>. As you scroll through the digital twin, I continuously monitor DDS middleware traffic, validate REP-105 coordinate trees, and intercept unauthorized velocity commands. How can I assist your robotics mission?
-        </div>
-      </div>
-
-      <!-- Quick inquiry chips -->
-      <div style="padding: 0.4rem 0.75rem; background: #F8FAFC; border-top: 1px solid var(--border-subtle); display: flex; gap: 0.4rem; overflow-x: auto;">
-        <button onclick="StoryApp.askQuick('How does Mecanum kinematics work?')" style="background: #FFFFFF; border: 1px solid var(--border-strong); border-radius: 9999px; padding: 0.2rem 0.55rem; font-size: 0.68rem; font-weight: 700; color: var(--text-primary); cursor: pointer; white-space: nowrap;">⚙️ Mecanum Kinematics</button>
-        <button onclick="StoryApp.askQuick('How does SROS2 tackle rogue /cmd_vel?')" style="background: #FFFFFF; border: 1px solid var(--border-strong); border-radius: 9999px; padding: 0.2rem 0.55rem; font-size: 0.68rem; font-weight: 700; color: var(--text-primary); cursor: pointer; white-space: nowrap;">🛡️ SROS2 Tackling</button>
-      </div>
-
-      <div class="chat-input-bar">
-        <input type="text" class="chat-input-field" id="userMsgInput" placeholder="Ask AI Sentinel about kinematics, threats..." onkeydown="if(event.key==='Enter') StoryApp.sendUserMsg()">
-        <button class="chat-send-btn" onclick="StoryApp.sendUserMsg()">➤</button>
-      </div>
-    </div>
-
-    <!-- Trigger Button -->
-    <button class="sentinel-trigger-btn" id="btnSentinelTrigger" onclick="StoryApp.toggleChat()">
-      🛡️
-      <div class="sentinel-badge-count" id="sentinelBadge">!</div>
-    </button>
-  </div>
-
-  <!-- ==========================================================================
-       THREE.JS + GSAP SCROLLTRIGGER ORCHESTRATION ENGINE
-       ========================================================================== -->
-  <script>
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
-    /* Story Application Controller */
-    const StoryApp = {
-      isOrbitMode: false,
-      chatOpen: false,
-
-      init() {
-        RobotHero3D.init();
-        this.setupGSAPScroll();
-      },
-
-      toggleOrbitMode() {
-        this.isOrbitMode = !this.isOrbitMode;
-        const btn = document.getElementById('btnOrbitMode');
-        const wrapper = document.getElementById('stage3dWrapper');
-        
-        if (this.isOrbitMode) {
-          btn.classList.add('active');
-          btn.innerHTML = '<span>🎬 Return to Story Scrub</span>';
-          wrapper.classList.add('interactive');
-          RobotHero3D.controls.enabled = true;
-        } else {
-          btn.classList.remove('active');
-          btn.innerHTML = '<span>🎮 Free Orbit 3D</span>';
-          wrapper.classList.remove('interactive');
-          RobotHero3D.controls.enabled = false;
-          // Re-sync camera to current scroll position
-          ScrollTrigger.refresh();
-        }
-      },
-
-      jumpToChapter(num) {
-        const target = document.getElementById(`sectionChapter${num}`);
-        if (!target) return;
-        gsap.to(window, {
-          scrollTo: { y: target, autoKill: false },
-          duration: 1.2,
-          ease: 'power2.inOut'
-        });
-      },
-
-      launchDashboard() {
-        try {
-          if (window.parent) {
-            window.parent.postMessage({ type: 'ROBOGUARD_NAVIGATE', page: 'soc' }, '*');
-            const topBtn = window.parent.document.querySelector('.st-key-hero_cta_proxy button') || window.parent.document.querySelector('button[kind="primary"]');
-            if (topBtn) {
-              topBtn.click();
-              return;
-            }
-          }
-        } catch(e) {}
-        try {
-          if (window.top) {
-            window.top.location.search = '?nav=soc';
-            return;
-          }
-        } catch(e) {}
-        alert('Transitioning to SOC Dashboard...');
-      },
-
-      toggleChat() {
-        this.chatOpen = !this.chatOpen;
-        const box = document.getElementById('sentinelChat');
-        box.style.display = this.chatOpen ? 'flex' : 'none';
-        if (this.chatOpen) this.closeAlert();
-      },
-
-      closeAlert() {
-        document.getElementById('proactiveAlert').style.display = 'none';
-      },
-
-      tackleAttack() {
-        this.closeAlert();
-        this.jumpToChapter(4);
-      },
-
-      askQuick(query) {
-        if (!this.chatOpen) this.toggleChat();
-        const input = document.getElementById('userMsgInput');
-        input.value = query;
-        this.sendUserMsg();
-      },
-
-      sendUserMsg() {
-        const input = document.getElementById('userMsgInput');
-        const val = input.value.trim();
-        if (!val) return;
-
-        const thread = document.getElementById('chatThread');
-        const uMsg = document.createElement('div');
-        uMsg.className = 'chat-bubble user';
-        uMsg.textContent = val;
-        thread.appendChild(uMsg);
-        input.value = '';
-
-        setTimeout(() => {
-          const bMsg = document.createElement('div');
-          bMsg.className = 'chat-bubble bot';
-          const q = val.toLowerCase();
-          if (q.includes('kinematic') || q.includes('mecanum') || q.includes('wheel')) {
-            bMsg.innerHTML = "⚙️ <b>Mecanum Kinematics:</b> 4 independent wheels with 45° rollers allow 3-DOF planar motion without turning. The kinematic equation relates linear velocities (vx, vy) and yaw rate (w_z) directly to wheel RPMs.";
-          } else if (q.includes('sros2') || q.includes('threat') || q.includes('attack') || q.includes('tackle')) {
-            bMsg.innerHTML = "🛡️ <b>SROS2 Enforcement:</b> Plaintext DDS permits unauthorized packets. Roboguard AI configures cryptographic X.509 certificates and SROS2 XML security policies that reject unauthenticated `/cmd_vel` publishers at the RTPS transport layer.";
-          } else {
-            bMsg.innerHTML = `🤖 <b>Analysis for "${val}":</b> Under ROS 2 Jazzy, ensure deterministic QoS profiles and cryptographic enclaves. Explore the <b>Enterprise SOC</b> for live graph and telemetry analysis!`;
-          }
-          thread.appendChild(bMsg);
-          thread.scrollTop = thread.scrollHeight;
-        }, 350);
-      },
-
-      setupGSAPScroll() {
-        // Master Camera State Object for GSAP Tweens
-        const camState = {
-          posX: 3.5, posY: 2.4, posZ: 4.5,
-          targetX: 0, targetY: 0.6, targetZ: 0,
-          teardown: 0.0,
-          attack: 0.0,
-          shield: 0.0,
-          vel: 0.0,
-          heading: 0.0
-        };
-
-        // Continuous ScrollTrigger Scrub Timeline
-        const masterTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#storyScrollTrack",
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 1.2,
-            onUpdate: (self) => {
-              if (StoryApp.isOrbitMode) return;
-              
-              // Apply interpolated camera coordinates
-              RobotHero3D.camera.position.set(camState.posX, camState.posY, camState.posZ);
-              RobotHero3D.controls.target.set(camState.targetX, camState.targetY, camState.targetZ);
-              RobotHero3D.camera.lookAt(camState.targetX, camState.targetY, camState.targetZ);
-
-              // Update 3D scene parameters
-              RobotHero3D.setTeardownProgress(camState.teardown);
-              RobotHero3D.setAttackProgress(camState.attack);
-              RobotHero3D.setShieldProgress(camState.shield);
-
-              // Telemetry updates
-              document.getElementById('hudVel').textContent = `${camState.vel.toFixed(1)} m/s`;
-              document.getElementById('hudHeading').textContent = `${camState.heading.toFixed(0)}°`;
-
-              // Active dot highlight
-              const progress = self.progress;
-              let activeCh = 1;
-              if (progress > 0.75) activeCh = 4;
-              else if (progress > 0.50) activeCh = 3;
-              else if (progress > 0.25) activeCh = 2;
-              
-              for (let i = 1; i <= 4; i++) {
-                document.getElementById(`dotCh${i}`).classList.toggle('active', i === activeCh);
-              }
-              const names = [
-                'CHAPTER 01: HARDWARE PLATFORM',
-                'CHAPTER 02: PERCEPTION TEARDOWN',
-                'CHAPTER 03: CYBERATTACK VECTOR',
-                'CHAPTER 04: SROS2 AUTONOMOUS DEFENSE'
-              ];
-              document.getElementById('hudChapterBadge').innerHTML = `<span>${names[activeCh - 1]}</span>`;
-            }
-          }
-        });
-
-        // BEAT 1 (0.00 -> 0.25): Orbit around Hardware Platform
-        masterTl.to(camState, {
-          posX: 2.8, posY: 1.3, posZ: 3.4,
-          targetX: 0, targetY: 0.45, targetZ: 0,
-          teardown: 0.0,
-          attack: 0.0,
-          shield: 0.0,
-          vel: 1.2,
-          heading: 15.0,
-          duration: 1
-        });
-
-        // BEAT 2 (0.25 -> 0.50): Zoom in on Sensor Tower & Exploded Teardown
-        masterTl.to(camState, {
-          posX: 1.6, posY: 1.9, posZ: 2.1,
-          targetX: 0.1, targetY: 0.9, targetZ: 0,
-          teardown: 1.0,
-          attack: 0.0,
-          shield: 0.0,
-          vel: 0.0,
-          heading: 0.0,
-          duration: 1
-        });
-
-        // BEAT 3 (0.50 -> 0.75): Low-angle Threat Incursion (Rogue cmd_vel)
-        masterTl.to(camState, {
-          posX: 2.6, posY: 0.85, posZ: 3.1,
-          targetX: 0, targetY: 0.5, targetZ: 0,
-          teardown: 0.0,
-          attack: 1.0,
-          shield: 0.0,
-          vel: 3.5,
-          heading: -35.0,
-          duration: 1
-        });
-
-        // BEAT 4 (0.75 -> 1.00): Geodesic Shield Tackles Threat & Hero Center
-        masterTl.to(camState, {
-          posX: 3.4, posY: 2.2, posZ: 4.2,
-          targetX: 0, targetY: 0.65, targetZ: 0,
-          teardown: 0.0,
-          attack: 0.0,
-          shield: 1.0,
-          vel: 0.0,
-          heading: 0.0,
-          duration: 1
-        });
+/* ================================================================
+   GSAP: ScrollTrigger — reveal sections
+   ================================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Generic reveal for .reveal elements
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.to(el, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.75,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        toggleActions: 'play none none none',
       }
-    };
-
-    /* Three.js 3D WebGL Implementation */
-    const RobotHero3D = {
-      scene: null,
-      camera: null,
-      renderer: null,
-      controls: null,
-      robot: null,
-      lidarPuck: null,
-      laserFan: null,
-      wheels: [],
-      deck: null,
-      lidarGroup: null,
-      batteryPack: null,
-      shield: null,
-      attackBeams: null,
-      warningRings: null,
-      beaconLight: null,
-      headlights: [],
-      oledMat: null,
-      teardownVal: 0,
-      attackVal: 0,
-      shieldVal: 0,
-      clock: new THREE.Clock(),
-
-      init() {
-        const canvas = document.getElementById('hero3dCanvas');
-        const container = canvas.parentElement;
-        const w = container.clientWidth || window.innerWidth;
-        const h = container.clientHeight || (window.innerHeight - 55);
-
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xF1F5F9);
-        this.scene.fog = new THREE.FogExp2(0xF1F5F9, 0.038);
-
-        this.camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-        this.camera.position.set(3.5, 2.4, 4.5);
-
-        this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-        this.renderer.setSize(w, h);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        this.renderer.shadowMap.enabled = true;
-
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.06;
-        this.controls.maxPolarAngle = Math.PI / 2 - 0.04;
-        this.controls.minDistance = 1.2;
-        this.controls.maxDistance = 12;
-        this.controls.target.set(0, 0.6, 0);
-        this.controls.enabled = false; // Disabled by default for scroll scrubbing
-
-        // Lighting
-        const amb = new THREE.AmbientLight(0xFFFFFF, 1.35);
-        this.scene.add(amb);
-
-        const dir = new THREE.DirectionalLight(0xFFFFFF, 1.55);
-        dir.position.set(6, 12, 8);
-        dir.castShadow = true;
-        this.scene.add(dir);
-
-        const blueAccent = new THREE.PointLight(0x0284C7, 1.6, 10);
-        blueAccent.position.set(-3, 3, -2);
-        this.scene.add(blueAccent);
-
-        // Ground Grid (Technical Aerospace Look)
-        const grid = new THREE.GridHelper(26, 26, 0xCBD5E1, 0xE2E8F0);
-        grid.position.y = 0;
-        this.scene.add(grid);
-
-        this.buildRobot();
-        this.buildCyberShield();
-        this.buildThreats();
-
-        window.addEventListener('resize', () => this.resize());
-        this.animate();
-      },
-
-      buildRobot() {
-        this.robot = new THREE.Group();
-
-        // 1. Lower Machined Chassis with Bevels & Rubber Bumpers
-        const chassisMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.25, metalness: 0.85 });
-        const chassis = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.42, 1.16), chassisMat);
-        chassis.position.y = 0.42;
-        chassis.castShadow = true;
-        this.robot.add(chassis);
-
-        // Heavy-Duty Corner Bumpers
-        const bumperMat = new THREE.MeshStandardMaterial({ color: 0x090D16, roughness: 0.9 });
-        const bCoords = [
-          [0.83, 0.42, 0.57], [-0.83, 0.42, 0.57],
-          [0.83, 0.42, -0.57], [-0.83, 0.42, -0.57]
-        ];
-        bCoords.forEach(c => {
-          const bmp = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 0.14), bumperMat);
-          bmp.position.set(c[0], c[1], c[2]);
-          this.robot.add(bmp);
-        });
-
-        // Side Livery Accent Racing Stripes
-        const stripeMatBlue = new THREE.MeshBasicMaterial({ color: 0x2563EB });
-        const stripeMatCyan = new THREE.MeshBasicMaterial({ color: 0x00E5FF });
-        [-0.59, 0.59].forEach(z => {
-          const strB = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 0.01), stripeMatBlue);
-          strB.position.set(0, 0.48, z);
-          this.robot.add(strB);
-          const strC = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.02, 0.01), stripeMatCyan);
-          strC.position.set(0, 0.44, z);
-          this.robot.add(strC);
-        });
-
-        // Dual Front High-Intensity Projector Headlights
-        const headBezelMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, metalness: 0.9 });
-        const headLensMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
-        this.headlights = [];
-        [0.26, -0.26].forEach(z => {
-          const bezel = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.05, 16), headBezelMat);
-          bezel.rotation.z = Math.PI / 2;
-          bezel.position.set(0.85, 0.38, z);
-          this.robot.add(bezel);
-
-          const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 16), headLensMat);
-          lens.rotation.z = Math.PI / 2;
-          lens.position.set(0.86, 0.38, z);
-          this.robot.add(lens);
-          this.headlights.push(lens);
-
-          const spot = new THREE.SpotLight(0x00E5FF, 2.0, 7.0, Math.PI / 5, 0.4);
-          spot.position.set(0.88, 0.38, z);
-          spot.target.position.set(3.5, 0.05, z);
-          this.scene.add(spot.target);
-          this.robot.add(spot);
-        });
-
-        // Modular Lithium Battery Pack (Exposed during teardown)
-        this.batteryPack = new THREE.Group();
-        this.batteryPack.position.set(0, 0.50, 0);
-        const battBody = new THREE.Mesh(
-          new THREE.BoxGeometry(0.72, 0.22, 0.62),
-          new THREE.MeshStandardMaterial({ color: 0x0A0E17, metalness: 0.8, roughness: 0.3 })
-        );
-        this.batteryPack.add(battBody);
-        const termMat = new THREE.MeshStandardMaterial({ color: 0xF97316, metalness: 0.5 });
-        const term1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.06, 12), termMat);
-        term1.position.set(0.2, 0.12, 0.18);
-        this.batteryPack.add(term1);
-        const term2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.06, 12), termMat);
-        term2.position.set(0.2, 0.12, -0.18);
-        this.batteryPack.add(term2);
-        this.robot.add(this.batteryPack);
-
-        // Upper Detachable Equipment Deck Plate
-        this.deck = new THREE.Mesh(
-          new THREE.BoxGeometry(1.54, 0.06, 1.06),
-          new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.35, metalness: 0.75 })
-        );
-        this.deck.position.set(0, 0.66, 0);
-        this.robot.add(this.deck);
-
-        // 2. High-Precision Mecanum Wheels with 8 Angled Barrel Rollers Each
-        const tireMat = new THREE.MeshStandardMaterial({ color: 0x090D14, roughness: 0.85 });
-        const hubMat = new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.95, roughness: 0.15 });
-        const rollerMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.6, metalness: 0.7 });
-
-        const wPositions = [
-          [-0.6, 0.24, 0.66], [0.6, 0.24, 0.66],
-          [-0.6, 0.24, -0.66], [0.6, 0.24, -0.66]
-        ];
-
-        this.wheels = [];
-        wPositions.forEach((p, wIdx) => {
-          const wGrp = new THREE.Group();
-          const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.16, 24), tireMat);
-          tire.rotation.x = Math.PI / 2;
-          wGrp.add(tire);
-
-          const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.18, 16), hubMat);
-          hub.rotation.x = Math.PI / 2;
-          wGrp.add(hub);
-
-          const rollerGroup = new THREE.Group();
-          for (let r = 0; r < 8; r++) {
-            const angle = (r / 8) * Math.PI * 2;
-            const rx = Math.cos(angle) * 0.21;
-            const ry = Math.sin(angle) * 0.21;
-            const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.11, 8), rollerMat);
-            roller.position.set(rx, ry, 0);
-            roller.rotation.z = angle + (wIdx % 2 === 0 ? Math.PI / 4 : -Math.PI / 4);
-            rollerGroup.add(roller);
-          }
-          wGrp.add(rollerGroup);
-          wGrp.position.set(p[0], p[1], p[2]);
-          this.robot.add(wGrp);
-          this.wheels.push(wGrp);
-        });
-
-        // 3. Sensor Tower: 360° LiDAR Riser
-        this.lidarGroup = new THREE.Group();
-        this.lidarGroup.position.set(0.12, 0.74, 0);
-
-        const pylon = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.07, 0.09, 0.16, 16),
-          new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9 })
-        );
-        pylon.position.y = 0.08;
-        this.lidarGroup.add(pylon);
-
-        const lidarBase = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.19, 0.22, 0.10, 24),
-          new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.9 })
-        );
-        lidarBase.position.y = 0.20;
-        this.lidarGroup.add(lidarBase);
-
-        this.lidarPuck = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.19, 0.19, 0.15, 24),
-          new THREE.MeshStandardMaterial({ color: 0x090D16, metalness: 0.95, roughness: 0.1 })
-        );
-        this.lidarPuck.position.y = 0.32;
-
-        const ring = new THREE.Mesh(
-          new THREE.TorusGeometry(0.192, 0.014, 8, 32),
-          new THREE.MeshBasicMaterial({ color: 0x00E5FF })
-        );
-        ring.rotation.x = Math.PI / 2;
-        this.lidarPuck.add(ring);
-        this.lidarGroup.add(this.lidarPuck);
-
-        // Sweeping LiDAR Laser Fan Cone
-        const fanGeom = new THREE.ConeGeometry(3.5, 0.12, 32, 1, true, 0, Math.PI / 3);
-        const fanMat = new THREE.MeshBasicMaterial({
-          color: 0x00E5FF,
-          transparent: true,
-          opacity: 0.22,
-          side: THREE.DoubleSide
-        });
-        this.laserFan = new THREE.Mesh(fanGeom, fanMat);
-        this.laserFan.rotation.x = Math.PI / 2;
-        this.laserFan.position.y = 0.32;
-        this.lidarPuck.add(this.laserFan);
-        this.robot.add(this.lidarGroup);
-
-        // 4. Edge Compute Enclave Enclosure with Heatsink Fins
-        this.computeEnclave = new THREE.Group();
-        this.computeEnclave.position.set(-0.35, 0.72, 0);
-
-        const compCase = new THREE.Mesh(
-          new THREE.BoxGeometry(0.48, 0.16, 0.44),
-          new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.85, roughness: 0.3 })
-        );
-        this.computeEnclave.add(compCase);
-
-        const finMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9 });
-        for (let f = -0.18; f <= 0.18; f += 0.04) {
-          const fin = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.04, 0.015), finMat);
-          fin.position.set(0, 0.10, f);
-          this.computeEnclave.add(fin);
-        }
-
-        // OLED Status Screen
-        this.oledMat = new THREE.MeshBasicMaterial({ color: 0x059669 });
-        const oled = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.08), this.oledMat);
-        oled.rotation.y = Math.PI / 2;
-        oled.position.set(0.242, 0.02, 0);
-        this.computeEnclave.add(oled);
-        this.robot.add(this.computeEnclave);
-
-        // Dual Safety Emergency E-Stop Buttons
-        const estopBaseMat = new THREE.MeshStandardMaterial({ color: 0xFACC15 });
-        const estopCapMat = new THREE.MeshStandardMaterial({ color: 0xDC2626 });
-        [0.45, -0.45].forEach(z => {
-          const eBase = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.03, 16), estopBaseMat);
-          eBase.position.set(-0.65, 0.71, z);
-          this.robot.add(eBase);
-
-          const eCap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.03, 16), estopCapMat);
-          eCap.position.set(-0.65, 0.73, z);
-          this.robot.add(eCap);
-        });
-
-        // Autonomous Strobe Beacon Light
-        const beaconStem = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.02, 0.02, 0.28, 12),
-          new THREE.MeshStandardMaterial({ color: 0x0F172A, metalness: 0.9 })
-        );
-        beaconStem.position.set(-0.68, 0.83, 0);
-        this.robot.add(beaconStem);
-
-        this.beaconLight = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.04, 0.04, 0.07, 16),
-          new THREE.MeshBasicMaterial({ color: 0x059669 })
-        );
-        this.beaconLight.position.set(-0.68, 0.99, 0);
-        this.robot.add(this.beaconLight);
-
-        this.scene.add(this.robot);
-      },
-
-      buildCyberShield() {
-        // Geodesic Wireframe Cyber-Shield Sphere
-        const geom = new THREE.IcosahedronGeometry(1.65, 2);
-        const wireMat = new THREE.MeshBasicMaterial({
-          color: 0x10B981,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.0
-        });
-        this.shield = new THREE.Mesh(geom, wireMat);
-        this.shield.position.y = 0.65;
-        this.scene.add(this.shield);
-      },
-
-      buildThreats() {
-        // Pulsing Warning Grid Rings
-        const ringGeom = new THREE.RingGeometry(1.8, 2.0, 32);
-        const ringMat = new THREE.MeshBasicMaterial({
-          color: 0xDC2626,
-          side: THREE.DoubleSide,
-          transparent: true,
-          opacity: 0.0
-        });
-        this.warningRings = new THREE.Mesh(ringGeom, ringMat);
-        this.warningRings.rotation.x = Math.PI / 2;
-        this.warningRings.position.y = 0.02;
-        this.scene.add(this.warningRings);
-
-        // Adversary Attack Energy Beams Group
-        this.attackBeams = new THREE.Group();
-        const beamMat = new THREE.MeshBasicMaterial({ color: 0xEF4444, transparent: true, opacity: 0.0 });
-        for (let i = 0; i < 5; i++) {
-          const bm = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.8, 8), beamMat);
-          bm.rotation.z = Math.PI / 4;
-          bm.position.set(1.5 + i * 0.2, 1.2, (i - 2) * 0.35);
-          this.attackBeams.add(bm);
-        }
-        this.scene.add(this.attackBeams);
-      },
-
-      setTeardownProgress(t) {
-        this.teardownVal = t;
-        // Elevate deck plate, sensor tower, and compute enclosure
-        if (this.deck) this.deck.position.y = 0.66 + t * 0.28;
-        if (this.lidarGroup) this.lidarGroup.position.y = 0.74 + t * 0.38;
-        if (this.computeEnclave) this.computeEnclave.position.y = 0.72 + t * 0.22;
-        if (this.batteryPack) this.batteryPack.position.y = 0.50 + t * 0.08;
-      },
-
-      setAttackProgress(a) {
-        this.attackVal = a;
-        if (this.warningRings) {
-          this.warningRings.material.opacity = a * 0.75;
-          const scale = 1.0 + Math.sin(Date.now() * 0.005) * 0.15 * a;
-          this.warningRings.scale.set(scale, scale, 1);
-        }
-        if (this.attackBeams) {
-          this.attackBeams.children.forEach(bm => {
-            bm.material.opacity = a * 0.85;
-          });
-        }
-        // Change beacon & headlights to warning color
-        if (a > 0.4) {
-          if (this.beaconLight) this.beaconLight.material.color.setHex(0xDC2626);
-          if (this.oledMat) this.oledMat.color.setHex(0xDC2626);
-          document.getElementById('hudSecurity').textContent = 'UNAUTHORIZED ACTUATION DETECTED';
-          document.getElementById('hudSecurity').style.color = '#DC2626';
-        } else if (this.shieldVal <= 0.1) {
-          if (this.beaconLight) this.beaconLight.material.color.setHex(0x059669);
-          if (this.oledMat) this.oledMat.color.setHex(0x059669);
-          document.getElementById('hudSecurity').textContent = 'SROS2 ENCLAVE ACTIVE';
-          document.getElementById('hudSecurity').style.color = '#059669';
-        }
-      },
-
-      setShieldProgress(s) {
-        this.shieldVal = s;
-        if (this.shield) {
-          this.shield.material.opacity = s * 0.55;
-          const pulse = 1.0 + Math.sin(Date.now() * 0.006) * 0.03 * s;
-          this.shield.scale.set(pulse, pulse, pulse);
-        }
-        if (s > 0.5) {
-          if (this.beaconLight) this.beaconLight.material.color.setHex(0x059669);
-          if (this.oledMat) this.oledMat.color.setHex(0x059669);
-          document.getElementById('hudSecurity').textContent = 'SROS2 ENCLAVE ACTIVE · ZERO TRUST ENFORCED';
-          document.getElementById('hudSecurity').style.color = '#059669';
-        }
-      },
-
-      resize() {
-        const canvas = document.getElementById('hero3dCanvas');
-        if (!canvas) return;
-        const container = canvas.parentElement;
-        const w = container.clientWidth || window.innerWidth;
-        const h = container.clientHeight || (window.innerHeight - 55);
-        if (w > 0 && h > 0) {
-          this.camera.aspect = w / h;
-          this.camera.updateProjectionMatrix();
-          this.renderer.setSize(w, h);
-        }
-      },
-
-      animate() {
-        requestAnimationFrame(() => this.animate());
-        const delta = this.clock.getDelta();
-        const time = this.clock.getElapsedTime();
-
-        // Continuous LiDAR Puck & Laser Fan Rotation (15 Hz equivalent visual)
-        if (this.lidarPuck) {
-          this.lidarPuck.rotation.y += delta * 6.28;
-        }
-
-        // Mecanum Wheel Spin when in motion
-        if (this.wheels.length > 0) {
-          this.wheels.forEach(w => {
-            w.rotation.x += delta * 2.5;
-          });
-        }
-
-        // Chassis perturbation during attack vector
-        if (this.attackVal > 0.1 && this.robot) {
-          this.robot.rotation.z = Math.sin(time * 24) * 0.035 * this.attackVal;
-          this.robot.position.x = Math.cos(time * 18) * 0.03 * this.attackVal;
-        } else if (this.robot) {
-          this.robot.rotation.z = 0;
-          this.robot.position.x = 0;
-        }
-
-        // Shield subtle rotation
-        if (this.shield && this.shieldVal > 0.1) {
-          this.shield.rotation.y += delta * 0.5;
-          this.shield.rotation.x += delta * 0.25;
-        }
-
-        if (this.controls && this.controls.enabled) {
-          this.controls.update();
-        }
-
-        this.renderer.render(this.scene, this.camera);
-      }
-    };
-
-    // Initialize application on DOM ready
-    window.addEventListener('DOMContentLoaded', () => {
-      StoryApp.init();
     });
-  </script>
+  });
+
+  // Stats counter animation
+  gsap.utils.toArray('[data-count]').forEach(el => {
+    const target = parseInt(el.getAttribute('data-count'));
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 85%',
+      onEnter: () => {
+        gsap.to({ val: 0 }, {
+          val: target,
+          duration: 1.6,
+          ease: 'power2.out',
+          onUpdate: function() {
+            el.textContent = Math.round(this.targets()[0].val);
+          }
+        });
+      }
+    });
+  });
+
+  // Parallax on the scene glow element
+  gsap.to('.scene-glow', {
+    y: -40,
+    scrollTrigger: {
+      trigger: '#hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1.5,
+    }
+  });
+
+  // Navbar color shift on scroll
+  ScrollTrigger.create({
+    start: 'top -60px',
+    onUpdate: self => {
+      const nav = document.getElementById('topnav');
+      if (self.direction === 1 && self.progress > 0) {
+        nav.style.boxShadow = '0 1px 32px rgba(0,0,0,0.5)';
+      } else {
+        nav.style.boxShadow = 'none';
+      }
+    }
+  });
+});
+
+/* ================================================================
+   THREE.JS — Detailed AMR Robot Scene
+   ================================================================ */
+(function initThreeScene() {
+  const canvas = document.getElementById('robot-canvas');
+  const container = document.getElementById('scene-card');
+
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setClearColor(0x0A0D1A);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+
+  // Scene
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x07080F, 0.045);
+
+  // Camera
+  const cam = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  cam.position.set(0, 2.8, 5.5);
+  cam.lookAt(0, 0.5, 0);
+
+  // OrbitControls
+  const controls = new THREE.OrbitControls(cam, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.target.set(0, 0.5, 0);
+  controls.minDistance = 3;
+  controls.maxDistance = 10;
+  controls.maxPolarAngle = Math.PI * 0.75;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.6;
+
+  /* ---- MATERIALS ---- */
+  const matChassis = new THREE.MeshStandardMaterial({
+    color: 0x1A2235,
+    roughness: 0.3,
+    metalness: 0.75,
+  });
+  const matAccent = new THREE.MeshStandardMaterial({
+    color: 0x3B82F6,
+    roughness: 0.2,
+    metalness: 0.9,
+    emissive: 0x1D4ED8,
+    emissiveIntensity: 0.4,
+  });
+  const matWheel = new THREE.MeshStandardMaterial({
+    color: 0x111827,
+    roughness: 0.8,
+    metalness: 0.3,
+  });
+  const matLidar = new THREE.MeshStandardMaterial({
+    color: 0x0F172A,
+    roughness: 0.1,
+    metalness: 0.95,
+    emissive: 0x06B6D4,
+    emissiveIntensity: 0.1,
+  });
+  const matLidarTop = new THREE.MeshStandardMaterial({
+    color: 0x000000,
+    roughness: 0.05,
+    metalness: 1.0,
+    emissive: 0x06B6D4,
+    emissiveIntensity: 0.3,
+  });
+  const matCamera = new THREE.MeshStandardMaterial({
+    color: 0x0F172A,
+    roughness: 0.1,
+    metalness: 0.9,
+  });
+  const matCameraLens = new THREE.MeshStandardMaterial({
+    color: 0x000814,
+    roughness: 0.0,
+    metalness: 1.0,
+    emissive: 0x1D4ED8,
+    emissiveIntensity: 0.6,
+  });
+  const matHeatsink = new THREE.MeshStandardMaterial({
+    color: 0x1E293B,
+    roughness: 0.4,
+    metalness: 0.8,
+  });
+  const matHeadlight = new THREE.MeshStandardMaterial({
+    color: 0xFFFBEB,
+    roughness: 0.0,
+    metalness: 0.0,
+    emissive: 0xFFF8D6,
+    emissiveIntensity: 2.0,
+    transparent: true,
+    opacity: 0.95,
+  });
+  const matGround = new THREE.MeshStandardMaterial({
+    color: 0x0A0D1A,
+    roughness: 0.9,
+    metalness: 0.1,
+  });
+
+  /* ---- GROUND PLANE ---- */
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(6, 64), matGround);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -1.0;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  /* Ground grid */
+  const gridHelper = new THREE.GridHelper(12, 24, 0x1D4ED8, 0x0F1A2E);
+  gridHelper.position.y = -0.98;
+  gridHelper.material.transparent = true;
+  gridHelper.material.opacity = 0.35;
+  scene.add(gridHelper);
+
+  /* ---- HAZARD CIRCLE ---- */
+  const hazardGeo = new THREE.TorusGeometry(1.5, 0.025, 8, 80);
+  const hazardMat = new THREE.MeshBasicMaterial({ color: 0x06B6D4, transparent: true, opacity: 0.5 });
+  const hazardRing = new THREE.Mesh(hazardGeo, hazardMat);
+  hazardRing.rotation.x = -Math.PI / 2;
+  hazardRing.position.y = -0.95;
+  scene.add(hazardRing);
+
+  /* ---- ROBOT GROUP ---- */
+  const robot = new THREE.Group();
+  scene.add(robot);
+
+  /* -- Main Chassis -- */
+  const chassisGeo = new THREE.BoxGeometry(1.6, 0.35, 2.4);
+  const chassis = new THREE.Mesh(chassisGeo, matChassis);
+  chassis.castShadow = true;
+  chassis.position.y = 0;
+  robot.add(chassis);
+
+  /* Chassis accent strip (front) */
+  const frontStrip = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.06, 0.04), matAccent);
+  frontStrip.position.set(0, 0.1, 1.2);
+  robot.add(frontStrip);
+  const rearStrip = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.06, 0.04), matAccent);
+  rearStrip.position.set(0, 0.1, -1.2);
+  robot.add(rearStrip);
+
+  /* Chassis top deck */
+  const deckGeo = new THREE.BoxGeometry(1.4, 0.06, 2.0);
+  const deck = new THREE.Mesh(deckGeo, matHeatsink);
+  deck.position.y = 0.205;
+  deck.castShadow = true;
+  robot.add(deck);
+
+  /* -- Edge Compute Enclosure (top center) -- */
+  const enclosureGeo = new THREE.BoxGeometry(0.7, 0.28, 0.9);
+  const enclosure = new THREE.Mesh(enclosureGeo, new THREE.MeshStandardMaterial({
+    color: 0x0F1A2E, roughness: 0.2, metalness: 0.85
+  }));
+  enclosure.position.set(0, 0.37, -0.2);
+  enclosure.castShadow = true;
+  robot.add(enclosure);
+
+  /* Heatsink fins on the enclosure */
+  for (let i = 0; i < 7; i++) {
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.22, 0.85), matHeatsink);
+    fin.position.set(-0.27 + i * 0.09, 0.37, -0.2);
+    robot.add(fin);
+  }
+
+  /* Status LED strip on enclosure */
+  const ledStrip = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.025, 0.025), new THREE.MeshStandardMaterial({
+    color: 0x22C55E, emissive: 0x22C55E, emissiveIntensity: 2.0, roughness: 0, metalness: 0
+  }));
+  ledStrip.position.set(0, 0.51, 0.23);
+  robot.add(ledStrip);
+
+  /* -- LiDAR Puck Assembly -- */
+  const lidarGroup = new THREE.Group();
+  lidarGroup.position.set(0, 0.72, 0.1);
+  robot.add(lidarGroup);
+
+  // LiDAR base cylinder
+  const lidarBase = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.22, 0.24, 0.12, 32),
+    matLidar
+  );
+  lidarGroup.add(lidarBase);
+
+  // LiDAR rotating drum
+  const lidarDrum = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.17, 0.19, 0.18, 32),
+    matLidar
+  );
+  lidarDrum.position.y = 0.08;
+  lidarGroup.add(lidarDrum);
+
+  // LiDAR top glass
+  const lidarTop = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.14, 0.17, 0.06, 32),
+    matLidarTop
+  );
+  lidarTop.position.y = 0.19;
+  lidarGroup.add(lidarTop);
+
+  // Rotating LiDAR beam group
+  const lidarBeamGroup = new THREE.Group();
+  lidarDrum.add(lidarBeamGroup);
+
+  // 4 laser sweep rays (thin lines)
+  for (let i = 0; i < 4; i++) {
+    const angle = (i / 4) * Math.PI * 2;
+    const beamGeo = new THREE.CylinderGeometry(0.004, 0.001, 2.0, 4);
+    const beamMat = new THREE.MeshBasicMaterial({ 
+      color: 0x06B6D4, transparent: true, opacity: 0.7 
+    });
+    const beam = new THREE.Mesh(beamGeo, beamMat);
+    beam.rotation.z = Math.PI / 2;
+    beam.position.set(1.0 * Math.cos(angle), 0, 1.0 * Math.sin(angle));
+    beam.lookAt(lidarBeamGroup.position);
+    lidarBeamGroup.add(beam);
+  }
+
+  /* -- Stereo Camera Bar -- */
+  const camBar = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 0.08), matCamera);
+  camBar.position.set(0, 0.42, 1.19);
+  robot.add(camBar);
+
+  // Left camera
+  const camBodyL = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.11, 0.09), matCamera);
+  camBodyL.position.set(-0.3, 0.42, 1.235);
+  robot.add(camBodyL);
+  const lensL = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.042, 0.04, 20), matCameraLens);
+  lensL.rotation.x = Math.PI / 2;
+  lensL.position.set(-0.3, 0.42, 1.285);
+  robot.add(lensL);
+
+  // Right camera
+  const camBodyR = camBodyL.clone();
+  camBodyR.position.set(0.3, 0.42, 1.235);
+  robot.add(camBodyR);
+  const lensR = lensL.clone();
+  lensR.position.set(0.3, 0.42, 1.285);
+  robot.add(lensR);
+
+  /* -- Headlights (front) -- */
+  const hlGeo = new THREE.SphereGeometry(0.055, 12, 8);
+  [-0.5, 0.5].forEach(x => {
+    const hl = new THREE.Mesh(hlGeo, matHeadlight);
+    hl.position.set(x, 0, 1.22);
+    robot.add(hl);
+
+    const hlLight = new THREE.PointLight(0xFFF8D6, 0.4, 2.5);
+    hlLight.position.set(x, 0, 1.3);
+    robot.add(hlLight);
+  });
+
+  /* -- IMU Module -- */
+  const imuGeo = new THREE.BoxGeometry(0.12, 0.05, 0.12);
+  const imuMat = new THREE.MeshStandardMaterial({
+    color: 0x1E3A5F, roughness: 0.3, metalness: 0.7,
+    emissive: 0x3B82F6, emissiveIntensity: 0.2
+  });
+  const imu = new THREE.Mesh(imuGeo, imuMat);
+  imu.position.set(0, 0.235, 0.6);
+  robot.add(imu);
+
+  /* ---- MECANUM WHEELS (4×) ---- */
+  function buildWheel(x, z) {
+    const wGroup = new THREE.Group();
+
+    // Main tire
+    const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.16, 32), matWheel);
+    tire.rotation.z = Math.PI / 2;
+    wGroup.add(tire);
+
+    // Rim
+    const rim = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.22, 0.22, 0.17, 20),
+      new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.2, metalness: 0.9 })
+    );
+    rim.rotation.z = Math.PI / 2;
+    wGroup.add(rim);
+
+    // Hub bolt circle
+    for (let b = 0; b < 5; b++) {
+      const angle = (b / 5) * Math.PI * 2;
+      const bolt = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.025, 0.025, 0.19, 8),
+        new THREE.MeshStandardMaterial({ color: 0x94A3B8, roughness: 0.3, metalness: 0.9 })
+      );
+      bolt.rotation.z = Math.PI / 2;
+      bolt.position.set(0, 0.12 * Math.sin(angle), 0.12 * Math.cos(angle));
+      wGroup.add(bolt);
+    }
+
+    // Mecanum roller fins (8 diagonal rollers)
+    for (let r = 0; r < 8; r++) {
+      const angle = (r / 8) * Math.PI * 2;
+      const roller = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.055, 0.055, 0.14, 8),
+        new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.9, metalness: 0.1 })
+      );
+      roller.rotation.z = Math.PI / 4; // 45° diagonal
+      roller.position.set(
+        0.09 * Math.sin(r * Math.PI * 2 / 8),
+        0.32 * Math.sin(angle),
+        0.32 * Math.cos(angle)
+      );
+      wGroup.add(roller);
+    }
+
+    wGroup.position.set(x, -0.3, z);
+    wGroup.castShadow = true;
+    robot.add(wGroup);
+    return wGroup;
+  }
+
+  const wheels = [
+    buildWheel(-0.95, 0.9),
+    buildWheel( 0.95, 0.9),
+    buildWheel(-0.95, -0.9),
+    buildWheel( 0.95, -0.9),
+  ];
+
+  /* ---- LIGHTING ---- */
+  // Ambient
+  scene.add(new THREE.AmbientLight(0x0D1B2A, 1.2));
+
+  // Key light (cool blue-white from above-front)
+  const keyLight = new THREE.DirectionalLight(0x9BC5FF, 1.8);
+  keyLight.position.set(3, 6, 4);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  keyLight.shadow.camera.near = 0.5;
+  keyLight.shadow.camera.far = 20;
+  keyLight.shadow.camera.left = -4;
+  keyLight.shadow.camera.right = 4;
+  keyLight.shadow.camera.top = 4;
+  keyLight.shadow.camera.bottom = -4;
+  scene.add(keyLight);
+
+  // Fill light (warm from behind)
+  const fillLight = new THREE.DirectionalLight(0x3B82F6, 0.5);
+  fillLight.position.set(-4, 2, -3);
+  scene.add(fillLight);
+
+  // Rim light (cyan accent from right)
+  const rimLight = new THREE.DirectionalLight(0x06B6D4, 0.8);
+  rimLight.position.set(5, 1, -2);
+  scene.add(rimLight);
+
+  // Ground fill (subtle warm bottom)
+  const groundLight = new THREE.DirectionalLight(0x1D3461, 0.4);
+  groundLight.position.set(0, -4, 0);
+  scene.add(groundLight);
+
+  // LiDAR glow point light
+  const lidarGlow = new THREE.PointLight(0x06B6D4, 0.6, 3.0);
+  lidarGlow.position.set(0, 1.3, 0.1);
+  scene.add(lidarGlow);
+
+  /* ---- RESIZE HANDLER ---- */
+  function resize() {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    renderer.setSize(w, h);
+    cam.aspect = w / h;
+    cam.updateProjectionMatrix();
+  }
+
+  const ro = new ResizeObserver(resize);
+  ro.observe(container);
+  resize();
+
+  /* ---- ANIMATION LOOP ---- */
+  let frame = 0;
+  let lastTime = performance.now();
+  let fpsAccum = 0;
+  let fpsCount = 0;
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = (now - lastTime) / 1000;
+    lastTime = now;
+    frame++;
+
+    // FPS counter
+    fpsAccum += 1 / dt;
+    fpsCount++;
+    if (fpsCount >= 30) {
+      const fps = Math.round(fpsAccum / fpsCount);
+      const fpsel = document.getElementById('hud-fps');
+      if (fpsel) fpsel.textContent = fps;
+      fpsAccum = 0; fpsCount = 0;
+    }
+
+    // Rotate LiDAR beam group
+    lidarBeamGroup.rotation.y += 2.5 * dt;
+    lidarDrum.rotation.y += 1.5 * dt;
+
+    // Hazard ring pulse
+    hazardRing.material.opacity = 0.3 + 0.2 * Math.sin(frame * 0.04);
+
+    // Wheel rotation (simulate forward motion)
+    wheels.forEach((w, i) => {
+      w.children[0].rotation.x += 1.2 * dt * ((i % 2 === 0) ? 1 : -1);
+    });
+
+    // Subtle robot hover bob
+    robot.position.y = 0.06 * Math.sin(frame * 0.025);
+    robot.rotation.y += 0.0005;
+
+    // LiDAR glow pulse
+    lidarGlow.intensity = 0.5 + 0.3 * Math.sin(frame * 0.08);
+
+    controls.update();
+    renderer.render(scene, cam);
+  }
+
+  // Show loader briefly, then reveal scene
+  setTimeout(() => {
+    animate(performance.now());
+    const loader = document.getElementById('scene-loader');
+    if (loader) {
+      gsap.to(loader, {
+        autoAlpha: 0,
+        duration: 0.6,
+        onComplete: () => { loader.classList.add('hidden'); }
+      });
+    }
+  }, 1400);
+
+})();
+
+/* ================================================================
+   AI SENTINEL CHATBOT
+   ================================================================ */
+let sentinelOpen = false;
+const knowledgeBase = {
+  'sros2': 'SROS2 (Secure ROS 2) adds cryptographic authentication and access control to ROS 2 DDS communications. It uses X.509 certificates to authenticate nodes and enforce topic-level permissions.',
+  'ros2': 'ROS 2 (Robot Operating System 2) is a set of open-source libraries for building robot applications. It uses DDS middleware for real-time, distributed communication between nodes.',
+  'lidar': 'LiDAR (Light Detection and Ranging) uses laser pulses to create 3D maps of the environment. The AMR uses a 360° rotating LiDAR puck for obstacle detection and SLAM navigation.',
+  'mecanum': 'Mecanum wheels are omnidirectional wheels with rollers at 45° angles, allowing the robot to move in any direction (holonomic motion) without changing wheel orientation.',
+  'attack': 'ROBOGUARD AI can simulate DDS spoofing, topic flooding, parameter tampering, and ROSBAG replay attacks against your robot fleet.',
+  'dashboard': 'The SOC Dashboard provides real-time monitoring of your AMR fleet with computational graph visualization, attack simulation, and forensic reporting.',
+};
+
+function getSentinelResponse(msg) {
+  const q = msg.toLowerCase();
+  for (const [key, val] of Object.entries(knowledgeBase)) {
+    if (q.includes(key)) return val;
+  }
+  if (q.includes('hello') || q.includes('hi')) return 'Hello! I\'m ROBOGUARD AI Sentinel. How can I help secure your robot fleet today?';
+  if (q.includes('simulate') || q.includes('inject')) {
+    setTimeout(() => injectAttackAlert(), 1000);
+    return '⚠️ Attack simulation initiated. Monitoring DDS traffic for anomalies…';
+  }
+  if (q.includes('report')) return 'PDF forensic reports can be generated from the SOC Dashboard → Reports tab. Each report includes timeline, graph snapshot, and CVSS scores.';
+  return 'I monitor your ROS 2 fleet for security anomalies. Try asking about SROS2, LiDAR, Mecanum wheels, attack simulation, or the SOC Dashboard!';
+}
+
+function toggleSentinel() {
+  sentinelOpen = !sentinelOpen;
+  const panel = document.getElementById('sentinel-panel');
+  if (sentinelOpen) {
+    panel.classList.remove('collapsed');
+    gsap.fromTo(panel, 
+      { autoAlpha: 0, scale: 0.9, y: 12 }, 
+      { autoAlpha: 1, scale: 1, y: 0, duration: 0.35, ease: 'back.out(1.4)' }
+    );
+    // Clear notif dot
+    document.getElementById('fab-notif-dot').classList.remove('active');
+  } else {
+    gsap.to(panel, {
+      autoAlpha: 0, scale: 0.92, y: 10, duration: 0.25, ease: 'power2.in',
+      onComplete: () => panel.classList.add('collapsed')
+    });
+  }
+}
+
+function sendSentinelMsg() {
+  const input = document.getElementById('sentinel-input');
+  const val = input.value.trim();
+  if (!val) return;
+  input.value = '';
+
+  const msgs = document.getElementById('sentinel-msgs');
+
+  // User bubble
+  const userBubble = document.createElement('div');
+  userBubble.className = 'msg-bubble user';
+  userBubble.textContent = val;
+  msgs.appendChild(userBubble);
+
+  // Typing indicator
+  const typingEl = document.createElement('div');
+  typingEl.className = 'msg-bubble bot';
+  typingEl.innerHTML = '<em style="color:var(--text-dim)">Thinking…</em>';
+  msgs.appendChild(typingEl);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    typingEl.remove();
+    const botBubble = document.createElement('div');
+    botBubble.className = 'msg-bubble bot';
+    botBubble.innerHTML = getSentinelResponse(val);
+    msgs.appendChild(botBubble);
+    msgs.scrollTop = msgs.scrollHeight;
+    // Animate the new bubble in
+    gsap.from(botBubble, { autoAlpha: 0, y: 8, duration: 0.3, ease: 'power2.out' });
+  }, 800 + Math.random() * 400);
+}
+
+function handleSentinelKey(e) {
+  if (e.key === 'Enter') sendSentinelMsg();
+}
+
+function injectAttackAlert() {
+  // Open panel if not open
+  if (!sentinelOpen) {
+    sentinelOpen = false; // force toggle to open
+    toggleSentinel();
+  }
+
+  // Show alert ring on FAB
+  const alertRing = document.getElementById('fab-alert-ring');
+  const notifDot = document.getElementById('fab-notif-dot');
+  alertRing.classList.add('active');
+  notifDot.classList.add('active');
+
+  // Update threat HUD
+  const threatText = document.getElementById('hud-threat-text');
+  if (threatText) {
+    threatText.textContent = 'THREAT';
+    threatText.style.color = '#EF4444';
+    setTimeout(() => {
+      threatText.textContent = 'Nominal';
+      threatText.style.color = '';
+      alertRing.classList.remove('active');
+    }, 8000);
+  }
+
+  // Inject alert banner into chat
+  const msgs = document.getElementById('sentinel-msgs');
+  const alertBubble = document.createElement('div');
+  alertBubble.className = 'alert-banner';
+  alertBubble.innerHTML = `
+    <strong>🚨 ALERT: DDS Topic Spoofing Detected</strong><br>
+    Node <code>/amr_01/cmd_vel</code> received unauthorized velocity command from 
+    unknown publisher. SROS2 policy violation logged. 
+    <strong>Recommend: isolate node immediately.</strong>
+  `;
+  msgs.appendChild(alertBubble);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // GSAP shake the sentinel panel
+  const panel = document.getElementById('sentinel-panel');
+  gsap.to(panel, {
+    x: [-4, 4, -3, 3, 0],
+    duration: 0.5,
+    ease: 'power1.inOut',
+  });
+
+  gsap.from(alertBubble, { autoAlpha: 0, scale: 0.95, duration: 0.4, ease: 'back.out(1.4)' });
+}
+
+// Auto-trigger attack alert after 12 seconds (demo effect)
+setTimeout(() => {
+  const notifDot = document.getElementById('fab-notif-dot');
+  if (notifDot) notifDot.classList.add('active');
+}, 12000);
+
+</script>
+
 </body>
 </html>
