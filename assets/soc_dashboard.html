@@ -1,2301 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ROBOGUARD AI — Enterprise 3D Robotics SOC &amp; Cyber-Physical Defense Center</title>
-  
-  <!-- Google Fonts: Plus Jakarta Sans, JetBrains Mono, Space Grotesk & Material Symbols -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  
-  <!-- Three.js, OrbitControls & GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-  <style>
-    /* ==========================================================================
-       CLASSIC TREMOR LIGHT SYSTEM (AEROSPACE & ROBOTICS OBSERVABILITY)
-       ========================================================================== */
-    :root {
-      --bg-app: #F8FAFC;
-      --bg-panel: #FFFFFF;
-      --bg-card: #FFFFFF;
-      --bg-elevated: #F1F5F9;
-      --bg-input: #FFFFFF;
-      
-      --border-subtle: #E2E8F0;
-      --border-strong: #CBD5E1;
-      --border-accent: #2563EB;
-      
-      --text-main: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #64748B;
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"secondary-fixed-dim":"#b4c5ff","surface":"#faf8ff","on-primary-container":"#fdfcff","on-background":"#131b2e","on-tertiary-fixed":"#00201d","secondary-container":"#316bf3","on-surface":"#131b2e","surface-container":"#eaedff","on-error":"#ffffff","on-tertiary-container":"#f3fffc","outline-variant":"#bfc7d2","primary-fixed-dim":"#93ccff","background":"#faf8ff","tertiary-container":"#248279","surface-container-high":"#e2e7ff","on-error-container":"#93000a","inverse-primary":"#93ccff","on-secondary-fixed":"#00174b","outline":"#707881","on-surface-variant":"#3f4850","inverse-surface":"#283044","on-primary-fixed":"#001d31","surface-container-lowest":"#ffffff","on-primary":"#ffffff","on-tertiary-fixed-variant":"#00504a","on-secondary-fixed-variant":"#003ea8","surface-bright":"#faf8ff","tertiary-fixed-dim":"#80d5cb","on-secondary":"#ffffff","tertiary-fixed":"#9cf2e8","surface-container-low":"#f2f3ff","on-primary-fixed-variant":"#004b73","primary":"#006194","on-tertiary":"#ffffff","surface-tint":"#006398","surface-container-highest":"#dae2fd","on-secondary-container":"#fefcff","tertiary":"#006860","secondary-fixed":"#dbe1ff","error-container":"#ffdad6","secondary":"#0051d5","primary-fixed":"#cce5ff","primary-container":"#007bb9","inverse-on-surface":"#eef0ff","surface-dim":"#d2d9f4","error":"#ba1a1a","surface-variant":"#dae2fd"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin-lg":"2rem","space-sm":"0.5rem","gutter-lg":"1.5rem","space-lg":"1.25rem","gutter":"1rem","space-md":"0.75rem","margin":"1.25rem","space-xs":"0.25rem","space-xl":"1.75rem","gutter-md":"1.25rem"},"fontFamily":{"headline-md":["Space Grotesk"],"label-code":["JetBrains Mono"],"label-kpi":["Inter"],"body-sm":["Inter"],"body-md":["Inter"],"metric-display":["Space Grotesk"],"label-badge":["Inter"],"headline-xl":["Space Grotesk"],"body-lg":["Inter"],"headline-lg":["Space Grotesk"]},"fontSize":{"headline-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"label-code":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"500"}],"label-kpi":["10px",{"lineHeight":"12px","letterSpacing":"0.06em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"metric-display":["24px",{"lineHeight":"28px","fontWeight":"700"}],"label-badge":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-xl":["28px",{"lineHeight":"34px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-lg":["15px",{"lineHeight":"22px","fontWeight":"500"}],"headline-lg":["22px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"600"}]}}}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-      --primary: #2563EB;
-      --primary-hover: #1D4ED8;
-      --primary-subtle: #EFF6FF;
-      --primary-border: #BFDBFE;
+</head><body class="bg-surface text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-24 w-full px-gutter-lg flex flex-col justify-between pt-space-xs pb-space-xs"><div class="flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md"><a href="/" class="flex items-center gap-space-xs hover:opacity-85 transition-opacity cursor-pointer" title="Back to Hero Story"><div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">shield</span></div><span class="font-headline-md text-headline-md text-primary tracking-tight">ROBOGUARD<span class="text-secondary font-headline-md text-headline-md ml-1">AI</span></span></a><div class="flex items-center gap-space-xs pl-space-sm"><div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-low text-primary text-[11px] font-medium"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span><span class="font-label-code text-label-code">ROS 2 JAZZY</span></div><div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-error-container text-on-error-container text-[11px] font-medium"><span class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span><span class="font-label-badge text-label-badge">Scenario 5: Insecure Robot Fleet</span></div><div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-tertiary text-[11px] font-medium"><span class="material-symbols-outlined text-[13px] text-tertiary">lock</span><span class="font-label-code text-label-code">SROS2 ACTIVE</span></div></div></div><div class="flex items-center gap-gutter"><div class="hidden xl:flex items-center gap-gutter text-on-surface-variant"><div class="flex flex-col items-end"><span class="font-label-kpi text-label-kpi uppercase">RTPS Wire Throughput</span><span class="font-label-code text-label-code text-primary font-semibold">284.2 msgs/sec</span></div><div class="flex flex-col items-end"><span class="font-label-kpi text-label-kpi uppercase">DDS Network Latency</span><span class="font-label-code text-label-code text-tertiary font-semibold">1.84 ms</span></div><div class="flex flex-col items-end"><span class="font-label-kpi text-label-kpi uppercase">Enclave Integrity</span><span class="font-label-code text-label-code text-on-surface font-semibold">99.8%</span></div></div><div class="flex items-center gap-space-sm pl-space-sm"><div class="hidden md:flex flex-col items-end text-right"><span class="font-label-badge text-label-badge text-on-surface">Operator S. Vance</span><span class="font-label-kpi text-label-kpi uppercase text-secondary font-bold">SOC Executive</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div><div class="flex items-center justify-between pt-1"><nav class="flex items-center gap-space-xs overflow-x-auto py-0.5" data-active-classes="bg-primary-container text-on-primary-container font-semibold"><a aria-current="page" class="px-3 py-1 rounded-lg transition-colors whitespace-nowrap bg-primary-container text-on-primary-container font-semibold" data-path="main-operations-dashboard" href="#">Main Operations Dashboard</a><a class="px-3 py-1 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors whitespace-nowrap" data-path="computational-graph" href="#">Computational Graph</a><a class="px-3 py-1 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors whitespace-nowrap" data-path="3d-hardware-twin" href="#">3D Hardware Twin</a><a class="px-3 py-1 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors whitespace-nowrap" data-path="dds-burst-heatmap" href="#">DDS Burst Heatmap</a><a class="px-3 py-1 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors whitespace-nowrap" data-path="fleet-incident-horizon" href="#">Fleet Incident Horizon</a><a class="px-3 py-1 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors whitespace-nowrap" data-path="diagnostic-git-patches" href="#">Diagnostic Git Patches</a><a class="px-3 py-1 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors whitespace-nowrap" data-path="sros2-keystore-studio" href="#">SROS2 Keystore Studio</a></nav><div class="hidden lg:flex items-center gap-space-xs"><button class="px-2 py-1 rounded-md bg-surface-container-low hover:bg-surface-container hover:text-on-surface font-label-code text-label-code text-on-surface-variant transition-colors flex items-center gap-1" type="button"><span class="material-symbols-outlined text-[14px]">terminal</span>Telemetry Console</button><div class="flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container font-label-code text-label-code text-on-surface-variant"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span><span>LIVE SYNC</span></div></div></div></div></header><main class="w-full pt-24 bg-surface min-h-[calc(100vh-80px)]"><div class="flex flex-col w-full">
+<!-- Interactive Canvas & Control Script -->
 
-      --emerald: #059669;
-      --emerald-subtle: #ECFDF5;
-      --emerald-border: #A7F3D0;
+<script>
+/* Required Graph Data injection marker for ROBOGUARD AI */
+const GRAPH_DATA = /*__ROBOGUARD_GRAPH_DATA__*/null;
 
-      --rose: #DC2626;
-      --rose-subtle: #FEF2F2;
-      --rose-border: #FECACA;
-
-      --amber: #D97706;
-      --cyan: #0284C7;
-
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background-color: var(--bg-app);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-      font-size: 13px;
-      line-height: 1.45;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Top Aerospace Command Header (Classic Light) */
-    .soc-header {
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 0.85rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-    }
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-    }
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
-    }
-    .brand-text h1 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .brand-badge {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      padding: 0.15rem 0.5rem;
-      background: var(--primary-subtle);
-      border: 1px solid var(--primary-border);
-      color: var(--primary);
-      border-radius: 9999px;
-      font-weight: 700;
-    }
-    .brand-sub {
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-      margin-top: 1px;
-    }
-
-    .header-telemetry {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .telemetry-item {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-    .telemetry-label {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-    .telemetry-val {
-      font-family: var(--font-mono);
-      font-size: 0.825rem;
-      font-weight: 700;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: var(--emerald);
-      box-shadow: 0 0 6px var(--emerald);
-      animation: pulseDot 1.8s infinite;
-    }
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-
-    /* Primary Navigation Bar (Tremor Segmented Tabs) */
-    .soc-nav-bar {
-      background-color: #F1F5F9;
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 0.4rem 1.5rem;
-      display: flex;
-      gap: 0.4rem;
-      overflow-x: auto;
-    }
-    .nav-tab-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.825rem;
-      padding: 0.55rem 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    .nav-tab-btn:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.6);
-    }
-    .nav-tab-btn.active {
-      color: var(--primary);
-      background: #FFFFFF;
-      border-color: var(--border-strong);
-      font-weight: 700;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
-
-    /* Main Container */
-    .soc-viewport {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 1.25rem 1.5rem 3rem 1.5rem;
-    }
-
-    /* Tremor Stat Banner Strip */
-    .stat-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 0.85rem;
-      margin-bottom: 1.25rem;
-    }
-    .stat-box {
-      background-color: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 0.95rem 1.15rem;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-      transition: all 0.2s ease;
-    }
-    .stat-box:hover {
-      border-color: var(--border-strong);
-      box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.06);
-    }
-    .stat-box::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--primary);
-    }
-    .stat-box.crit::before { background: var(--rose); }
-    .stat-box.success::before { background: var(--emerald); }
-    .stat-box.cyan::before { background: var(--cyan); }
-    .stat-box.amber::before { background: var(--amber); }
-
-    .stat-box-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
-    .stat-box-val {
-      font-size: 1.5rem;
-      font-weight: 800;
-      font-family: var(--font-sans);
-      color: var(--text-main);
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-    }
-    .stat-pill {
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 9999px;
-      font-family: var(--font-sans);
-    }
-    .pill-green { background: var(--emerald-subtle); color: var(--emerald); border: 1px solid var(--emerald-border); }
-    .pill-red { background: var(--rose-subtle); color: var(--rose); border: 1px solid var(--rose-border); }
-    .pill-cyan { background: var(--primary-subtle); color: var(--primary); border: 1px solid var(--primary-border); }
-
-    /* Panels & Viewports */
-    .soc-panel {
-      background-color: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      margin-bottom: 1.25rem;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    }
-    .panel-head {
-      padding: 0.85rem 1.25rem;
-      background: #F8FAFC;
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .panel-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .panel-sub {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      font-weight: 400;
-    }
-    .panel-body {
-      padding: 1.25rem;
-    }
-
-    /* 3D Hero Viewport & Grid Layout */
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.25rem;
-    }
-    @media (max-width: 1080px) {
-      .hero-grid { grid-template-columns: 1fr; }
-    }
-
-    .canvas-3d-container {
-      position: relative;
-      width: 100%;
-      height: 540px;
-      background: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    #heroCanvas3D {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    
-    /* 3D Floating HUD Overlays */
-    .hud-overlay-top {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      display: flex;
-      gap: 0.5rem;
-      z-index: 10;
-    }
-    .hud-badge {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--border-strong);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-family: var(--font-mono);
-      color: var(--text-main);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .hud-overlay-right {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      z-index: 10;
-    }
-    .hud-btn.active { background: #EFF6FF !important; border-color: #2563EB !important; color: #1D4ED8 !important; }
-    .panel-head { flex-wrap: wrap; gap: 0.6rem; }
-    .panel-head > div[style*="display: flex"] { flex-wrap: wrap; }
-    .hud-btn {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--border-strong);
-      color: var(--text-main);
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      transition: all 0.15s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-    .hud-btn:hover {
-      background: var(--primary-subtle);
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: translateX(-2px);
-    }
-
-    .hud-overlay-bottom {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
-      right: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .hud-telemetry-pill {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--border-strong);
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      color: var(--text-main);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Attack & Tackling Control Console */
-    .attack-console {
-      background-color: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 1.15rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    }
-    .console-header {
-      font-size: 0.88rem;
-      font-weight: 800;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 0.6rem;
-    }
-    .mode-toggle-group {
-      display: flex;
-      background: #F1F5F9;
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 3px;
-    }
-    .mode-toggle-btn {
-      flex: 1;
-      padding: 0.45rem 0.65rem;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.72rem;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-align: center;
-    }
-    .mode-toggle-btn.active.insecure {
-      background: #FFFFFF;
-      color: var(--rose);
-      box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15);
-      border: 1px solid var(--rose-border);
-    }
-    .mode-toggle-btn.active.hardened {
-      background: #FFFFFF;
-      color: var(--emerald);
-      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.15);
-      border: 1px solid var(--emerald-border);
-    }
-
-    .attack-btn-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .action-attack-btn {
-      background: #FFFFFF;
-      border: 1px solid var(--border-strong);
-      color: var(--text-main);
-      padding: 0.65rem 0.85rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.15s ease;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    }
-    .action-attack-btn:hover {
-      background: var(--rose-subtle);
-      border-color: var(--rose);
-      color: var(--rose);
-    }
-    .action-attack-btn.active {
-      border-color: var(--rose);
-      background: var(--rose-subtle);
-      color: var(--rose);
-    }
-
-    /* React Bits Shimmer Action Button */
-    @keyframes btnShimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-    .tackle-btn {
-      background: linear-gradient(90deg, #059669 0%, #10B981 35%, #34D399 50%, #10B981 65%, #059669 100%);
-      background-size: 200% 100%;
-      animation: btnShimmer 5s infinite linear;
-      border: 1px solid #047857;
-      color: #FFFFFF;
-      font-weight: 800;
-      font-size: 0.825rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .tackle-btn:hover {
-      background: linear-gradient(90deg, #047857 0%, #059669 100%);
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .terminal-out {
-      background: #F8FAFC;
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0.75rem 0.95rem;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: #334155;
-      height: 125px;
-      overflow-y: auto;
-      line-height: 1.5;
-    }
-
-    /* Force-Directed Graph Layout */
-    .graph-viewport-box {
-      width: 100%;
-      height: 580px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    #dynamicGraphCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      cursor: grab;
-    }
-    #dynamicGraphCanvas:active {
-      cursor: grabbing;
-    }
-    .graph-legend-bar {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid var(--border-strong);
-      border-radius: 8px;
-      padding: 0.45rem 0.9rem;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      display: flex;
-      gap: 1.15rem;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      z-index: 10;
-    }
-    .graph-inspector-drawer {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 320px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-strong);
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      display: none;
-      z-index: 20;
-    }
-
-    /* ROSBAG Scrubber */
-    .bag-strip {
-      background-color: #FFFFFF;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 0.85rem 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-      margin-top: 1rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-    }
-    .bag-btn {
-      background: var(--primary-subtle);
-      border: 1px solid var(--primary-border);
-      color: var(--primary);
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 700;
-      transition: all 0.15s ease;
-    }
-    .bag-btn:hover {
-      background: var(--primary);
-      color: #FFFFFF;
-    }
-    .bag-slider {
-      flex: 1;
-      accent-color: var(--primary);
-      height: 6px;
-      background: #E2E8F0;
-      border-radius: 3px;
-    }
-
-    /* ==========================================================================
-       PERSISTENT FLOATING LIVE AI SENTINEL BOT (LIVE & PROACTIVE)
-       ========================================================================== */
-    .floating-ai-sentinel {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-    }
-    @keyframes sentinelFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    @keyframes sentinelPulseRing {
-      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45); }
-      70% { box-shadow: 0 0 0 16px rgba(37, 99, 235, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-    }
-    .sentinel-trigger-btn {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
-      border: 3px solid #FFFFFF;
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: #FFFFFF;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      animation: sentinelFloat 3.5s ease-in-out infinite, sentinelPulseRing 4s infinite;
-    }
-    .sentinel-trigger-btn:hover {
-      transform: scale(1.1) translateY(-3px);
-      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
-    }
-    .sentinel-hover-bubble {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      width: 250px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-strong);
-      border-radius: 12px;
-      padding: 0.75rem 0.95rem;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
-      font-size: 0.78rem;
-      color: var(--text-main);
-      display: none;
-      pointer-events: none;
-      animation: slideUp 0.2s ease;
-    }
-    .floating-ai-sentinel:hover .sentinel-hover-bubble {
-      display: block;
-    }
-    .sentinel-badge-count {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      background: var(--rose);
-      color: #FFFFFF;
-      font-size: 0.65rem;
-      font-weight: 800;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #FFFFFF;
-    }
-
-    /* Proactive Attack Pop-Up Alert Bubble */
-    .proactive-alert-bubble {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      width: 320px;
-      background: #FFFFFF;
-      border: 1px solid var(--rose-border);
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-      display: none;
-      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .alert-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-    }
-    .alert-tag {
-      font-size: 0.68rem;
-      font-weight: 800;
-      padding: 0.15rem 0.5rem;
-      background: var(--rose-subtle);
-      color: var(--rose);
-      border-radius: 9999px;
-    }
-    .alert-body-text {
-      font-size: 0.78rem;
-      color: var(--text-main);
-      margin-bottom: 0.75rem;
-      line-height: 1.45;
-    }
-
-    /* Expanded Chat Drawer */
-    .sentinel-chat-box {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      width: 360px;
-      height: 480px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-strong);
-      border-radius: 16px;
-      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      animation: slideUp 0.25s ease;
-    }
-    .chat-header {
-      background: #F8FAFC;
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 0.85rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .chat-messages-scroll {
-      flex: 1;
-      padding: 1rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .chat-bubble {
-      padding: 0.75rem 0.95rem;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      line-height: 1.45;
-      max-width: 88%;
-    }
-    .chat-bubble.bot {
-      background: #FFFFFF;
-      color: #0F172A;
-      font-weight: 500;
-      align-self: flex-start;
-      border: 1px solid var(--border-strong);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    }
-    .chat-bubble.bot code {
-      background: #0F172A;
-      color: #38BDF8;
-      padding: 0.15rem 0.35rem;
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-    }
-    .chat-bubble.user {
-      background: var(--primary);
-      color: #FFFFFF;
-      align-self: flex-end;
-    }
-    .chat-input-bar {
-      padding: 0.75rem;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      gap: 0.5rem;
-      background: #FFFFFF;
-    }
-    .chat-input-field {
-      flex: 1;
-      border: 1px solid var(--border-strong);
-      border-radius: 8px;
-      padding: 0.55rem 0.75rem;
-      font-size: 0.8rem;
-      font-family: var(--font-sans);
-      outline: none;
-    }
-    .chat-input-field:focus {
-      border-color: var(--primary);
-    }
-
-    /* General Utilities */
-    .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 900px) { .grid-2col { grid-template-columns: 1fr; } }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    /* ==========================================================================
-       DDS COCKPIT & TOPIC BURST HEATMAP (AEROSPACE COCKPIT STYLES)
-       ========================================================================== */
-    .material-symbols-outlined {
-      font-family: 'Material Symbols Outlined';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 20px;
-      line-height: 1;
-      letter-spacing: normal;
-      text-transform: none;
-      display: inline-block;
-      white-space: nowrap;
-      word-wrap: normal;
-      direction: ltr;
-      -webkit-font-feature-settings: 'liga';
-      -webkit-font-smoothing: antialiased;
-      vertical-align: middle;
-    }
-    .font-display { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; }
-    
-    .cockpit-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0.5rem 0 2rem 0;
-    }
-    
-    .cockpit-card {
-      background: #FFFFFF;
-      border-radius: 14px;
-      padding: 1.15rem;
-      border: 1px solid rgba(226, 232, 240, 0.85);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      position: relative;
-    }
-
-    .cockpit-bento-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-    @media (max-width: 640px) {
-      .cockpit-bento-grid { grid-template-columns: 1fr; }
-    }
-
-    .cockpit-bento-card {
-      position: relative;
-      background: #FFFFFF;
-      border-radius: 12px;
-      padding: 0.95rem 1.15rem;
-      border: 1px solid rgba(226, 232, 240, 0.85);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-    }
-    .cockpit-bento-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0; width: 4px;
-    }
-    .cockpit-bento-card.bar-rose::before { background: #F43F5E; }
-    .cockpit-bento-card.bar-amber::before { background: #F59E0B; }
-    .cockpit-bento-card.bar-emerald::before { background: #10B981; }
-    .cockpit-bento-card.bar-blue::before { background: #2563EB; }
-
-    .pulse-dot-rose {
-      width: 6px; height: 6px; border-radius: 50%; background: #E11D48;
-      display: inline-block; animation: pulse-rose 1.5s infinite;
-    }
-    @keyframes pulse-rose {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
-    }
-    
-    .pulse-ping-blue {
-      width: 6px; height: 6px; border-radius: 50%; background: #2563EB;
-      display: inline-block; position: relative;
-    }
-    .pulse-ping-blue::after {
-      content: ''; position: absolute; inset: -3px; border-radius: 50%;
-      border: 2px solid #2563EB; animation: ping-ring 1.5s cubic-bezier(0,0,0.2,1) infinite;
-    }
-    @keyframes ping-ring {
-      0% { transform: scale(0.8); opacity: 0.8; }
-      100% { transform: scale(2.2); opacity: 0; }
-    }
-
-    .heatmap-time-btn {
-      flex: 1;
-      padding: 0.35rem 0.65rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: none;
-      background: transparent;
-      color: #64748B;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-    }
-    .heatmap-time-btn:hover { color: #0F172A; }
-    .heatmap-time-btn.active {
-      background: #FFFFFF;
-      color: #1D4ED8;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-    }
-
-    .heatmap-cell {
-      height: 24px;
-      border-radius: 4px;
-      transition: transform 0.15s ease, filter 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .heatmap-cell:hover {
-      transform: scale(1.08);
-      filter: brightness(1.05);
-      z-index: 2;
-    }
-    
-    /* ==========================================================================
-       TAILWIND UTILITY SHIM FOR DDS COCKPIT (100% OFFLINE COMPLIANT)
-       ========================================================================== */
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .flex-row { flex-direction: row; }
-    .flex-1 { flex: 1 1 0%; }
-    .items-center { align-items: center; }
-    .items-start { align-items: flex-start; }
-    .items-end { align-items: flex-end; }
-    .items-baseline { align-items: baseline; }
-    .justify-between { justify-content: space-between; }
-    .justify-center { justify-content: center; }
-    .self-start { align-self: flex-start; }
-    .shrink-0 { flex-shrink: 0; }
-    .space-x-1 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.25rem; }
-    .space-x-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.375rem; }
-    .space-x-2 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.5rem; }
-    .space-y-0\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.125rem; }
-    .space-y-1 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.25rem; }
-    .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.375rem; }
-    .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
-    .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
-    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
-    .gap-1 { gap: 0.25rem; }
-    .gap-1\.5 { gap: 0.375rem; }
-    .gap-2 { gap: 0.5rem; }
-    .gap-2\.5 { gap: 0.625rem; }
-    .gap-3 { gap: 0.75rem; }
-
-    .grid { display: grid; }
-    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-    .grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-    .col-span-4 { grid-column: span 4 / span 4; }
-    .col-span-8 { grid-column: span 8 / span 8; }
-
-    .relative { position: relative; }
-    .absolute { position: absolute; }
-    .inset-0 { inset: 0; }
-    .left-0 { left: 0; }
-    .right-0 { right: 0; }
-    .top-0 { top: 0; }
-    .bottom-0 { bottom: 0; }
-    .-top-1 { top: -0.25rem; }
-    .-mt-0\.5 { margin-top: -0.125rem; }
-
-    .w-full { width: 100%; }
-    .w-1 { width: 0.25rem; }
-    .w-1\.5 { width: 0.375rem; }
-    .w-2 { width: 0.5rem; }
-    .w-2\.5 { width: 0.625rem; }
-    .w-5 { width: 1.25rem; }
-    .w-7 { width: 1.75rem; }
-    .w-8 { width: 2rem; }
-    .w-10 { width: 2.5rem; }
-    .w-11 { width: 2.75rem; }
-    .min-w-0 { min-width: 0px; }
-    .min-w-\[76px\] { min-width: 76px; }
-    .max-w-full { max-width: 100%; }
-
-    .h-full { height: 100%; }
-    .h-0\.5 { height: 0.125rem; }
-    .h-1\.5 { height: 0.375rem; }
-    .h-2 { height: 0.5rem; }
-    .h-5 { height: 1.25rem; }
-    .h-6 { height: 1.5rem; }
-    .h-7 { height: 1.75rem; }
-    .h-8 { height: 2rem; }
-    .h-10 { height: 2.5rem; }
-
-    .p-0\.5 { padding: 0.125rem; }
-    .p-1\.5 { padding: 0.375rem; }
-    .p-2\.5 { padding: 0.625rem; }
-    .p-3 { padding: 0.75rem; }
-    .p-3\.5 { padding: 0.875rem; }
-    .p-4 { padding: 1rem; }
-    .px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
-    .px-1\.5 { padding-left: 0.375rem; padding-right: 0.375rem; }
-    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-    .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
-    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
-    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
-    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
-    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-    .pt-1 { padding-top: 0.25rem; }
-    .pt-2 { padding-top: 0.5rem; }
-    .pb-0\.5 { padding-bottom: 0.125rem; }
-    .pr-1 { padding-right: 0.25rem; }
-    .mt-1 { margin-top: 0.25rem; }
-    .mb-2 { margin-bottom: 0.5rem; }
-    .mr-1 { margin-right: 0.25rem; }
-
-    .bg-white { background-color: #FFFFFF; }
-    .bg-slate-50 { background-color: #F8FAFC; }
-    .bg-slate-50\/70 { background-color: rgba(248, 250, 252, 0.7); }
-    .bg-slate-100 { background-color: #F1F5F9; }
-    .bg-slate-200 { background-color: #E2E8F0; }
-    .bg-slate-300 { background-color: #CBD5E1; }
-    .bg-blue-50 { background-color: #EFF6FF; }
-    .bg-blue-100 { background-color: #DBEAFE; }
-    .bg-blue-200 { background-color: #BFDBFE; }
-    .bg-blue-300 { background-color: #93C5FD; }
-    .bg-blue-400 { background-color: #60A5FA; }
-    .bg-blue-500 { background-color: #3B82F6; }
-    .bg-blue-600 { background-color: #2563EB; }
-    .bg-rose-50 { background-color: #FFF1F2; }
-    .bg-rose-50\/50 { background-color: rgba(255, 241, 242, 0.5); }
-    .bg-rose-100 { background-color: #FFE4E6; }
-    .bg-rose-100\/70 { background-color: rgba(255, 228, 230, 0.7); }
-    .bg-rose-200 { background-color: #FECDD3; }
-    .bg-rose-300 { background-color: #FDA4AF; }
-    .bg-rose-400 { background-color: #FB7185; }
-    .bg-rose-500 { background-color: #F43F5E; }
-    .bg-rose-600 { background-color: #E11D48; }
-    .bg-amber-50 { background-color: #FFFBEB; }
-    .bg-amber-100 { background-color: #FEF3C7; }
-    .bg-amber-200 { background-color: #FDE68A; }
-    .bg-amber-300 { background-color: #FCD34D; }
-    .bg-amber-400 { background-color: #FBBF24; }
-    .bg-amber-500 { background-color: #F59E0B; }
-    .bg-emerald-50 { background-color: #ECFDF5; }
-    .bg-emerald-100 { background-color: #D1FAE5; }
-    .bg-emerald-500 { background-color: #10B981; }
-    .bg-emerald-600 { background-color: #059669; }
-    .bg-cyan-100 { background-color: #CFFAFE; }
-    .bg-cyan-200 { background-color: #A5F3FC; }
-    .bg-cyan-400 { background-color: #22D3EE; }
-    .bg-cyan-500 { background-color: #06B6D4; }
-    .bg-cyan-600 { background-color: #0891B2; }
-    .bg-indigo-100 { background-color: #E0E7FF; }
-    .bg-indigo-300 { background-color: #A5B4FC; }
-    .bg-indigo-400 { background-color: #818CF8; }
-    .bg-indigo-500 { background-color: #6366F1; }
-    .bg-indigo-600 { background-color: #4F46E5; }
-
-    .text-white { color: #FFFFFF; }
-    .text-slate-400 { color: #94A3B8; }
-    .text-slate-500 { color: #64748B; }
-    .text-slate-600 { color: #475569; }
-    .text-slate-700 { color: #334155; }
-    .text-slate-800 { color: #1E293B; }
-    .text-slate-900 { color: #0F172A; }
-    .text-blue-600 { color: #2563EB; }
-    .text-blue-700 { color: #1D4ED8; }
-    .text-rose-500 { color: #F43F5E; }
-    .text-rose-600 { color: #E11D48; }
-    .text-rose-700 { color: #BE123C; }
-    .text-rose-800 { color: #9F1239; }
-    .text-rose-900 { color: #881337; }
-    .text-amber-500 { color: #F59E0B; }
-    .text-amber-600 { color: #D97706; }
-    .text-amber-700 { color: #B45309; }
-    .text-amber-800 { color: #92400E; }
-    .text-amber-900 { color: #78350F; }
-    .text-emerald-500 { color: #10B981; }
-    .text-emerald-600 { color: #059669; }
-    .text-emerald-700 { color: #047857; }
-    .text-cyan-600 { color: #0891B2; }
-    .text-indigo-600 { color: #4F46E5; }
-
-    .border { border-width: 1px; border-style: solid; }
-    .border-2 { border-width: 2px; border-style: solid; }
-    .border-t { border-top-width: 1px; border-top-style: solid; }
-    .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
-    .border-slate-100 { border-color: #F1F5F9; }
-    .border-slate-200 { border-color: #E2E8F0; }
-    .border-slate-200\/50 { border-color: rgba(226, 232, 240, 0.5); }
-    .border-slate-200\/60 { border-color: rgba(226, 232, 240, 0.6); }
-    .border-slate-200\/70 { border-color: rgba(226, 232, 240, 0.7); }
-    .border-slate-200\/80 { border-color: rgba(226, 232, 240, 0.8); }
-    .border-blue-100 { border-color: #DBEAFE; }
-    .border-blue-200 { border-color: #BFDBFE; }
-    .border-blue-200\/70 { border-color: rgba(191, 219, 254, 0.7); }
-    .border-rose-200 { border-color: #FECDD3; }
-    .border-rose-200\/70 { border-color: rgba(254, 205, 211, 0.7); }
-    .border-rose-400 { border-color: #FB7185; }
-    .border-amber-200 { border-color: #FDE68A; }
-    .border-amber-200\/70 { border-color: rgba(253, 230, 138, 0.7); }
-    .border-amber-200\/80 { border-color: rgba(253, 230, 138, 0.8); }
-    .border-amber-300 { border-color: #FCD34D; }
-    .border-emerald-200 { border-color: #A7F3D0; }
-    .border-emerald-200\/70 { border-color: rgba(167, 243, 208, 0.7); }
-
-    .rounded { border-radius: 0.25rem; }
-    .rounded-md { border-radius: 0.375rem; }
-    .rounded-lg { border-radius: 0.5rem; }
-    .rounded-xl { border-radius: 0.75rem; }
-    .rounded-full { border-radius: 9999px; }
-
-    .font-sans { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-    .text-\[9px\] { font-size: 9px; }
-    .text-\[10px\] { font-size: 10px; }
-    .text-\[11px\] { font-size: 11px; }
-    .text-\[12px\] { font-size: 12px; }
-    .text-\[13px\] { font-size: 13px; }
-    .text-\[14px\] { font-size: 14px; }
-    .text-\[16px\] { font-size: 16px; }
-    .text-\[17px\] { font-size: 17px; }
-    .text-\[18px\] { font-size: 18px; }
-    .text-\[19px\] { font-size: 19px; }
-    .text-\[20px\] { font-size: 20px; }
-    .text-xs { font-size: 0.75rem; line-height: 1rem; }
-    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-    .text-base { font-size: 1rem; line-height: 1.5rem; }
-    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-
-    .font-medium { font-weight: 500; }
-    .font-semibold { font-weight: 600; }
-    .font-bold { font-weight: 700; }
-    .uppercase { text-transform: uppercase; }
-    .tracking-tight { letter-spacing: -0.025em; }
-    .tracking-wide { letter-spacing: 0.025em; }
-    .tracking-wider { letter-spacing: 0.05em; }
-    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .text-center { text-align: center; }
-
-    .overflow-hidden { overflow: hidden; }
-    .overflow-visible { overflow: visible; }
-    .overflow-x-auto { overflow-x: auto; }
-    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-    .shadow-xs { box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05); }
-    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-    .cursor-pointer { cursor: pointer; }
-    .cursor-not-allowed { cursor: not-allowed; }
-    .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-    .transition-colors { transition-property: color, background-color, border-color; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-    .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-    .transform { transform: translate(var(--tw-translate-x, 0), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1)); }
-    .translate-x-0 { --tw-translate-x: 0px; transform: translateX(0px); }
-    .translate-x-5 { --tw-translate-x: 1.25rem; transform: translateX(1.25rem); }
-
-    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-    .animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
-    @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
-    .animate-spin { animation: spin 1s linear infinite; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .animate-bounce { animation: bounce 1s infinite; }
-    @keyframes bounce { 0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); } 50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); } }
-    
-    .hover\:bg-rose-700:hover { background-color: #BE123C; }
-    .hover\:bg-blue-700:hover { background-color: #1D4ED8; }
-    .hover\:bg-slate-100:hover { background-color: #F1F5F9; }
-    .hover\:text-slate-900:hover { color: #0F172A; }
-    .active\:scale-95:active { transform: scale(0.95); }
-    .accent-blue-600 { accent-color: #2563EB; }
-  </style>
-</head>
-<body>
-
-  <!-- TOP AEROSPACE COMMAND HEADER -->
-  <header class="soc-header">
-    <div class="brand-group">
-      <div class="brand-icon">🛡️</div>
-      <div class="brand-text">
-        <h1>ROBOGUARD AI <span class="brand-badge">ROS 2 JAZZY · SROS2</span></h1>
-        <div class="brand-sub">Enterprise 3D Cyber-Physical Robotics SOC &amp; Auto-Remediation Engine</div>
-      </div>
-    </div>
-
-    <div class="header-telemetry">
-      <div class="telemetry-item">
-        <span class="telemetry-label">Cyber Defense Status</span>
-        <span class="telemetry-val" id="topEnclaveState"><span class="live-dot"></span> SROS2 ENCLAVE ACTIVE</span>
-      </div>
-      <div class="telemetry-item">
-        <span class="telemetry-label">DDS RTPS Network Throughput</span>
-        <span class="telemetry-val" id="topThroughput">284.2 msgs/sec</span>
-      </div>
-      <div class="telemetry-item">
-        <span class="telemetry-label">Active Scenario</span>
-        <span class="telemetry-val" style="color: var(--text-main);" id="topScenarioTag">Scenario 5: Insecure Robot Fleet</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- NAVIGATION TABS (TREMOR STYLE) -->
-  <nav class="soc-nav-bar">
-    <button class="nav-tab-btn active" onclick="switchSocTab('tab-dynamic-graph')">🌐 Dynamic Python Computational Graph</button>
-    <button class="nav-tab-btn" onclick="switchSocTab('tab-hero3d')">🤖 3D Hardware Telemetry Twin &amp; Arena</button>
-    <button class="nav-tab-btn" onclick="switchSocTab('tab-heatmap')">📡 DDS Telemetry &amp; Burst Heatmap</button>
-    <button class="nav-tab-btn" onclick="switchSocTab('tab-timeline')">⚡ Fleet Incident Horizon &amp; Threat Stream</button>
-    <button class="nav-tab-btn" onclick="switchSocTab('tab-findings')">🔍 Diagnostic Findings &amp; Patches</button>
-    <button class="nav-tab-btn" onclick="switchSocTab('tab-sros2-wizard')">🧙 SROS2 Keystore &amp; Policy Studio</button>
-  </nav>
-
-  <!-- MAIN SOC VIEWPORT -->
-  <main class="soc-viewport">
-
-    <!-- STAT BANNER STRIP -->
-    <section class="stat-strip">
-      <div class="stat-box crit">
-        <div class="stat-box-label">Critical Vulnerabilities</div>
-        <div class="stat-box-val" id="statCrit">2 <span class="stat-pill pill-red">Unauthenticated Actuation</span></div>
-      </div>
-      <div class="stat-box amber">
-        <div class="stat-box-label">QoS Contract Mismatches</div>
-        <div class="stat-box-val" id="statQoS">1 <span class="stat-pill pill-red">Reliability Violation</span></div>
-      </div>
-      <div class="stat-box success">
-        <div class="stat-box-label">Security Posture Score</div>
-        <div class="stat-box-val" id="statScore">45% <span class="stat-pill pill-green">Evaluated</span></div>
-      </div>
-      <div class="stat-box cyan">
-        <div class="stat-box-label">Hardware Sensor Enclave</div>
-        <div class="stat-box-val" id="statSensors">6 / 6 <span class="stat-pill pill-cyan">REP-105 Compliant</span></div>
-      </div>
-    </section>
-
-    <!-- TAB 1: 3D ROBOT TWIN & ATTACK ARENA (SECONDARY SOC VIEW) -->
-    <div id="tab-hero3d" class="tab-content">
-      <div class="hero-grid">
-        <!-- Left: Three.js 3D Interactive Cyber-Physical Viewport -->
-        <div class="canvas-3d-container">
-          <canvas id="heroCanvas3D"></canvas>
-          
-          <!-- Top Left Floating HUD -->
-          <div class="hud-overlay-top">
-            <div class="hud-badge">AMR Rover: <b>ROBOGUARD-X1</b></div>
-            <div class="hud-badge" id="hudModeBadge">Mode: <span style="color: var(--rose); font-weight: 700;">Vulnerable ROS 2 (Plaintext)</span></div>
-          </div>
-
-          <!-- Top Right Camera Presets & Teardown Toggle -->
-          <div class="hud-overlay-right">
-            <button class="hud-btn" onclick="Robot3D.setCameraPreset('orbit')">🎥 Cinematic 360°</button>
-            <button class="hud-btn" onclick="Robot3D.setCameraPreset('pov')">👀 Sensor POV</button>
-            <button class="hud-btn" onclick="Robot3D.setCameraPreset('compute')">💻 Edge Compute Enclave</button>
-            <button class="hud-btn" id="btnTeardown" onclick="Robot3D.toggleTeardown()">📐 Hardware Teardown View</button>
-          </div>
-
-          <!-- Bottom Telemetry Pill -->
-          <div class="hud-overlay-bottom">
-            <div class="hud-telemetry-pill">
-              Velocity: <span id="telemetryVel" style="color: var(--primary);">0.0 m/s</span> · Heading: <span id="telemetryHeading">0.0°</span> · LiDAR: <span id="telemetryLidar" style="color: var(--emerald);">15.0 Hz</span>
-            </div>
-            <div class="hud-telemetry-pill" id="defenseStatePill">
-              Shield: INACTIVE · Enclave: UNPROTECTED
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: Attack Simulation & Tackling Controls -->
-        <div class="attack-console">
-          <div class="console-header">
-            <span>⚡ Cyber-Physical Attack Simulator</span>
-            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">RTPS Injection Engine</span>
-          </div>
-
-          <!-- Insecure vs Hardened Mode Switcher -->
-          <div>
-            <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; text-transform: uppercase; font-weight: 700;">Robot Defense Profile:</label>
-            <div class="mode-toggle-group">
-              <button class="mode-toggle-btn active insecure" id="btnModeInsecure" onclick="setDefenseMode('insecure')">❌ Insecure ROS 2 (Default)</button>
-              <button class="mode-toggle-btn" id="btnModeHardened" onclick="setDefenseMode('hardened')">🛡️ Hardened SROS2 (Enclave)</button>
-            </div>
-          </div>
-
-          <!-- Attack Vectors -->
-          <div>
-            <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; text-transform: uppercase; font-weight: 700;">Select Attack Vector:</label>
-            <div class="attack-btn-list">
-              <button class="action-attack-btn" id="btnAtk1" onclick="launchAttack(1)">
-                <span>⚡ Attack 1: Rogue /cmd_vel Injection</span>
-                <span class="stat-pill pill-red">Spoofing</span>
-              </button>
-              <button class="action-attack-btn" id="btnAtk2" onclick="launchAttack(2)">
-                <span>⚡ Attack 2: LiDAR Phantom Obstacle</span>
-                <span class="stat-pill pill-red">Sensor Deception</span>
-              </button>
-              <button class="action-attack-btn" id="btnAtk3" onclick="launchAttack(3)">
-                <span>⚡ Attack 3: DDS Multicast Storm</span>
-                <span class="stat-pill pill-red">DoS / Jitter</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Tackle Attack Button -->
-          <button class="tackle-btn" id="btnTackle" onclick="tackleActiveAttack()">
-            🛡️ Tackle Attack &amp; Engage Countermeasure
-          </button>
-
-          <!-- Real-Time Terminal Output -->
-          <div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 0.25rem; font-weight: 700;">DEFENSE EXECUTION LOGS:</div>
-            <div class="terminal-out" id="terminalLog">
-              <span style="color: var(--text-muted);">[SYSTEM READY] ROBOGUARD AI 3D Cyber-Physical Security Engine initialized.</span><br>
-              <span style="color: var(--primary);">[TELEMETRY] ROS 2 Jazzy AMR Rover model loaded. Three.js PBR shaders ready.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ROSBAG Playback Scrubber -->
-      <div class="bag-strip">
-        <button class="bag-btn" id="btnPlayBag" onclick="toggleBagPlayback()">▶</button>
-        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--text-main);" id="bagTimeLabel">10:15:30.000</span>
-        <input type="range" class="bag-slider" id="bagScrubber" min="0" max="100" value="30" oninput="scrubBag(this.value)">
-        <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--primary);" id="bagMsgRate">524 msgs/sec</span>
-      </div>
-    </div>
-
-    <!-- TAB 2: DYNAMIC PYTHON COMPUTATIONAL GRAPH (DEFAULT ACTIVE SOC VIEW) -->
-    <div id="tab-dynamic-graph" class="tab-content active">
-      <div class="soc-panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span>🌐 Dynamic Physics-Driven ROS 2 Computational Graph</span>
-            <span class="panel-sub" id="graphStatLine">Graph computed by the Python NetworkX engine</span>
-          </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="hud-btn" onclick="DynamicGraphSim.resetForces()">🔄 Recenter Layout</button>
-            <button class="hud-btn" id="btnGraphPhysics" onclick="DynamicGraphSim.togglePhysics()">⚛ Physics: OFF</button>
-            <button class="hud-btn" id="btnGraphErrors" onclick="DynamicGraphSim.toggleErrorsOnly()">⚠️ Incompatible Edges Only</button>
-          </div>
-        </div>
-        <div class="panel-body" style="padding: 0.75rem;">
-          <div class="graph-viewport-box">
-            <canvas id="dynamicGraphCanvas"></canvas>
-            
-            <!-- Graph Legend -->
-            <div class="graph-legend-bar">
-              <span style="color: #059669;">● Active Node</span>
-              <span style="color: #D97706;">● Lifecycle Node</span>
-              <span style="color: #0284C7;">◆ Topic</span>
-              <span style="color: #DC2626;">━ ━ Incompatible Edge</span>
-              <span style="color: #2563EB;">● Data Packet Pulse</span>
-            </div>
-
-            <!-- Click Inspector Drawer -->
-            <div class="graph-inspector-drawer" id="graphInspector">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-                <b id="inspectName" style="color: var(--primary); font-size: 0.85rem;">/cmd_vel</b>
-                <button onclick="document.getElementById('graphInspector').style.display='none'" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem;">✕</button>
-              </div>
-              <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5;" id="inspectDetails">
-                Type: geometry_msgs/msg/Twist<br>
-                Publishers: /teleop_keyboard, /planner_server<br>
-                Subscribers: /controller_server, /diff_drive_base<br>
-                QoS Policy: <span style="color: var(--rose); font-weight: 700;">INCOMPATIBLE (BEST_EFFORT Offered vs RELIABLE Requested)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: DIAGNOSTIC FINDINGS & PATCHES -->
-    <div id="tab-findings" class="tab-content">
-      <div class="soc-panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span>🔍 Active Diagnostic Findings &amp; 1-Click Git Patches</span>
-            <span class="panel-sub">Deterministic OMG DDS &amp; SROS2 Violation Ledger</span>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <!-- Finding Item 1 -->
-            <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <b style="font-size: 0.85rem; color: var(--text-main);">[QOS-REL-001] QoS Reliability Policy Incompatibility</b>
-                <span class="stat-pill pill-red">CRITICAL</span>
-              </div>
-              <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-                Subscriber requested RELIABLE durability on topic <code>/cmd_vel</code>, but publisher offers BEST_EFFORT. Messages are silently dropped by DDS middleware.
-              </p>
-              <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.6rem 0.8rem; font-family: var(--font-mono); font-size: 0.72rem; color: #059669; margin-bottom: 0.75rem;">
-                +++ b/src/robot_navigation/subscriber.py<br>
-                + qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT)
-              </div>
-              <button class="hud-btn" style="color: var(--primary); border-color: var(--primary);" onclick="downloadPatch('qos_fix.patch')">📥 Download .patch File</button>
-            </div>
-
-            <!-- Finding Item 2 -->
-            <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <b style="font-size: 0.85rem; color: var(--text-main);">[SEC-SROS2-001] Disabled SROS2 Security Enclave &amp; Default Domain ID 0</b>
-                <span class="stat-pill pill-red">HIGH</span>
-              </div>
-              <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-                Environment variable <code>ROS_SECURITY_ENABLE=false</code> permits unauthenticated DDS discovery. Any device on local Wi-Fi can inject velocity commands.
-              </p>
-              <button class="hud-btn" style="color: var(--primary); border-color: var(--primary);" onclick="downloadPatch('sros2_hardening.patch')">📥 Download SROS2 Enclave Patch</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 4: SROS2 KEYSTORE WIZARD -->
-    <div id="tab-sros2-wizard" class="tab-content">
-      <div class="soc-panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span>🧙 Visual SROS2 Keystore &amp; Policy XML Studio</span>
-            <span class="panel-sub">Zero-Touch Compliant Cryptographic Enclave Generator for ROS 2 Jazzy</span>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div class="grid-2col">
-            <div>
-              <label style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.35rem;">Target Enclave Node Name:</label>
-              <input type="text" id="wizNodeName" value="/controller_server" style="width: 100%; background: #FFFFFF; border: 1px solid var(--border-strong); padding: 0.6rem; border-radius: 6px; color: var(--text-main); font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 1rem;">
-
-              <label style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.35rem;">DDS Cryptographic Plugin:</label>
-              <select style="width: 100%; background: #FFFFFF; border: 1px solid var(--border-strong); padding: 0.6rem; border-radius: 6px; color: var(--text-main); font-size: 0.8rem; margin-bottom: 1rem;">
-                <option>FastDDS PKI (ECDSA prime256v1 + AES-GCM-256)</option>
-                <option>CycloneDDS Security (X.509 Cryptographic Token)</option>
-              </select>
-
-              <button class="tackle-btn" onclick="generateSrosXml()">✨ Generate Enclave Governance XML</button>
-            </div>
-
-            <div>
-              <label style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.35rem;">Generated SROS2 Policy XML:</label>
-              <pre id="srosXmlOut" style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.72rem; color: #0F172A; height: 180px; overflow-y: auto;">
-&lt;!-- SROS2 Cryptographic Enclave for /controller_server --&gt;
-&lt;dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;domain_access_rules&gt;
-    &lt;domain_rule&gt;
-      &lt;domains&gt;&lt;id&gt;42&lt;/id&gt;&lt;/domains&gt;
-      &lt;allow_rule&gt;
-        &lt;domains&gt;&lt;id&gt;42&lt;/id&gt;&lt;/domains&gt;
-        &lt;publish&gt;&lt;topics&gt;&lt;topic&gt;rt/cmd_vel&lt;/topic&gt;&lt;/topics&gt;&lt;/publish&gt;
-        &lt;subscribe&gt;&lt;topics&gt;&lt;topic&gt;rt/odom&lt;/topic&gt;&lt;/topics&gt;&lt;/subscribe&gt;
-      &lt;/allow_rule&gt;
-    &lt;/domain_rule&gt;
-  &lt;/domain_access_rules&gt;
-&lt;/dds&gt;</pre>
-            </div>
-          </div>
-        </div>
-      </div>
-    <!-- TAB 5: DDS TELEMETRY & BURST HEATMAP (AEROSPACE COCKPIT SUITE) -->
-    <div id="tab-heatmap" class="tab-content">
-      <div class="cockpit-container">
-        
-        <!-- TOP SUBTITLE HEADER -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-            <span class="font-mono text-[11px] font-semibold text-blue-700 tracking-wider uppercase">DDS RTPS Real-Time Bus Monitor</span>
-          </div>
-          <span class="font-mono text-[11px] text-slate-500">DOMAIN ID: <span class="text-slate-800 font-bold">42</span></span>
-        </div>
-
-        <!-- METRIC BENTO CARDS (Light Theme with Left Color Indicator Strips) -->
-        <div class="grid grid-cols-2 gap-3">
-          <!-- Card 1: Critical Vulnerabilities (Red accent) -->
-          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500"></div>
-            <div class="flex items-start justify-between">
-              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Critical Vulnerabilities</span>
-              <span class="material-symbols-outlined text-rose-500 text-[18px]">gpp_bad</span>
-            </div>
-            <div class="flex items-baseline space-x-1 mt-1 mb-2">
-              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">2</span>
-            </div>
-            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-rose-50 border border-rose-200/70 text-rose-700 font-sans text-[10px] font-semibold truncate max-w-full">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1 shrink-0"></span>
-              <span class="truncate">Unauthenticated Actuation</span>
-            </div>
-          </div>
-
-          <!-- Card 2: QoS Contract Mismatches (Orange/Amber accent) -->
-          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500"></div>
-            <div class="flex items-start justify-between">
-              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">QoS Mismatches</span>
-              <span class="material-symbols-outlined text-amber-500 text-[18px]">warning</span>
-            </div>
-            <div class="flex items-baseline space-x-1 mt-1 mb-2">
-              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">1</span>
-              <span class="font-mono text-[10px] text-slate-400">Active</span>
-            </div>
-            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200/70 text-amber-800 font-sans text-[10px] font-semibold truncate max-w-full">
-              <span class="truncate">Reliability Violation</span>
-            </div>
-          </div>
-
-          <!-- Card 3: Security Posture Score (Emerald green accent) -->
-          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
-            <div class="flex items-start justify-between">
-              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Security Posture</span>
-              <span class="material-symbols-outlined text-emerald-600 text-[18px]">shield</span>
-            </div>
-            <div class="flex items-baseline space-x-1 mt-1 mb-2">
-              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">45%</span>
-            </div>
-            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/70 text-emerald-700 font-sans text-[10px] font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span>
-              <span>Evaluated</span>
-            </div>
-          </div>
-
-          <!-- Card 4: Hardware Sensor Enclave (Blue accent) -->
-          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
-            <div class="flex items-start justify-between">
-              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Sensor Enclave</span>
-              <span class="material-symbols-outlined text-blue-600 text-[18px]">verified_user</span>
-            </div>
-            <div class="flex items-baseline space-x-1 mt-1 mb-2">
-              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">6 / 6</span>
-            </div>
-            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-blue-50 border border-blue-200/70 text-blue-700 font-sans text-[10px] font-semibold">
-              <span>REP-105 Compliant</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- RTPS THROUGHPUT & WAVEFORM CARD -->
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center space-x-2">
-              <span class="material-symbols-outlined text-blue-600 text-[20px]">speed</span>
-              <div>
-                <span class="font-sans text-xs font-semibold text-slate-700">DDS RTPS Network Throughput</span>
-                <p class="font-sans text-[11px] text-slate-400">Live wire packet stream</p>
-              </div>
-            </div>
-            <div class="flex items-baseline space-x-1">
-              <span class="font-display text-xl font-bold text-blue-600">284.2</span>
-              <span class="font-mono text-[10px] text-slate-500">msgs/sec</span>
-            </div>
-          </div>
-          <!-- Crisp Blue Sparkline -->
-          <div class="py-2 bg-slate-50/70 rounded-lg px-2 border border-slate-100">
-            <svg class="w-full h-8 overflow-visible" fill="none" viewbox="0 0 100 24">
-              <defs>
-                <lineargradient id="blueSparkCockpit" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#2563eb" stop-opacity="0.18"></stop>
-                  <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"></stop>
-                </lineargradient>
-              </defs>
-              <path d="M0 16 L12 15 L22 18 L34 8 L46 14 L56 4 L68 12 L78 6 L88 19 L100 11" stroke="#2563eb" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
-              <path d="M0 16 L12 15 L22 18 L34 8 L46 14 L56 4 L68 12 L78 6 L88 19 L100 11 L100 24 L0 24 Z" fill="url(#blueSparkCockpit)"></path>
-            </svg>
-          </div>
-          <div class="flex items-center justify-between font-mono text-[11px] pt-2 text-slate-500">
-            <span>Jitter: <span class="text-slate-800 font-semibold">1.4 ms</span></span>
-            <span>Loss: <span class="text-blue-600 font-semibold">0.02%</span></span>
-            <span>Burst Volatility: <span class="text-rose-600 font-bold">78/100 (Spike)</span></span>
-          </div>
-        </div>
-
-        <!-- TOPIC BURST HEATMAP & SPECTRAL TIMELINE -->
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
-          <!-- Heatmap Header Controls -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                <span class="material-symbols-outlined text-[17px]">grid_goldenratio</span>
-              </div>
-              <div>
-                <span class="font-display text-sm font-bold text-slate-900">Topic Burst Heatmap</span>
-                <span class="font-sans text-[11px] text-slate-400 block -mt-0.5">Real-time spectral matrix</span>
-              </div>
-            </div>
-            <div class="flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
-              <span class="font-mono text-[10px] font-bold text-rose-700 uppercase">Cyberattack Injected</span>
-            </div>
-          </div>
-          <!-- Time Range Selector Pill -->
-          <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/70">
-            <button class="flex-1 py-1 rounded-md font-sans text-xs text-slate-600 hover:text-slate-900 text-center font-medium heatmap-range-btn" onclick="selectCockpitRange(this, '5m')">5m</button>
-            <button class="flex-1 py-1 rounded-md bg-white font-sans text-xs text-blue-700 font-semibold text-center shadow-xs border border-slate-200/60 heatmap-range-btn active" onclick="selectCockpitRange(this, '15m')">15m (Active)</button>
-            <button class="flex-1 py-1 rounded-md font-sans text-xs text-slate-600 hover:text-slate-900 text-center font-medium heatmap-range-btn" onclick="selectCockpitRange(this, '1h')">1h</button>
-            <button class="flex-1 py-1 rounded-md font-sans text-xs text-blue-600 text-center font-medium flex items-center justify-center space-x-1 heatmap-range-btn" onclick="selectCockpitRange(this, 'live')">
-              <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span>
-              <span>Live WS</span>
-            </button>
-          </div>
-          <!-- Topic Heatmap Matrix Table -->
-          <div class="flex flex-col space-y-1.5 overflow-x-auto">
-            <!-- Time Bin Headers -->
-            <div class="grid grid-cols-12 gap-1.5 items-center pb-0.5">
-              <span class="col-span-4 font-mono text-[10px] font-bold text-slate-400 uppercase tracking-wider">ROS 2 Topic</span>
-              <div class="col-span-8 grid grid-cols-8 gap-1 text-center font-mono text-[10px] text-slate-400">
-                <span>-14m</span>
-                <span>-12m</span>
-                <span>-10m</span>
-                <span>-8m</span>
-                <span>-6m</span>
-                <span>-4m</span>
-                <span>-2m</span>
-                <span class="text-blue-600 font-bold">NOW</span>
-              </div>
-            </div>
-            <!-- Row 1: /cmd_vel (ATTACKED) -->
-            <div class="grid grid-cols-12 gap-1.5 items-center bg-rose-50/50 border border-rose-200/70 p-1.5 rounded-lg" id="hmRowCmdVel">
-              <div class="col-span-4 flex flex-col min-w-0 pr-1">
-                <div class="flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
-                  <span class="font-mono text-xs text-rose-700 font-bold truncate">/cmd_vel</span>
-                </div>
-                <span class="font-sans text-[10px] text-slate-500 truncate">Actuator Influx</span>
-              </div>
-              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
-                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/cmd_vel -14m: 20 Hz"></div>
-                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/cmd_vel -12m: 20 Hz"></div>
-                <div class="h-full rounded bg-amber-200 heatmap-cell" title="/cmd_vel -10m: 75 Hz"></div>
-                <div class="h-full rounded bg-amber-400 heatmap-cell" title="/cmd_vel -8m: 95 Hz"></div>
-                <div class="h-full rounded bg-rose-300 text-center flex items-center justify-center heatmap-cell" title="/cmd_vel -6m: 140 Hz (Surge!)">
-                  <span class="font-mono text-[9px] text-rose-900 font-bold">!</span>
-                </div>
-                <div class="h-full rounded bg-rose-500 shadow-xs heatmap-cell" title="/cmd_vel -4m: 220 Hz (Attack)"></div>
-                <div class="h-full rounded bg-rose-600 shadow-xs animate-pulse heatmap-cell cell-pulse-rose" title="/cmd_vel -2m: 480 Hz (Overload)"></div>
-                <div class="h-full rounded bg-rose-600 heatmap-cell" title="/cmd_vel NOW: 480 Hz (Critical)"></div>
-              </div>
-            </div>
-            <!-- Row 2: /scan (LiDAR) -->
-            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
-              <div class="col-span-4 flex flex-col min-w-0 pr-1">
-                <div class="flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-600 shrink-0"></span>
-                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/scan</span>
-                </div>
-                <span class="font-sans text-[10px] text-slate-400 truncate">LiDAR 2D Array</span>
-              </div>
-              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
-                <div class="h-full rounded bg-cyan-100 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-200 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-400 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-400 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-500 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-500 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-400 heatmap-cell" title="/scan: 15 Hz"></div>
-                <div class="h-full rounded bg-cyan-200 heatmap-cell" title="/scan: 15 Hz"></div>
-              </div>
-            </div>
-            <!-- Row 3: /camera/depth -->
-            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
-              <div class="col-span-4 flex flex-col min-w-0 pr-1">
-                <div class="flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
-                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/camera/depth</span>
-                </div>
-                <span class="font-sans text-[10px] text-slate-400 truncate">Pointcloud XYZ</span>
-              </div>
-              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
-                <div class="h-full rounded bg-blue-100 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-                <div class="h-full rounded bg-blue-200 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-                <div class="h-full rounded bg-blue-200 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/camera/depth: 0 Hz"></div>
-                <div class="h-full rounded bg-blue-300 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-                <div class="h-full rounded bg-blue-500 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-                <div class="h-full rounded bg-blue-400 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-                <div class="h-full rounded bg-blue-300 heatmap-cell" title="/camera/depth: 30 Hz"></div>
-              </div>
-            </div>
-            <!-- Row 4: /tf (Transform Tree) -->
-            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
-              <div class="col-span-4 flex flex-col min-w-0 pr-1">
-                <div class="flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0"></span>
-                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/tf</span>
-                </div>
-                <span class="font-sans text-[10px] text-slate-400 truncate">Kinematics Tree</span>
-              </div>
-              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
-                <div class="h-full rounded bg-indigo-300 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-500 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
-                <div class="h-full rounded bg-indigo-300 heatmap-cell" title="/tf: 50 Hz"></div>
-              </div>
-            </div>
-            <!-- Row 5: /diagnostics -->
-            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
-              <div class="col-span-4 flex flex-col min-w-0 pr-1">
-                <div class="flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/diagnostics</span>
-                </div>
-                <span class="font-sans text-[10px] text-slate-400 truncate">Motor ESC Drops</span>
-              </div>
-              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
-                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/diagnostics: 1 Hz"></div>
-                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/diagnostics: 1 Hz"></div>
-                <div class="h-full rounded bg-amber-100 heatmap-cell" title="/diagnostics: 2 Hz"></div>
-                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/diagnostics: 1 Hz"></div>
-                <div class="h-full rounded bg-amber-200 heatmap-cell" title="/diagnostics: 3 Hz"></div>
-                <div class="h-full rounded bg-amber-400 heatmap-cell" title="/diagnostics: 5 Hz"></div>
-                <div class="h-full rounded bg-amber-400 heatmap-cell" title="/diagnostics: 5 Hz"></div>
-                <div class="h-full rounded bg-amber-300 heatmap-cell" title="/diagnostics: 4 Hz"></div>
-              </div>
-            </div>
-          </div>
-          <!-- Heatmap Legend (Light Palette) -->
-          <div class="flex items-center justify-between pt-2 border-t border-slate-100 font-mono text-[10px] text-slate-500">
-            <span>Throughput Scale:</span>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <span class="w-2.5 h-2.5 rounded bg-slate-200"></span>
-                <span>0</span>
-              </div>
-              <div class="flex items-center space-x-1">
-                <span class="w-2.5 h-2.5 rounded bg-cyan-300"></span>
-                <span>250</span>
-              </div>
-              <div class="flex items-center space-x-1">
-                <span class="w-2.5 h-2.5 rounded bg-blue-500"></span>
-                <span>600</span>
-              </div>
-              <div class="flex items-center space-x-1">
-                <span class="w-2.5 h-2.5 rounded bg-amber-400"></span>
-                <span class="font-bold text-amber-700">950</span>
-              </div>
-              <div class="flex items-center space-x-1">
-                <span class="w-2.5 h-2.5 rounded bg-rose-600"></span>
-                <span class="font-bold text-rose-700">&gt;1.2k (SURGE)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ROS 2 GRAPH TELEMETRY & ROGUE NODE ALERT -->
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                <span class="material-symbols-outlined text-[17px]">account_tree</span>
-              </div>
-              <div>
-                <span class="font-display text-sm font-bold text-slate-900">ROS 2 Graph Telemetry</span>
-                <span class="font-mono text-[10px] text-slate-500 ml-1">7 nodes / 4 topics</span>
-              </div>
-            </div>
-            <span class="px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 font-mono text-[10px] font-bold flex items-center space-x-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span>
-              <span>1 ROGUE NODE</span>
-            </span>
-          </div>
-          <!-- Network Diagram Micro-Canvas -->
-          <div class="relative bg-slate-50 rounded-xl p-3.5 border border-slate-200/80 overflow-hidden" style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 12px 12px;">
-            <div class="relative flex flex-col space-y-3 z-10">
-              <!-- Malicious Injected Vector Banner -->
-              <div class="flex items-center justify-between bg-rose-100/70 border border-rose-200 px-2.5 py-1.5 rounded-lg">
-                <div class="flex items-center space-x-1.5">
-                  <span class="material-symbols-outlined text-rose-600 text-[16px]">gpp_maybe</span>
-                  <span class="font-mono text-[11px] text-rose-800 font-bold uppercase tracking-tight">Rogue Injection Edge Detected</span>
-                </div>
-                <span class="font-mono text-[10px] font-semibold text-rose-700">IP: 192.168.1.189</span>
-              </div>
-              <!-- Node Flow Representation -->
-              <div class="flex items-center justify-between gap-1 py-1">
-                <!-- Rogue joy -->
-                <div class="flex flex-col items-center min-w-[76px]">
-                  <div class="w-10 h-10 rounded-full bg-rose-100 border-2 border-rose-400 flex items-center justify-center shadow-xs" id="nodeRogueJoy">
-                    <span class="material-symbols-outlined text-rose-600 text-[19px]">sports_esports</span>
-                  </div>
-                  <span class="font-mono text-[11px] text-rose-700 font-bold mt-1 text-center truncate w-full">unauth_joy</span>
-                  <span class="font-mono text-[9px] text-slate-400">PID: 9021</span>
-                </div>
-                <!-- Connecting Vector (Red) -->
-                <div class="flex flex-col items-center justify-center flex-1 px-1">
-                  <span class="font-mono text-[10px] text-rose-600 font-bold">1.1 kHz</span>
-                  <div class="w-full h-0.5 bg-rose-500 relative">
-                    <span class="absolute right-0 -top-1 material-symbols-outlined text-rose-600 text-[10px]">arrow_forward</span>
-                  </div>
-                </div>
-                <!-- cmd_vel_mux -->
-                <div class="flex flex-col items-center min-w-[76px]">
-                  <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-center shadow-xs">
-                    <span class="material-symbols-outlined text-amber-600 text-[19px]">alt_route</span>
-                  </div>
-                  <span class="font-mono text-[11px] text-slate-800 font-semibold mt-1 text-center truncate w-full">cmd_vel_mux</span>
-                  <span class="font-sans text-[9px] text-amber-700 font-medium">SROS2 Flaw</span>
-                </div>
-                <!-- Normal Vector -->
-                <div class="flex flex-col items-center justify-center flex-1 px-1">
-                  <span class="font-mono text-[10px] text-blue-600 font-medium">50 Hz</span>
-                  <div class="w-full h-0.5 bg-blue-500 relative">
-                    <span class="absolute right-0 -top-1 material-symbols-outlined text-blue-600 text-[10px]">arrow_forward</span>
-                  </div>
-                </div>
-                <!-- diff_drive -->
-                <div class="flex flex-col items-center min-w-[76px]">
-                  <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center shadow-xs">
-                    <span class="material-symbols-outlined text-blue-600 text-[19px]">precision_manufacturing</span>
-                  </div>
-                  <span class="font-mono text-[11px] text-slate-800 font-semibold mt-1 text-center truncate w-full">diff_drive</span>
-                  <span class="font-sans text-[9px] text-blue-600 font-medium">HW Actuator</span>
-                </div>
-              </div>
-              <!-- Action footer -->
-              <div class="flex items-center justify-between pt-1 border-t border-slate-200/80">
-                <div class="flex items-center space-x-1">
-                  <span class="font-sans text-[11px] text-slate-500">Enclave Rule:</span>
-                  <span class="font-mono text-[10px] text-rose-700 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200" id="ruleBadgePermission">PERMISSION_DENIED</span>
-                </div>
-                <button class="px-3 py-1.5 rounded-lg bg-rose-600 text-white font-sans text-xs font-semibold flex items-center space-x-1 transition-all hover:bg-rose-700 active:scale-95 shadow-xs" id="quarantine-node-btn" onclick="quarantineRogueNodeCockpit()">
-                  <span class="material-symbols-outlined text-[14px]">block</span>
-                  <span>Isolate Rogue Node</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- QoS CONTRACT DIAGNOSTIC -->
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
-                <span class="material-symbols-outlined text-[17px]">verified</span>
-              </div>
-              <div>
-                <span class="font-display text-sm font-bold text-slate-900">QoS Contract Diagnostic</span>
-                <span class="font-sans text-[11px] text-slate-400 block -mt-0.5">RTPS Compatibility Engine</span>
-              </div>
-            </div>
-            <span class="font-mono text-[10px] text-slate-500 font-medium">REP-2001 Audited</span>
-          </div>
-          <!-- Contract Item 1: /cmd_vel (Mismatch) -->
-          <div class="bg-slate-50 rounded-xl p-3 border border-amber-200/80 space-y-2">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                  <span class="font-mono text-xs font-bold text-slate-900">/cmd_vel</span>
-                </div>
-                <span class="font-sans text-[11px] text-slate-500">Nav2 Controller ➔ Base Actuator</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-mono text-[10px] font-bold border border-amber-200">
-                MISMATCH: RELIABILITY
-              </span>
-            </div>
-            <!-- Comparison Table -->
-            <div class="grid grid-cols-2 gap-2 font-mono text-[10px] bg-white p-2.5 rounded-lg border border-slate-200">
-              <div class="flex flex-col space-y-0.5">
-                <span class="text-slate-400 uppercase font-semibold text-[9px]">Publisher QoS</span>
-                <span class="text-blue-600 font-bold">BEST_EFFORT</span>
-                <span class="text-slate-500 text-[10px]">Durability: VOLATILE</span>
-              </div>
-              <div class="flex flex-col space-y-0.5">
-                <span class="text-slate-400 uppercase font-semibold text-[9px]">Subscriber QoS</span>
-                <span class="text-rose-600 font-bold">RELIABLE (Demanded)</span>
-                <span class="text-slate-500 text-[10px]">Durability: TRANSIENT</span>
-              </div>
-            </div>
-            <div class="flex items-center justify-between pt-1">
-              <span class="font-sans text-[11px] text-rose-700 flex items-center space-x-1">
-                <span class="material-symbols-outlined text-rose-500 text-[14px]">warning</span>
-                <span>Risk: Safety frame drop</span>
-              </span>
-              <button class="px-2.5 py-1 rounded-md bg-blue-600 text-white font-sans text-xs font-semibold flex items-center space-x-1 hover:bg-blue-700 active:scale-95 shadow-xs" id="patch-sros2-policy" onclick="patchSros2PolicyCockpit()">
-                <span class="material-symbols-outlined text-[13px]">security_update_good</span>
-                <span>Apply SROS2 Fix</span>
-              </button>
-            </div>
-          </div>
-          <!-- Contract Item 2: /scan (Matched) -->
-          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80 space-y-1.5">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span class="font-mono text-xs font-bold text-slate-900">/scan</span>
-                </div>
-                <span class="font-sans text-[11px] text-slate-500">RPLidar Driver ➔ Cartographer SLAM</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 font-mono text-[10px] font-bold flex items-center space-x-1">
-                <span class="material-symbols-outlined text-[12px]">check_circle</span>
-                <span>100% MATCHED</span>
-              </span>
-            </div>
-            <div class="flex items-center justify-between text-slate-500 pt-1 font-mono text-[10px] border-t border-slate-200/50">
-              <span>Profile: BEST_EFFORT</span>
-              <span>Deadline: 100ms</span>
-              <span>Durability: VOLATILE</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ACTIVE COUNTERMEASURES & ACTIONS -->
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                <span class="material-symbols-outlined text-[17px]">tune</span>
-              </div>
-              <span class="font-display text-sm font-bold text-slate-900">Active Countermeasures</span>
-            </div>
-            <span class="font-mono text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">E-STOP Ready</span>
-          </div>
-          <!-- Emergency DDS Rate Limiter -->
-          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80 space-y-2">
-            <div class="flex items-center justify-between">
-              <div class="flex flex-col">
-                <span class="font-sans text-xs font-semibold text-slate-800">Emergency DDS Rate Limiter</span>
-                <span class="font-sans text-[11px] text-slate-500">Clamp suspicious influx above 200 Hz</span>
-              </div>
-              <button class="w-11 h-6 rounded-full bg-blue-600 p-0.5 transition-colors relative flex items-center cursor-pointer" id="limiter-toggle" onclick="toggleLimiterCockpit()">
-                <span class="w-5 h-5 rounded-full bg-white transform translate-x-5 transition-transform shadow-xs" id="limiter-slider"></span>
-              </button>
-            </div>
-            <!-- Real-time Slider Visualizer -->
-            <div class="pt-1 flex flex-col space-y-1">
-              <div class="flex justify-between font-mono text-[10px] text-slate-500">
-                <span>Max Allowed: 200 msgs/s</span>
-                <span class="text-blue-600 font-bold" id="rate-limit-val">200 Hz Active</span>
-              </div>
-              <input class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" id="burst-range-input" max="1000" min="50" type="range" value="200" oninput="updateRateLimitVal(this.value)"/>
-            </div>
-          </div>
-          <!-- Forensic Export Actions -->
-          <div class="grid grid-cols-2 gap-2.5 pt-1">
-            <button class="h-10 px-3 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 transition-colors flex items-center justify-center space-x-1.5 active:scale-95 shadow-xs" id="pcap-dump-btn" onclick="triggerPcapExportCockpit()">
-              <span class="material-symbols-outlined text-[17px] text-blue-600">download</span>
-              <span class="font-sans text-xs font-semibold">MCAP / Rosbag</span>
-            </button>
-            <button class="h-10 px-3 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 transition-colors flex items-center justify-center space-x-1.5 active:scale-95 shadow-xs" id="html-export-btn" onclick="triggerHtmlExportCockpit()">
-              <span class="material-symbols-outlined text-[17px] text-slate-600">html</span>
-              <span class="font-sans text-xs font-semibold">Export HTML</span>
-            </button>
-          </div>
-          <!-- SROS2 Keystore Status Bar -->
-          <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-[10px]">
-            <div class="flex items-center space-x-1.5">
-              <span class="material-symbols-outlined text-blue-600 text-[14px]">key</span>
-              <span class="text-slate-700 font-medium">CA Certificate: Valid (ECDSA-SECP256R1)</span>
-            </div>
-            <span class="text-blue-600 font-bold">EXP: 89d</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- TAB 6: FLEET INCIDENT HORIZON & THREAT STREAM -->
-    <div id="tab-timeline" class="tab-content">
-      <div class="soc-panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span>⚡ Fleet Incident Horizon &amp; Cyberattack Event Stream</span>
-            <span class="panel-sub">Real-Time Security Event Feed · SROS2 Audits · QoS Drops · Dynamic Remediation</span>
-          </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <button class="hud-btn" id="btnTimelineSim" style="color: var(--rose); border-color: var(--rose);" onclick="ThreatTimeline.injectIncident()">⚡ Simulate Rogue Injection</button>
-            <button class="hud-btn" style="color: var(--emerald); border-color: var(--emerald);" onclick="ThreatTimeline.resolveAll()">🛡️ Auto-Remediate All Incidents</button>
-            <button class="hud-btn" onclick="ThreatTimeline.exportAuditLog()">📥 Export Audit Log (.json)</button>
-          </div>
-        </div>
-        <div class="panel-body">
-          <!-- Timeline Filter Strip -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
-            <div style="display: flex; gap: 0.5rem;" id="timelineFilters">
-              <button class="hud-btn active" style="background: var(--primary); color: #FFFFFF;" onclick="ThreatTimeline.setFilter('ALL')">All Events (<span id="countAll">5</span>)</button>
-              <button class="hud-btn" onclick="ThreatTimeline.setFilter('CRITICAL')">🚨 Critical (<span id="countCrit">2</span>)</button>
-              <button class="hud-btn" onclick="ThreatTimeline.setFilter('SECURITY')">🛡️ Security (<span id="countSec">3</span>)</button>
-              <button class="hud-btn" onclick="ThreatTimeline.setFilter('QOS')">⚠️ QoS &amp; Network (<span id="countQos">1</span>)</button>
-            </div>
-            <div style="font-size: 0.72rem; color: var(--emerald); font-weight: 700; display: flex; align-items: center; gap: 0.35rem;">
-              <span class="live-dot"></span> LIVE AUDIT STREAM CONNECTED
-            </div>
-          </div>
-
-          <!-- Dynamic Event Cards Container -->
-          <div id="timelineContainer" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 480px; overflow-y: auto; padding-right: 0.5rem;">
-            <!-- Rendered dynamically by ThreatTimeline.render() -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- PERSISTENT FLOATING LIVE AI SENTINEL BOT (LIVE & PROACTIVE) -->
-  <div class="floating-ai-sentinel">
-    <!-- Proactive Attack Alert Pop-up -->
-    <div class="proactive-alert-bubble" id="proactiveAlert">
-      <div class="alert-head">
-        <span class="alert-tag">🚨 THREAT DETECTED</span>
-        <button onclick="closeAlert()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">✕</button>
-      </div>
-      <div class="alert-body-text" id="alertText">
-        <b>Rogue /cmd_vel injection detected!</b> Unauthenticated DDS participant transmitting velocity overrides. Recommend immediate SROS2 enclave enforcement.
-      </div>
-      <button class="tackle-btn" style="width: 100%; font-size: 0.75rem; padding: 0.5rem;" onclick="tackleFromAlert()">
-        🛡️ Engage Cyber Shield &amp; Tackle Threat
-      </button>
-    </div>
-
-    <!-- Floating Chat Drawer -->
-    <div class="sentinel-chat-box" id="sentinelChat">
-      <div class="chat-header">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="font-size: 1.1rem;">🛡️</span>
-          <div>
-            <div style="font-size: 0.85rem; font-weight: 800;">ROBOGUARD AI Copilot</div>
-            <div style="font-size: 0.68rem; color: var(--emerald); font-weight: 700;">● Online · ROS 2 Jazzy SROS2 Sentinel</div>
-          </div>
-        </div>
-        <button onclick="toggleChat()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1rem;">✕</button>
-      </div>
-
-      <div class="chat-messages-scroll" id="chatThread">
-        <div class="chat-bubble bot">
-          👋 Hello Operator! I am your <b>Roboguard AI Sentinel</b>. I continuously monitor DDS middleware traffic, validate REP-105 coordinate trees, and intercept unauthorized velocity commands. How can I assist your robotics mission?
-        </div>
-      </div>
-
-      <div style="padding: 0.5rem 0.75rem; display: flex; gap: 0.35rem; overflow-x: auto; background: #F8FAFC; border-top: 1px solid var(--border-subtle);">
-        <button class="hud-btn" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="askQuick('Explain active attack')">⚡ Active Threat</button>
-        <button class="hud-btn" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="askQuick('How does SROS2 tackle attacks?')">🛡️ SROS2 Policy</button>
-        <button class="hud-btn" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="askQuick('Explain Mecanum kinematics')">⚙️ Kinematics</button>
-      </div>
-
-      <div class="chat-input-bar">
-        <input type="text" class="chat-input-field" id="userMsgInput" placeholder="Ask about QoS, TF2, or SROS2..." onkeydown="if(event.key==='Enter') sendUserMsg()">
-        <button class="hud-btn" style="padding: 0.55rem 0.85rem; background: var(--primary); color: #FFFFFF;" onclick="sendUserMsg()">➤</button>
-      </div>
-    </div>
-
-    <!-- Hover speech bubble -->
-    <div class="sentinel-hover-bubble" id="sentinelHoverBubble">
-      <div style="font-weight: 800; color: #1D4ED8; margin-bottom: 0.15rem;">💬 Roboguard AI Sentinel</div>
-      <div style="font-size: 0.72rem; color: #64748B;">Live monitor for DDS middleware attacks, QoS violations, and SROS2 policies.</div>
-    </div>
-
-    <!-- Trigger Button -->
-    <button class="sentinel-trigger-btn" id="btnSentinelTrigger" onclick="toggleChat()">
-      🛡️
-      <div class="sentinel-badge-count" id="sentinelBadge">!</div>
-    </button>
-  </div>
-
-  <!-- ==========================================================================
-       THREE.JS 3D AMR ROBOT & CYBERATTACK TACKLING ENGINE (CLASSIC LIGHT THEME)
-       ========================================================================== -->
-  <script>
-    // Tab Switching Logic
-    function switchSocTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
-      
-      const target = document.getElementById(tabId);
-      if (target) target.classList.add('active');
-
-      const tabs = ['tab-dynamic-graph', 'tab-hero3d', 'tab-heatmap', 'tab-timeline', 'tab-findings', 'tab-sros2-wizard'];
-      const idx = tabs.indexOf(tabId);
-      if (idx !== -1 && document.querySelectorAll('.nav-tab-btn')[idx]) {
-        document.querySelectorAll('.nav-tab-btn')[idx].classList.add('active');
-      }
-
-      if (tabId === 'tab-hero3d' && typeof Robot3D !== 'undefined' && Robot3D.renderer) {
-        setTimeout(() => Robot3D.onWindowResize(), 50);
-      }
-      if (tabId === 'tab-dynamic-graph' && typeof DynamicGraphSim !== 'undefined' && DynamicGraphSim.ready) {
-        setTimeout(() => DynamicGraphSim.resize(), 50);
-      }
-      if (tabId === 'tab-heatmap' && typeof TelemetryHeatmap !== 'undefined') {
-        setTimeout(() => TelemetryHeatmap.initOrResize(), 50);
-      }
-      if (tabId === 'tab-timeline' && typeof ThreatTimeline !== 'undefined') {
-        setTimeout(() => ThreatTimeline.render(), 50);
-      }
-    }
-
-    // Global State
-    let currentDefenseMode = 'insecure'; // 'insecure' or 'hardened'
-    let currentAttack = 0; // 0: none, 1: cmd_vel, 2: lidar, 3: dds_storm
-    let isBagPlaying = true;
-    let bagPosition = 30;
-    let chatOpen = false;
-
-    function setDefenseMode(mode) {
-      currentDefenseMode = mode;
-      const btnInsecure = document.getElementById('btnModeInsecure');
-      const btnHardened = document.getElementById('btnModeHardened');
-      const hudBadge = document.getElementById('hudModeBadge');
-      const topEnclave = document.getElementById('topEnclaveState');
-
-      if (mode === 'insecure') {
-        btnInsecure.className = 'mode-toggle-btn active insecure';
-        btnHardened.className = 'mode-toggle-btn';
-        hudBadge.innerHTML = 'Mode: <span style="color: var(--rose); font-weight: 700;">Vulnerable ROS 2 (Plaintext)</span>';
-        topEnclave.innerHTML = '<span class="live-dot" style="background: var(--rose); box-shadow: 0 0 6px var(--rose);"></span> SROS2 DISABLED (DOMAIN 0)';
-        logTerminal('[CONFIG] Switched to Vulnerable Mode: ROS_SECURITY_ENABLE=false. UDP Multicast unencrypted.', '#DC2626');
-      } else {
-        btnInsecure.className = 'mode-toggle-btn';
-        btnHardened.className = 'mode-toggle-btn active hardened';
-        hudBadge.innerHTML = 'Mode: <span style="color: var(--emerald); font-weight: 700;">Hardened SROS2 (Enclave Active)</span>';
-        topEnclave.innerHTML = '<span class="live-dot" style="background: var(--emerald); box-shadow: 0 0 6px var(--emerald);"></span> SROS2 ENCLAVE ACTIVE';
-        logTerminal('[CONFIG] Switched to Hardened SROS2 Mode: Mutual TLS X.509 enabled on Domain 42.', '#059669');
-      }
-      Robot3D.updateDefenseVisuals();
-    }
-
-    function logTerminal(msg, color = '#334155') {
-      const term = document.getElementById('terminalLog');
-      const line = document.createElement('div');
-      line.style.color = color;
-      const time = new Date().toISOString().substring(11, 19);
-      line.innerHTML = `[${time}] ${msg}`;
-      term.appendChild(line);
-      term.scrollTop = term.scrollHeight;
-    }
-
-    function launchAttack(num) {
-      currentAttack = num;
-      document.querySelectorAll('.action-attack-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(`btnAtk${num}`);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      const alertBox = document.getElementById('proactiveAlert');
-      const alertText = document.getElementById('alertText');
-      alertBox.style.display = 'block';
-
-      if (num === 1) {
-        logTerminal('🚨 ATTACK 1 LAUNCHED: Rogue /cmd_vel publisher injecting linear.x=3.5 m/s, angular.z=2.8 rad/s!', '#DC2626');
-        alertText.innerHTML = "<b>CRITICAL: Rogue /cmd_vel injection detected!</b> Unauthenticated DDS participant [GUID: 01:0f:e4] transmitting linear.x=3.5 m/s overrides. Chassis perturbation active!";
-      } else if (num === 2) {
-        logTerminal('🚨 ATTACK 2 LAUNCHED: LiDAR distance spoofing! Injecting phantom obstacle at range=0.45m!', '#DC2626');
-        alertText.innerHTML = "<b>WARNING: LiDAR Phantom Obstacle spoofed!</b> Injected laser reflection at range=0.45m. Nav2 costmap halt active!";
-      } else if (num === 3) {
-        logTerminal('🚨 ATTACK 3 LAUNCHED: DDS RTPS Multicast UDP Flooding storm (62,000 pkts/sec) targeting Edge Compute!', '#DC2626');
-        alertText.innerHTML = "<b>HIGH: DDS RTPS Multicast UDP Flooding!</b> Jitter spiked to 94ms. Edge compute packet saturation!";
-      }
-
-      gsap.fromTo('#btnSentinelTrigger', { scale: 1.25 }, { scale: 1, duration: 0.4, ease: 'bounce.out' });
-      Robot3D.triggerAttack(num);
-    }
-
-    function tackleFromAlert() {
-      tackleActiveAttack();
-      closeAlert();
-    }
-
-    function closeAlert() {
-      document.getElementById('proactiveAlert').style.display = 'none';
-    }
-
-    function tackleActiveAttack() {
-      if (currentAttack === 0) {
-        logTerminal('ℹ️ No active cyberattack. Deploying SROS2 security posture verification sweep.', '#0284C7');
-        Robot3D.pulseShield();
-        return;
-      }
-      logTerminal(`🛡️ TACKLING ATTACK ${currentAttack}: Engaging automated countermeasure and cryptographic enclave barrier!`, '#059669');
-      Robot3D.tackleAttack(currentAttack);
-      currentAttack = 0;
-      closeAlert();
-      document.querySelectorAll('.action-attack-btn').forEach(b => b.classList.remove('active'));
-
-      const thread = document.getElementById('chatThread');
-      const msg = document.createElement('div');
-      msg.className = 'chat-bubble bot';
-      msg.innerHTML = "✅ <b>Threat Neutralized:</b> SROS2 enclave policy enforced on Domain 42. Rogue packets discarded at transport layer.";
-      thread.appendChild(msg);
-      thread.scrollTop = thread.scrollHeight;
-    }
-
-    function toggleChat() {
-      chatOpen = !chatOpen;
-      const chatBox = document.getElementById('sentinelChat');
-      chatBox.style.display = chatOpen ? 'flex' : 'none';
-      if (chatOpen) closeAlert();
-    }
-
-    function askQuick(query) {
-      if (!chatOpen) toggleChat();
-      const input = document.getElementById('userMsgInput');
-      input.value = query;
-      sendUserMsg();
-    }
-
-    function sendUserMsg() {
-      const input = document.getElementById('userMsgInput');
-      const val = input.value.trim();
-      if (!val) return;
-
-      const thread = document.getElementById('chatThread');
-      const uMsg = document.createElement('div');
-      uMsg.className = 'chat-bubble user';
-      uMsg.textContent = val;
-      thread.appendChild(uMsg);
-      input.value = '';
-
-      setTimeout(() => {
-        const bMsg = document.createElement('div');
-        bMsg.className = 'chat-bubble bot';
-        const q = val.toLowerCase();
-        if (q.includes('threat') || q.includes('attack') || q.includes('active')) {
-          bMsg.innerHTML = `🛡️ <b>SOC Threat Analysis:</b> Active vector target: <code>/cmd_vel</code> via unauthenticated UDP multicast. In default ROS 2, any local machine on the subnet can inject motion. Enforcing SROS2 restricts transmission to verified nodes.`;
-        } else if (q.includes('sros2') || q.includes('policy')) {
-          bMsg.innerHTML = `🔐 <b>SROS2 Keystore:</b> Navigate to the <b>SROS2 Keystore & Policy Studio</b> tab above to auto-generate XML governance profiles.`;
-        } else if (q.includes('kinematic') || q.includes('mecanum') || q.includes('wheel')) {
-          bMsg.innerHTML = `⚙️ <b>Holonomic Drive:</b> 4 Mecanum wheels with 8 rollers each provide omnidirectional motion without mechanical steering linkages.`;
-        } else {
-          bMsg.innerHTML = `🤖 <b>Copilot Guidance:</b> For ROS 2 Jazzy, ensure QoS durability contracts match across publishers and subscribers to avoid silent message drops.`;
-        }
-        thread.appendChild(bMsg);
-        thread.scrollTop = thread.scrollHeight;
-      }, 400);
-    }
-
-    function toggleBagPlayback() {
-      isBagPlaying = !isBagPlaying;
-      document.getElementById('btnPlayBag').textContent = isBagPlaying ? '⏸' : '▶';
-      logTerminal(isBagPlaying ? '▶ ROSBAG playback resumed.' : '⏸ ROSBAG playback paused.');
-    }
-
-    function scrubBag(val) {
-      bagPosition = val;
-      const secs = (val * 0.3).toFixed(2);
-      document.getElementById('bagTimeLabel').textContent = `10:15:${secs}`;
-      document.getElementById('telemetryVel').textContent = `${(0.4 + (val % 5)*0.1).toFixed(2)} m/s`;
-      document.getElementById('telemetryHeading').textContent = `${(val * 3.6 % 360).toFixed(1)}°`;
-    }
-
-    function downloadPatch(filename) {
-      const patchContent = `--- a/src/robot_navigation/subscriber.py\n+++ b/src/robot_navigation/subscriber.py\n@@ -15,4 +15,6 @@\n- self.sub = self.create_subscription(Twist, '/cmd_vel', self.cb, 10)\n+ # HARDENED: Explicitly match offered QoS\n+ qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT)\n+ self.sub = self.create_subscription(Twist, '/cmd_vel', self.cb, qos)\n`;
-      const blob = new Blob([patchContent], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      a.click();
-      logTerminal(`📥 Downloaded automated remediation patch: ${filename}`, '#0284C7');
-    }
-
-    function generateSrosXml() {
-      const node = document.getElementById('wizNodeName').value;
-      logTerminal(`✨ Generated SROS2 security policy for ${node}`, '#059669');
-    }
-
-    /* ==========================================================================
-       THREE.JS 3D ROBOT & CYBER-PHYSICAL SCENE (CLASSIC LIGHT THEME)
-       ========================================================================== */
-    const Robot3D = {
+const Robot3D = {
       scene: null,
       camera: null,
       renderer: null,
@@ -2321,11 +39,11 @@
       clock: new THREE.Clock(),
 
       init() {
-        const canvasEl = document.getElementById('heroCanvas3D');
+        const canvasEl = document.getElementById('twin-canvas') || document.getElementById('heroCanvas3D');
         if (!canvasEl) return;
         const container = canvasEl.parentElement;
         const width = (container && container.clientWidth > 0) ? container.clientWidth : 720;
-        const height = (container && container.clientHeight > 0) ? container.clientHeight : 540;
+        const height = (container && container.clientHeight > 0) ? container.clientHeight : 288;
 
         // Scene with Classic Light Off-White Background
         this.scene = new THREE.Scene();
@@ -2865,11 +583,11 @@
       },
 
       onWindowResize() {
-        const canvasEl = document.getElementById('heroCanvas3D');
+        const canvasEl = document.getElementById('twin-canvas') || document.getElementById('heroCanvas3D');
         if (!canvasEl || !this.camera || !this.renderer) return;
         const container = canvasEl.parentElement;
         const width = (container && container.clientWidth > 0) ? container.clientWidth : 720;
-        const height = (container && container.clientHeight > 0) ? container.clientHeight : 540;
+        const height = (container && container.clientHeight > 0) ? container.clientHeight : 288;
         if (width > 0 && height > 0) {
           this.camera.aspect = width / height;
           this.camera.updateProjectionMatrix();
@@ -3883,17 +1601,945 @@
     };
 
     // Boot engines independently: a WebGL failure must never blank the 2D graph
-    window.addEventListener('DOMContentLoaded', () => {
-      try { DynamicGraphSim.init(); } catch (err) { console.error('Graph init failed', err); }
-      try { Robot3D.init(); } catch (err) {
-        console.error('3D init failed', err);
-        const box = document.querySelector('.canvas-3d-container');
-        if (box) box.insertAdjacentHTML('beforeend',
-          '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;color:#334155;font-weight:600">WebGL is unavailable in this browser. Enable hardware acceleration to view the 3D digital twin.</div>');
-      }
-      try { TelemetryHeatmap.init(); } catch (err) { console.error('Heatmap init failed', err); }
-      try { ThreatTimeline.render(); } catch (err) { console.error('Timeline init failed', err); }
+    
+
+// --- Interactive Controller Logic ---
+
+function setCameraView(preset) {
+  document.querySelectorAll('.cam-btn').forEach(b => {
+    b.classList.remove('bg-primary', 'text-on-primary', 'font-bold');
+    b.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+  });
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('bg-primary', 'text-on-primary', 'font-bold');
+    event.currentTarget.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+  }
+  if (typeof Robot3D !== 'undefined' && Robot3D.setCameraPreset) {
+    Robot3D.setCameraPreset(preset);
+  }
+}
+
+function switchAttackTab(btn, mode) {
+  document.querySelectorAll('.attack-mode-btn').forEach(el => {
+    el.classList.remove('bg-error-container', 'text-on-error-container', 'border-error');
+    el.classList.add('bg-surface-container-low', 'text-on-surface-variant', 'border-transparent');
+  });
+  btn.classList.add('bg-error-container', 'text-on-error-container', 'border-error');
+  btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant', 'border-transparent');
+
+  const term = document.getElementById('terminal-log-content');
+  const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+  if (mode === 'cmd_vel') {
+    term.innerHTML += `
+[${timestamp}] <span class="text-error">[ALERT]</span> Rogue /cmd_vel vector detected: injection rate 42Hz from unauthenticated remote RTPS GUID.`;
+  } else if (mode === 'lidar') {
+    term.innerHTML += `
+[${timestamp}] <span class="text-secondary">[SIM]</span> Injected synthetic point-cloud phantom cluster at x:1.42m y:0.00m. Nav2 costmap inflated.`;
+  } else if (mode === 'storm') {
+    term.innerHTML += `
+[${timestamp}] <span class="text-tertiary">[DDS]</span> Initiating UDP Multicast saturation attack on Domain ID 0. Drop rate: 12.8%.`;
+  }
+  term.scrollTop = term.scrollHeight;
+
+  if (typeof Robot3D !== 'undefined' && Robot3D.triggerAttack) {
+    Robot3D.triggerAttack(mode);
+  }
+
+  // Notify backend API if server running
+  fetch('/api/attack', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ vector: mode })
+  }).catch(() => {});
+}
+
+function toggleNodeFilter(btn) {
+  btn.classList.toggle('bg-primary');
+  btn.classList.toggle('text-on-primary');
+  btn.classList.toggle('bg-surface-container-low');
+  btn.classList.toggle('text-on-surface-variant');
+  const badge = document.getElementById('filter-status-indicator');
+  if (badge) {
+    badge.innerText = badge.innerText === 'ALL ACTIVE' ? 'FILTERED (2 INCOMPATIBLE)' : 'ALL ACTIVE';
+  }
+}
+
+function applyGitPatch(patchId) {
+  const banner = document.getElementById('patch-applied-banner');
+  if (banner) {
+    banner.classList.remove('hidden');
+    setTimeout(() => banner.classList.add('hidden'), 4000);
+  }
+  const term = document.getElementById('terminal-log-content');
+  const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+  term.innerHTML += `
+[${timestamp}] <span class="text-tertiary font-bold">[AUTO-PATCH]</span> Applied hotfix ${patchId}. SROS2 Keystore reloaded via PKCS#11 enclave.`;
+  term.scrollTop = term.scrollHeight;
+
+  // Optimistic UI updates
+  const score = document.getElementById('metric-score');
+  const drift = document.getElementById('metric-drift');
+  const vulns = document.getElementById('metric-vulns');
+  const qos = document.getElementById('metric-qos');
+  if (patchId === 'SEC-SROS2-001') {
+    if (score) score.innerText = '75%';
+    if (drift) { drift.innerText = '▲ +30% patched'; drift.className = 'font-label-code text-label-code px-1.5 py-0.5 rounded bg-tertiary/20 text-tertiary font-semibold'; }
+    if (vulns) vulns.innerText = '1';
+  } else if (patchId === 'QOS-REL-001') {
+    if (score) score.innerText = '95%';
+    if (drift) { drift.innerText = '▲ +50% optimal'; drift.className = 'font-label-code text-label-code px-1.5 py-0.5 rounded bg-tertiary/20 text-tertiary font-semibold'; }
+    if (qos) qos.innerText = '0';
+  }
+
+  // Post to backend API
+  fetch(`/api/patch/${patchId}`, { method: 'POST' }).catch(() => {});
+}
+
+function isolateRoguePublisher() {
+  const edge = document.getElementById('rogue-edge-svg');
+  if (edge) {
+    edge.setAttribute('stroke', '#707881');
+    edge.setAttribute('stroke-dasharray', '2,4');
+  }
+  const rogueLabel = document.getElementById('rogue-edge-label');
+  if (rogueLabel) rogueLabel.innerText = '[ISOLATED BY EBPF]';
+  const term = document.getElementById('terminal-log-content');
+  const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+  term.innerHTML += `
+[${timestamp}] <span class="text-tertiary font-bold">[EBPF ENFORCER]</span> Node /teleop_keyboard isolated. Socket fd:28 closed. Rule #4092 applied.`;
+  term.scrollTop = term.scrollHeight;
+
+  fetch('/api/isolate', { method: 'POST' }).catch(() => {});
+}
+
+function estopFleet() {
+  if (confirm('ENGAGE IMMEDIATE FLEET E-STOP?
+All actuators and motor drivers will receive zero velocity clamping.')) {
+    const term = document.getElementById('terminal-log-content');
+    const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+    term.innerHTML += `
+[${timestamp}] <span class="text-error font-bold">[EMERGENCY]</span> Fleet E-STOP engaged. Actuation circuits cut across all 6 AMR enclaves.`;
+    term.scrollTop = term.scrollHeight;
+    fetch('/api/estop', { method: 'POST' }).catch(() => {});
+  }
+}
+
+function quarantineFleet() {
+  const term = document.getElementById('terminal-log-content');
+  const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+  term.innerHTML += `
+[${timestamp}] <span class="text-tertiary font-bold">[QUARANTINE]</span> SROS2 Keystore rotated. Compromised certs revoked via CRL.`;
+  term.scrollTop = term.scrollHeight;
+}
+
+function switchScenario(scenarioId) {
+  fetch(`/api/scenarios/${scenarioId}`, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      const title = document.getElementById('active-scenario-title');
+      if (title && data.name) title.innerText = data.name;
+      const score = document.getElementById('metric-score');
+      if (score && data.score) score.innerText = data.score + '%';
+      const vulns = document.getElementById('metric-vulns');
+      if (vulns && data.vulns !== undefined) vulns.innerText = data.vulns;
+      const qos = document.getElementById('metric-qos');
+      if (qos && data.qos !== undefined) qos.innerText = data.qos;
+      const term = document.getElementById('terminal-log-content');
+      const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+      term.innerHTML += `
+[${timestamp}] <span class="text-secondary font-bold">[SCENARIO]</span> Switched context to ${data.name || scenarioId}.`;
+      term.scrollTop = term.scrollHeight;
+    })
+    .catch(() => {
+      const term = document.getElementById('terminal-log-content');
+      const timestamp = new Date().toISOString().split('T')[1].slice(0, 8);
+      term.innerHTML += `
+[${timestamp}] <span class="text-secondary">[OFFLINE]</span> Switched scenario to ${scenarioId}.`;
+      term.scrollTop = term.scrollHeight;
     });
-  </script>
-</body>
-</html>
+}
+
+function exportReport() {
+  window.open('/api/export/html', '_blank');
+}
+
+// Initialize 3D Robot on load
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof Robot3D !== 'undefined' && Robot3D.init) {
+    Robot3D.init('twin-canvas');
+  }
+});
+</script>
+
+<!-- TOP COMMAND BAR & SCENARIO CONTROL STRIP -->
+<section class="w-full px-gutter-lg py-space-sm bg-surface-container-lowest shadow-sm flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="flex items-center gap-space-xs bg-error-container/40 px-3 py-1.5 rounded-lg">
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-ping"></span>
+<span class="font-label-badge text-label-badge text-on-error-container uppercase">Active Scenario:</span>
+<span class="font-headline-md text-headline-md text-on-error-container ml-1">Scenario 5 - Insecure AMR Navigation Fleet</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2.5 py-1 rounded-md">
+<span class="font-label-kpi text-label-kpi text-on-surface-variant uppercase">Switch Scenario:</span>
+<select class="bg-transparent font-label-code text-label-code text-on-surface font-semibold focus:outline-none cursor-pointer">
+<option>Scenario 5: Insecure AMR Fleet (Active)</option>
+<option>Scenario 4: LiDAR Sensor Tampering</option>
+<option>Scenario 3: DDS Multicast Storm</option>
+<option>Scenario 2: SROS2 Keystore Drift</option>
+<option>Scenario 1: Baseline Zero-Trust Fleet</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-space-xs flex-wrap">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-code text-label-code flex items-center gap-1.5 transition-colors shadow-sm" onclick="window.print()" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">download</span>
+        Export Standalone Offline HTML
+      </button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-code text-label-code flex items-center gap-1.5 transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-tertiary">save_alt</span>
+        MCAP / Rosbag Dump
+      </button>
+<div class="hidden sm:flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-md font-label-code text-label-code text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>DOMAIN: 0</span>
+</div>
+</div>
+</section>
+<!-- 4-UP MISSION-CRITICAL METRIC CARDS STRIP -->
+<section class="w-full px-gutter-lg pt-space-md grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<!-- METRIC CARD 1: Critical Vulnerabilities (Red Border Left) -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between" style="border-left: 4px solid #ba1a1a;">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant tracking-wider block">Critical Vulnerabilities</span>
+<span class="font-metric-display text-metric-display text-error font-headline-xl">2</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-badge text-label-badge">
+<span class="material-symbols-outlined text-[12px]">warning</span> CVE-2024-41123
+        </span>
+</div>
+<div class="pt-space-xs flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Unauthenticated Actuation</span>
+<span class="font-label-code text-label-code text-error bg-error-container/30 px-1.5 py-0.5 rounded">Rogue /cmd_vel</span>
+</div>
+</div>
+<!-- METRIC CARD 2: QoS Contract Mismatches (Amber Border Left) -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between" style="border-left: 4px solid #e08b00;">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant tracking-wider block">QoS Contract Mismatches</span>
+<span class="font-metric-display text-metric-display text-on-surface font-headline-xl">1</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-badge text-label-badge">
+<span class="material-symbols-outlined text-[12px] text-outline">sync_problem</span> RX/TX Drift
+        </span>
+</div>
+<div class="pt-space-xs flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Reliability Violation</span>
+<span class="font-label-code text-label-code text-on-surface bg-surface-container px-1.5 py-0.5 rounded">BEST_EFFORT ≠ RELIABLE</span>
+</div>
+</div>
+<!-- METRIC CARD 3: Security Posture Score (Emerald Border Left) -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between" style="border-left: 4px solid #006860;">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant tracking-wider block">Security Posture Score</span>
+<div class="flex items-baseline gap-2">
+<span class="font-metric-display text-metric-display text-tertiary font-headline-xl">45%</span>
+<span class="font-label-code text-label-code text-error font-medium">▼ -18% drift</span>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-tertiary font-label-badge text-label-badge">
+<span class="material-symbols-outlined text-[12px]">verified_user</span> OMG DDS
+        </span>
+</div>
+<div class="pt-space-xs flex flex-col gap-1">
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 45%;"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-label-kpi text-on-surface-variant uppercase">
+<span>Target: 95%</span>
+<span>Evaluated Profile: SROS2 Level-3</span>
+</div>
+</div>
+</div>
+<!-- METRIC CARD 4: Hardware Sensor Enclave (Cyan Border Left) -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between" style="border-left: 4px solid #006194;">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant tracking-wider block">Hardware Sensor Enclave</span>
+<span class="font-metric-display text-metric-display text-primary font-headline-xl">6 / 6</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-badge text-label-badge">
+<span class="material-symbols-outlined text-[12px]">lock</span> REP-105 Locked
+        </span>
+</div>
+<div class="pt-space-xs flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">TPM 2.0 / Root of Trust</span>
+<span class="font-label-code text-label-code text-primary bg-primary-fixed-dim/30 px-1.5 py-0.5 rounded">All Secure</span>
+</div>
+</div>
+</section>
+<!-- SUCCESS TOAST / BANNER FOR ACTIONS -->
+<div class="hidden px-gutter-lg pt-space-sm transition-all duration-300" id="patch-applied-banner">
+<div class="bg-tertiary text-on-tertiary px-4 py-2 rounded-lg flex items-center justify-between shadow-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span class="font-body-md text-body-md font-semibold">Git Hotfix Patch Applied &amp; ROS 2 Environment Reloaded Successfully. SROS2 Keystore re-encrypted.</span>
+</div>
+<span class="font-label-code text-label-code bg-on-tertiary/20 px-2 py-0.5 rounded">HASH: a8f912c</span>
+</div>
+</div>
+<!-- MAIN OPERATIONAL GRID (TWO BALANCED COLUMNS) -->
+<div class="w-full px-gutter-lg py-space-md grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- ==================== LEFT COLUMN (60% / 7 COLS) ==================== -->
+<div class="lg:col-span-7 flex flex-col gap-gutter">
+<!-- CARD: ROS 2 Computational Graph & RTPS Edge Inspector -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col">
+<!-- Header & Graph Toolbar -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-xs pb-space-sm">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">ROS 2 Computational Graph &amp; RTPS Edge Inspector</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Live DDS Domain Topology, cryptographic enclaves, and active topic publishers.</p>
+</div>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-code text-label-code px-2 py-0.5 rounded bg-surface-container text-on-surface-variant" id="filter-status-indicator">ALL ACTIVE</span>
+<button class="px-2.5 py-1 rounded bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-code text-label-code transition-colors" onclick="toggleNodeFilter(this)" type="button">
+              Incompatible Only
+            </button>
+<button class="px-2 py-1 rounded bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-code text-label-code transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[13px]">refresh</span> Recenter
+            </button>
+<span class="px-2 py-1 rounded bg-primary-fixed-dim/40 text-primary font-label-code text-label-code">Physics: ON</span>
+</div>
+</div>
+<!-- Graph Topology Summary Ribbon -->
+<div class="grid grid-cols-4 gap-2 py-2 px-3 bg-surface-container-low rounded-lg mb-space-sm">
+<div class="flex flex-col">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">Discovered Nodes</span>
+<span class="font-label-code text-label-code font-bold text-on-surface">7 Nodes</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">DDS Topics</span>
+<span class="font-label-code text-label-code font-bold text-primary">4 Topics</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">RTPS Edges</span>
+<span class="font-label-code text-label-code font-bold text-on-surface">10 Wire Connections</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-kpi text-label-kpi uppercase text-error">QoS Breaches</span>
+<span class="font-label-code text-label-code font-bold text-error">2 Incompatible</span>
+</div>
+</div>
+<!-- Interactive SVG Topological Node-Edge Canvas -->
+<div class="relative w-full h-80 rounded-lg bg-surface-container-low/60 overflow-hidden flex items-center justify-center shadow-inner">
+<!-- Background Grid Texture via SVG -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+<defs>
+<pattern height="24" id="grid-dots" patternunits="userSpaceOnUse" width="24">
+<circle cx="2" cy="2" fill="#707881" opacity="0.3" r="1"></circle>
+</pattern>
+</defs>
+<rect fill="url(#grid-dots)" height="100%" width="100%"></rect>
+</svg>
+<!-- SVG Visual Flow of Computational Graph -->
+<svg class="w-full h-full relative z-10" viewbox="0 0 680 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-blue" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="8" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#006194"></path>
+</marker>
+<marker id="arrow-red" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="8" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#ba1a1a"></path>
+</marker>
+<marker id="arrow-green" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="8" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#006860"></path>
+</marker>
+<filter height="140%" id="glow-red" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Standard Compliant Edges -->
+<!-- Lidar Driver -> /scan -->
+<path d="M 120 70 L 260 70" marker-end="url(#arrow-blue)" stroke="#006194" stroke-width="2"></path>
+<!-- /scan -> Planner Server -->
+<path d="M 330 70 L 440 95" marker-end="url(#arrow-blue)" stroke="#006194" stroke-width="2"></path>
+<!-- Camera Driver -> /camera/raw -->
+<path d="M 120 130 L 255 130" marker-end="url(#arrow-blue)" stroke="#006194" stroke-width="2"></path>
+<!-- /camera/raw -> Planner Server -->
+<path d="M 350 130 L 440 115" marker-end="url(#arrow-blue)" stroke="#006194" stroke-width="2"></path>
+<!-- Planner Server -> /cmd_vel (Legitimate) -->
+<path d="M 500 120 L 340 215" marker-end="url(#arrow-green)" stroke="#006860" stroke-dasharray="4,3" stroke-width="2"></path>
+<!-- /cmd_vel -> Controller Server -->
+<path d="M 270 230 L 440 235" marker-end="url(#arrow-blue)" stroke="#006194" stroke-width="2"></path>
+<!-- Controller Server -> Diff Drive Base -->
+<path d="M 530 240 L 590 240" marker-end="url(#arrow-blue)" stroke="#006194" stroke-width="2"></path>
+<!-- SROS2 Sentinel Overseeing Graph -->
+<path d="M 340 30 L 300 60" stroke="#006860" stroke-dasharray="2,2" stroke-width="1.5"></path>
+<path d="M 360 30 L 460 85" stroke="#006860" stroke-dasharray="2,2" stroke-width="1.5"></path>
+<!-- ROGUE INJECTION EDGE: /teleop_keyboard -> /cmd_vel (HIGHLIGHTED IN CRIMSON WITH PULSE) -->
+<path d="M 120 220 L 250 220" filter="url(#glow-red)" id="rogue-edge-svg" marker-end="url(#arrow-red)" stroke="#ba1a1a" stroke-width="3.5"></path>
+<!-- Injected packet circle animation -->
+<circle cx="150" cy="220" fill="#ba1a1a" r="4">
+<animate attributename="cx" dur="1.2s" repeatcount="indefinite" values="120;250"></animate>
+<animate attributename="opacity" dur="1.2s" repeatcount="indefinite" values="1;0.2"></animate>
+</circle>
+<circle cx="180" cy="220" fill="#ffffff" r="3">
+<animate attributename="cx" begin="0.4s" dur="1.2s" repeatcount="indefinite" values="120;250"></animate>
+</circle>
+<!-- NODES (Rounded rects with labels) -->
+<!-- 1. Node: /lidar_driver -->
+<g transform="translate(30, 50)">
+<rect fill="#ffffff" height="36" rx="6" stroke="#707881" stroke-width="1" width="90"></rect>
+<text fill="#131b2e" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="45" y="18">/lidar_driver</text>
+<text fill="#006860" font-family="Inter" font-size="8" text-anchor="middle" x="45" y="29">SEC ENCLAVE</text>
+</g>
+<!-- 2. Node: /camera_driver -->
+<g transform="translate(30, 112)">
+<rect fill="#ffffff" height="36" rx="6" stroke="#707881" stroke-width="1" width="90"></rect>
+<text fill="#131b2e" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="45" y="18">/camera_driver</text>
+<text fill="#006860" font-family="Inter" font-size="8" text-anchor="middle" x="45" y="29">SEC ENCLAVE</text>
+</g>
+<!-- 3. ROGUE NODE: /teleop_keyboard (CRITICAL) -->
+<g transform="translate(20, 202)">
+<rect fill="#ffdad6" height="40" rx="6" stroke="#ba1a1a" stroke-width="2" width="105"></rect>
+<text fill="#93000a" font-family="JetBrains Mono" font-size="9" font-weight="bold" text-anchor="middle" x="52" y="17">/teleop_keyboard</text>
+<text fill="#ba1a1a" font-family="Inter" font-size="8" font-weight="bold" text-anchor="middle" x="52" y="30">NO SROS2 PERM</text>
+</g>
+<!-- 4. TOPIC: /scan -->
+<g transform="translate(260, 56)">
+<ellipse cx="36" cy="14" fill="#eaedff" rx="34" ry="14" stroke="#006194" stroke-width="1"></ellipse>
+<text fill="#006194" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="36" y="18">/scan</text>
+</g>
+<!-- 5. TOPIC: /camera/raw -->
+<g transform="translate(255, 116)">
+<ellipse cx="44" cy="14" fill="#eaedff" rx="42" ry="14" stroke="#006194" stroke-width="1"></ellipse>
+<text fill="#006194" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="44" y="18">/camera/raw</text>
+</g>
+<!-- 6. TOPIC: /cmd_vel (TARGET OF ATTACK) -->
+<g transform="translate(250, 206)">
+<ellipse cx="44" cy="16" fill="#ffdad6" rx="42" ry="16" stroke="#ba1a1a" stroke-width="2"></ellipse>
+<text fill="#ba1a1a" font-family="JetBrains Mono" font-size="10" font-weight="bold" text-anchor="middle" x="44" y="18">/cmd_vel</text>
+<text fill="#93000a" font-family="Inter" font-size="7" text-anchor="middle" x="44" y="27">QoS MISMATCH</text>
+</g>
+<!-- 7. Node: /planner_server -->
+<g transform="translate(440, 85)">
+<rect fill="#ffffff" height="40" rx="6" stroke="#707881" stroke-width="1" width="100"></rect>
+<text fill="#131b2e" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="50" y="18">/planner_server</text>
+<text fill="#3f4850" font-family="Inter" font-size="8" text-anchor="middle" x="50" y="30">Nav2 Stack (20Hz)</text>
+</g>
+<!-- 8. Node: /controller_server -->
+<g transform="translate(440, 215)">
+<rect fill="#ffffff" height="42" rx="6" stroke="#006194" stroke-width="1.5" width="105"></rect>
+<text fill="#131b2e" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="52" y="18">/controller_server</text>
+<text fill="#006860" font-family="Inter" font-size="8" text-anchor="middle" x="52" y="31">QoS: RELIABLE</text>
+</g>
+<!-- 9. Node: /diff_drive_base -->
+<g transform="translate(590, 222)">
+<rect fill="#eaedff" height="34" rx="6" stroke="#707881" stroke-width="1" width="80"></rect>
+<text fill="#131b2e" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="40" y="17">/diff_drive_base</text>
+<text fill="#3f4850" font-family="Inter" font-size="7" text-anchor="middle" x="40" y="27">Actuator Enclave</text>
+</g>
+<!-- 10. Overseer: /sros2_sentinel -->
+<g transform="translate(300, 10)">
+<rect fill="#006860" height="24" rx="12" width="90"></rect>
+<text fill="#ffffff" font-family="JetBrains Mono" font-size="8" font-weight="bold" text-anchor="middle" x="45" y="15">⚙ /sros2_sentinel</text>
+</g>
+<!-- Warning Badge Label on Attack vector -->
+<g transform="translate(140, 190)">
+<rect fill="#ba1a1a" height="18" rx="4" width="95"></rect>
+<text fill="#ffffff" font-family="JetBrains Mono" font-size="7" font-weight="bold" id="rogue-edge-label" text-anchor="middle" x="47" y="13">ROGUE INJECTION (42Hz)</text>
+</g>
+</svg>
+<!-- Floating Map Zoom Controls -->
+<div class="absolute bottom-2 right-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur p-1 rounded-md shadow-sm">
+<button class="w-6 h-6 flex items-center justify-center text-on-surface hover:bg-surface-container rounded text-sm font-bold">+</button>
+<button class="w-6 h-6 flex items-center justify-center text-on-surface hover:bg-surface-container rounded text-sm font-bold">-</button>
+</div>
+</div>
+<!-- Edge Diagnostic & Remediation Trigger Strip -->
+<div class="mt-space-sm p-3 bg-surface-container rounded-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[20px]">security</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Unauthenticated Topic Publisher Breach</span>
+<span class="font-label-code text-label-code text-on-surface-variant">Policy [DDS-SEC-04] missing keystore certificate for <code class="text-error font-bold">/teleop_keyboard</code></span>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-wrap">
+<button class="px-3 py-1.5 rounded bg-error text-on-error hover:bg-opacity-90 font-label-code text-label-code font-bold transition-all shadow-sm flex items-center gap-1" onclick="isolateRoguePublisher()" type="button">
+<span class="material-symbols-outlined text-[14px]">block</span> Isolate Rogue Publisher
+            </button>
+<button class="px-3 py-1.5 rounded bg-surface-container-lowest text-primary hover:bg-surface-container-high font-label-code text-label-code font-semibold transition-all shadow-sm" onclick="applyGitPatch('QOS-01')" type="button">
+              Harmonize QoS Policy
+            </button>
+</div>
+</div>
+</div>
+<!-- CARD: DDS Telemetry & Real-Time Topic Burst Heatmap -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-space-sm gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">DDS Telemetry &amp; Topic Burst Heatmap</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Spectral frequency analysis of RTPS discovery packets &amp; payload throughput.</p>
+</div>
+<!-- Time Range Selector -->
+<div class="inline-flex rounded-lg bg-surface-container-low p-0.5 font-label-code text-label-code">
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface">5m</button>
+<button class="px-2 py-0.5 rounded bg-surface-container-lowest font-bold text-primary shadow-xs">15m (Active)</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface">1h</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>WS LIVE
+            </button>
+</div>
+</div>
+<!-- Telemetry Stat Row with Inline SVG Sparklines -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter py-2 mb-space-sm">
+<div class="bg-surface-container-low p-2.5 rounded-lg flex flex-col justify-between">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">Throughput</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-label-code text-label-code text-on-surface font-bold text-[14px]">284.2 msgs/s</span>
+<span class="font-label-kpi text-label-kpi text-error font-semibold">+68%</span>
+</div>
+<!-- Sparkline SVG -->
+<svg class="w-full h-5 mt-1" viewbox="0 0 100 20">
+<polyline fill="none" points="0,15 15,14 30,12 45,15 60,11 75,5 90,2 100,4" stroke="#ba1a1a" stroke-width="1.8"></polyline>
+</svg>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg flex flex-col justify-between">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">Jitter (RTPS)</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-label-code text-label-code text-on-surface font-bold text-[14px]">1.40 ms</span>
+<span class="font-label-kpi text-label-kpi text-tertiary font-semibold">±0.1ms</span>
+</div>
+<svg class="w-full h-5 mt-1" viewbox="0 0 100 20">
+<polyline fill="none" points="0,10 20,9 40,11 60,8 80,10 100,9" stroke="#006860" stroke-width="1.8"></polyline>
+</svg>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg flex flex-col justify-between">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">Packet Loss</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-label-code text-label-code text-on-surface font-bold text-[14px]">0.02 %</span>
+<span class="font-label-kpi text-label-kpi text-tertiary font-semibold">Nominal</span>
+</div>
+<svg class="w-full h-5 mt-1" viewbox="0 0 100 20">
+<polyline fill="none" points="0,18 25,18 50,17 75,18 100,18" stroke="#006194" stroke-width="1.8"></polyline>
+</svg>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg flex flex-col justify-between">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">QoS Volatility</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-label-code text-label-code text-error font-bold text-[14px]">78 / 100</span>
+<span class="font-label-kpi text-label-kpi text-error font-semibold">High</span>
+</div>
+<svg class="w-full h-5 mt-1" viewbox="0 0 100 20">
+<polyline fill="none" points="0,15 20,12 40,16 60,8 80,4 100,2" stroke="#ba1a1a" stroke-width="1.8"></polyline>
+</svg>
+</div>
+</div>
+<!-- Full Spectral Heatmap Matrix for ROS 2 Topics -->
+<div class="w-full overflow-x-auto">
+<div class="min-w-[500px] flex flex-col gap-1.5">
+<!-- Timeline header -->
+<div class="grid grid-cols-12 text-[9px] font-label-kpi text-on-surface-variant uppercase px-2">
+<div class="col-span-3 text-left">ROS 2 Topic Channel</div>
+<div class="col-span-1 text-center">-14m</div>
+<div class="col-span-1 text-center">-11m</div>
+<div class="col-span-1 text-center">-8m</div>
+<div class="col-span-1 text-center">-5m</div>
+<div class="col-span-1 text-center">-3m</div>
+<div class="col-span-1 text-center">-2m</div>
+<div class="col-span-1 text-center">-1m</div>
+<div class="col-span-1 text-center font-bold text-error">NOW</div>
+<div class="col-span-1 text-right">Hz Rate</div>
+</div>
+<!-- Row 1: /cmd_vel (SPIKING IN CRIMSON) -->
+<div class="grid grid-cols-12 items-center bg-surface-container-low/70 rounded p-1.5">
+<div class="col-span-3 flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+<span class="font-label-code text-label-code font-bold text-error truncate">/cmd_vel</span>
+</div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-secondary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-error-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-error"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-error shadow-sm"></div></div>
+<div class="col-span-1 text-right font-label-code text-label-code font-bold text-error">42.4 Hz</div>
+</div>
+<!-- Row 2: /scan (LiDAR) -->
+<div class="grid grid-cols-12 items-center bg-surface-container-low/70 rounded p-1.5">
+<div class="col-span-3 flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-code text-label-code font-semibold text-on-surface truncate">/scan</span>
+</div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed-dim"></div></div>
+<div class="col-span-1 text-right font-label-code text-label-code text-on-surface">15.0 Hz</div>
+</div>
+<!-- Row 3: /camera/depth -->
+<div class="grid grid-cols-12 items-center bg-surface-container-low/70 rounded p-1.5">
+<div class="col-span-3 flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-code text-label-code font-semibold text-on-surface truncate">/camera/depth</span>
+</div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 text-right font-label-code text-label-code text-on-surface">30.1 Hz</div>
+</div>
+<!-- Row 4: /tf (Transforms) -->
+<div class="grid grid-cols-12 items-center bg-surface-container-low/70 rounded p-1.5">
+<div class="col-span-3 flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-code text-label-code font-semibold text-on-surface truncate">/tf</span>
+</div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-primary-fixed"></div></div>
+<div class="col-span-1 text-right font-label-code text-label-code text-on-surface">50.0 Hz</div>
+</div>
+<!-- Row 5: /diagnostics -->
+<div class="grid grid-cols-12 items-center bg-surface-container-low/70 rounded p-1.5">
+<div class="col-span-3 flex items-center gap-1.5 truncate">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-code text-label-code font-semibold text-on-surface truncate">/diagnostics</span>
+</div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 p-0.5"><div class="h-5 rounded bg-surface-container"></div></div>
+<div class="col-span-1 text-right font-label-code text-label-code text-on-surface">1.0 Hz</div>
+</div>
+</div>
+</div>
+<!-- Heatmap Legend -->
+<div class="flex items-center justify-between pt-space-xs text-[10px] font-label-kpi text-on-surface-variant uppercase">
+<div class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded bg-surface-container"></span><span>Idle</span>
+<span class="w-2.5 h-2.5 rounded bg-primary-fixed ml-2"></span><span>Nominal</span>
+<span class="w-2.5 h-2.5 rounded bg-secondary-fixed ml-2"></span><span>Elevated</span>
+<span class="w-2.5 h-2.5 rounded bg-error ml-2"></span><span>Spike / Flooding</span>
+</div>
+<span class="font-label-code text-label-code">RTPS Discovery Packets: 1,420 msgs (Peak)</span>
+</div>
+</div>
+</div>
+<!-- ==================== RIGHT COLUMN (40% / 5 COLS) ==================== -->
+<div class="lg:col-span-5 flex flex-col gap-gutter">
+<!-- CARD: 3D AMR Digital Twin & Attack Arena (ROBOGUARD-X1) -->
+<div id="section-twin" class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col scroll-mt-28">
+<!-- Header & View Perspective Tabs -->
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">precision_manufacturing</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">3D AMR Digital Twin: ROBOGUARD-X1</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time cyber-physical state &amp; cryptographical perimeter.</p>
+</div>
+<span class="font-label-code text-label-code px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed-variant font-bold">mTLS ENCLAVE</span>
+</div>
+<div class="flex items-center gap-1 py-1 font-label-code text-label-code">
+<button onclick="setCameraView('orbit')" class="cam-btn px-2 py-1 rounded bg-primary text-on-primary font-bold shadow-xs">Cinematic 360°</button>
+<button onclick="setCameraView('sensor')" class="cam-btn px-2 py-1 rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface">Sensor POV</button>
+<button onclick="setCameraView('chassis')" class="cam-btn px-2 py-1 rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface">Edge Enclave</button>
+</div>
+<!-- 3D Digital Twin Viewport & Geodesic Shield Overlay -->
+<div id="twin-container" class="relative w-full h-72 rounded-lg bg-surface-container-low overflow-hidden mt-space-xs flex items-center justify-center shadow-inner">
+<canvas id="twin-canvas" class="w-full h-full absolute inset-0 z-0"></canvas>
+<!-- Holographic Security Geodesic Overlay & Telemetry Readouts -->
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent flex flex-col justify-between p-3 pointer-events-none">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-inverse-surface/80 backdrop-blur font-label-code text-label-code text-primary-fixed">
+                SHIELD: SROS2 INTEGRITY 99.8%
+              </span>
+<span class="px-2 py-0.5 rounded bg-error/80 backdrop-blur font-label-code text-label-code text-on-error animate-pulse">
+                UNAUTHORIZED YAW OVERRIDE
+              </span>
+</div>
+<!-- Overlaid Telemetry Heads-Up Ribbon -->
+<div class="grid grid-cols-4 gap-1 bg-surface-container-lowest/90 backdrop-blur rounded p-1.5 text-on-surface">
+<div class="flex flex-col">
+<span class="font-label-kpi text-[9px] uppercase text-on-surface-variant">Vel X</span>
+<span class="font-label-code text-label-code font-bold text-error">0.82 m/s</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-kpi text-[9px] uppercase text-on-surface-variant">LiDAR</span>
+<span class="font-label-code text-label-code font-bold text-tertiary">15.0 Hz</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-kpi text-[9px] uppercase text-on-surface-variant">Yaw</span>
+<span class="font-label-code text-label-code font-bold text-primary">12.4° Drift</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-kpi text-[9px] uppercase text-on-surface-variant">Enclave</span>
+<span class="font-label-code text-label-code font-bold text-tertiary">LOCKED</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Cyber-Physical Attack Simulator Section -->
+<div class="pt-space-sm flex flex-col gap-space-xs">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant tracking-wider">Simulate Cyber-Physical Attack Vector</span>
+<div class="grid grid-cols-3 gap-1.5">
+<button class="attack-mode-btn p-2 rounded bg-error-container text-on-error-container text-left flex flex-col justify-between transition-all" onclick="switchAttackTab(this, 'cmd_vel')" style="border-left: 3px solid #ba1a1a;" type="button">
+<span class="font-label-kpi text-[9px] uppercase opacity-80">Vector 1 (Active)</span>
+<span class="font-label-code text-label-code font-bold">Rogue /cmd_vel</span>
+</button>
+<button class="attack-mode-btn p-2 rounded bg-surface-container-low text-on-surface-variant hover:bg-surface-container text-left flex flex-col justify-between transition-all" onclick="switchAttackTab(this, 'lidar')" type="button">
+<span class="font-label-kpi text-[9px] uppercase opacity-80">Vector 2</span>
+<span class="font-label-code text-label-code font-semibold">Phantom LiDAR</span>
+</button>
+<button class="attack-mode-btn p-2 rounded bg-surface-container-low text-on-surface-variant hover:bg-surface-container text-left flex flex-col justify-between transition-all" onclick="switchAttackTab(this, 'storm')" type="button">
+<span class="font-label-kpi text-[9px] uppercase opacity-80">Vector 3</span>
+<span class="font-label-code text-label-code font-semibold">DDS Multicast Storm</span>
+</button>
+</div>
+<button class="mt-1 w-full py-2 px-3 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-headline-md text-headline-md flex items-center justify-center gap-2 transition-colors shadow-sm" onclick="isolateRoguePublisher()" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+            Tackle Attack &amp; Engage Countermeasure
+          </button>
+</div>
+<!-- Live Defense Execution Log Terminal Preview -->
+<div class="mt-space-sm bg-inverse-surface text-inverse-on-surface rounded-lg p-2.5 flex flex-col">
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-code text-[10px] text-surface-variant uppercase font-semibold">Live Enforcer Console</span>
+</div>
+<span class="font-label-code text-[10px] text-primary-fixed">Clamped: 4,192 pkts</span>
+</div>
+<pre class="font-label-code text-[10px] leading-tight text-on-secondary-fixed max-h-20 overflow-y-auto whitespace-pre-wrap select-all font-mono" id="terminal-log-content">[14:22:04] [INFO] SROS2 daemon initialized with 6 enclave certs.
+[14:22:10] [WARN] Node /teleop_keyboard publishing without x509 enclave token.
+[14:22:15] [ALERT] Actuation mismatch: commanded 0.82m/s, Nav2 planned 0.0m/s.
+[14:22:18] [AUDIT] eBPF socket inspection triggered on ROS 2 Jazzy domain 0.</pre>
+</div>
+</div>
+<!-- CARD: Fleet Incident Horizon & Mini Fleet Enclave Posture Matrix -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col">
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">timeline</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Fleet Incident Horizon &amp; Predictive Stream</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">T-30m historical events through T+15m projected lateral contamination.</p>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded bg-error-container text-on-error-container font-semibold">AMR-01 COMPROMISED</span>
+</div>
+<!-- Predictive Timeline Visualization -->
+<div class="py-2 flex items-center justify-between gap-1">
+<div class="flex flex-col items-center flex-1">
+<span class="font-label-kpi text-[9px] text-on-surface-variant">T-25m</span>
+<div class="w-2.5 h-2.5 rounded-full bg-tertiary mt-1"></div>
+<span class="font-label-code text-[9px] text-on-surface-variant mt-1 text-center">Keystore Sync</span>
+</div>
+<div class="h-0.5 bg-surface-container flex-1"></div>
+<div class="flex flex-col items-center flex-1">
+<span class="font-label-kpi text-[9px] text-error font-bold">T-04m</span>
+<div class="w-3 h-3 rounded-full bg-error mt-1 animate-ping"></div>
+<span class="font-label-code text-[9px] text-error font-bold mt-1 text-center">Unauth /cmd_vel</span>
+</div>
+<div class="h-0.5 bg-surface-container flex-1"></div>
+<div class="flex flex-col items-center flex-1">
+<span class="font-label-kpi text-[9px] text-secondary font-bold">T+02m (Proj)</span>
+<div class="w-2.5 h-2.5 rounded-full bg-secondary mt-1"></div>
+<span class="font-label-code text-[9px] text-secondary mt-1 text-center">eBPF Quarantine</span>
+</div>
+<div class="h-0.5 bg-surface-container flex-1"></div>
+<div class="flex flex-col items-center flex-1">
+<span class="font-label-kpi text-[9px] text-on-surface-variant">T+15m (Proj)</span>
+<div class="w-2.5 h-2.5 rounded-full bg-surface-dim mt-1"></div>
+<span class="font-label-code text-[9px] text-on-surface-variant mt-1 text-center">Nav2 Fleet Safe</span>
+</div>
+</div>
+<!-- Active Threat Stream Callout with Emergency Controls -->
+<div class="mt-2 p-2.5 bg-error-container/20 rounded-lg flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-badge text-label-badge font-bold text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">crisis_alert</span>
+              Lateral Nav2 Contagion Projected (89% Confidence)
+            </span>
+<span class="font-label-code text-label-code text-on-surface-variant">Zone 4 Warehouse</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Unenforced topic forwarding on ROS 2 bridge router <code>192.168.1.104</code> may allow actuation commands to spill over into AMR-02 and AMR-04.</p>
+<div class="flex items-center gap-2 pt-1">
+<button class="px-3 py-1 bg-error text-on-error hover:bg-opacity-90 rounded font-label-code text-label-code font-bold transition-all shadow-xs flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[13px]">power_settings_new</span> Engage Fleet E-STOP
+            </button>
+<button class="px-3 py-1 bg-surface-container-lowest text-on-surface hover:bg-surface-container rounded font-label-code text-label-code font-semibold transition-all shadow-xs" onclick="applyGitPatch('SROS-QUARANTINE')" type="button">
+              SROS2 Keystore Quarantine
+            </button>
+</div>
+</div>
+<!-- Mini Fleet Enclave Posture Matrix Table (AMR-01 - AMR-06) -->
+<div class="mt-space-sm overflow-x-auto">
+<table class="w-full text-left font-label-code text-label-code">
+<thead>
+<tr class="text-[9px] uppercase font-label-kpi text-on-surface-variant bg-surface-container-low">
+<th class="p-1.5">Asset ID</th>
+<th class="p-1.5">Model</th>
+<th class="p-1.5">Status</th>
+<th class="p-1.5">Enclave State</th>
+<th class="p-1.5 text-right">Throughput</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<tr class="bg-error-container/10">
+<td class="p-1.5 font-bold text-error">AMR-01</td>
+<td class="p-1.5 text-on-surface">RoboGuard-X1</td>
+<td class="p-1.5"><span class="px-1.5 py-0.5 rounded-full bg-error-container text-on-error-container font-semibold">Compromised</span></td>
+<td class="p-1.5 text-error">Breached</td>
+<td class="p-1.5 text-right text-error font-bold">284 msgs/s</td>
+</tr>
+<tr>
+<td class="p-1.5 font-bold text-on-surface">AMR-02</td>
+<td class="p-1.5 text-on-surface">RoboGuard-X1</td>
+<td class="p-1.5"><span class="px-1.5 py-0.5 rounded-full bg-surface-container-low text-tertiary font-semibold">Nominal</span></td>
+<td class="p-1.5 text-tertiary">REP-105 Locked</td>
+<td class="p-1.5 text-right text-on-surface">44 msgs/s</td>
+</tr>
+<tr>
+<td class="p-1.5 font-bold text-on-surface">AMR-03</td>
+<td class="p-1.5 text-on-surface">RoboGuard-Heavy</td>
+<td class="p-1.5"><span class="px-1.5 py-0.5 rounded-full bg-surface-container-low text-tertiary font-semibold">Nominal</span></td>
+<td class="p-1.5 text-tertiary">REP-105 Locked</td>
+<td class="p-1.5 text-right text-on-surface">52 msgs/s</td>
+</tr>
+<tr>
+<td class="p-1.5 font-bold text-on-surface">AMR-04</td>
+<td class="p-1.5 text-on-surface">RoboGuard-X1</td>
+<td class="p-1.5"><span class="px-1.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-semibold">Warning (Drift)</span></td>
+<td class="p-1.5 text-on-surface-variant">SROS2 Syncing</td>
+<td class="p-1.5 text-right text-on-surface">61 msgs/s</td>
+</tr>
+<tr>
+<td class="p-1.5 font-bold text-on-surface">AMR-05</td>
+<td class="p-1.5 text-on-surface">Forklift-Autonomous</td>
+<td class="p-1.5"><span class="px-1.5 py-0.5 rounded-full bg-surface-container-low text-tertiary font-semibold">Nominal</span></td>
+<td class="p-1.5 text-tertiary">REP-105 Locked</td>
+<td class="p-1.5 text-right text-on-surface">38 msgs/s</td>
+</tr>
+<tr>
+<td class="p-1.5 font-bold text-on-surface">AMR-06</td>
+<td class="p-1.5 text-on-surface">PalletMover-Z</td>
+<td class="p-1.5"><span class="px-1.5 py-0.5 rounded-full bg-surface-container-low text-tertiary font-semibold">Nominal</span></td>
+<td class="p-1.5 text-tertiary">REP-105 Locked</td>
+<td class="p-1.5 text-right text-on-surface">39 msgs/s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- CARD: Deterministic Findings & 1-Click Git Patches -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col">
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">code</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Deterministic Findings &amp; 1-Click Git Patches</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Verified cryptographic and ROS 2 launch file remedies generated by RoboGuard Engine.</p>
+</div>
+<span class="font-label-code text-label-code px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold">2 REMEDIES READY</span>
+</div>
+<!-- Finding 1: SROS2 Security Flag Disabled in Launch Script -->
+<div class="mt-space-xs p-3 bg-surface-container-low rounded-lg flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-code text-label-code font-bold text-error">[SEC-SROS2-001] Missing Enforce Flag</span>
+<span class="font-label-code text-[10px] text-on-surface-variant">launch/bringup.launch.py</span>
+</div>
+<!-- Code Diff Box -->
+<div class="bg-inverse-surface text-inverse-on-surface p-2 rounded font-label-code text-[11px] font-mono leading-snug">
+<div class="text-error bg-error/10 px-1 rounded">- os.environ['ROS_SECURITY_ENABLE'] = 'false'</div>
+<div class="text-tertiary bg-tertiary/10 px-1 rounded mt-0.5">+ os.environ['ROS_SECURITY_ENABLE'] = 'true'</div>
+<div class="text-tertiary bg-tertiary/10 px-1 rounded mt-0.5">+ os.environ['ROS_SECURITY_STRATEGY'] = 'Enforce'</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Enables hardware PKCS#11 enclave validation.</span>
+<button class="px-3 py-1 rounded bg-primary hover:bg-primary-container text-on-primary font-label-code text-label-code font-bold transition-all shadow-xs flex items-center gap-1" onclick="applyGitPatch('SEC-SROS2-001')" type="button">
+<span class="material-symbols-outlined text-[13px]">commit</span> Apply Git Patch
+            </button>
+</div>
+</div>
+<!-- Finding 2: QoS Reliability Contract Harmonization -->
+<div class="mt-2 p-3 bg-surface-container-low rounded-lg flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-code text-label-code font-bold text-secondary">[QOS-REL-001] Reliability Mismatch Fix</span>
+<span class="font-label-code text-[10px] text-on-surface-variant">config/nav2_params.yaml</span>
+</div>
+<!-- Code Diff Box -->
+<div class="bg-inverse-surface text-inverse-on-surface p-2 rounded font-label-code text-[11px] font-mono leading-snug">
+<div class="text-error bg-error/10 px-1 rounded">- qos_overrides: {/cmd_vel: {reliability: best_effort}}</div>
+<div class="text-tertiary bg-tertiary/10 px-1 rounded mt-0.5">+ qos_overrides: {/cmd_vel: {reliability: reliable}}</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mitigates packet drops during high DDS network contention.</span>
+<button class="px-3 py-1 rounded bg-secondary hover:bg-secondary-container text-on-secondary font-label-code text-label-code font-bold transition-all shadow-xs flex items-center gap-1" onclick="applyGitPatch('QOS-REL-001')" type="button">
+<span class="material-symbols-outlined text-[13px]">check</span> Commit &amp; Re-encrypt
+            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FLOATING QUICK ACTIONS & SYSTEM RUNTIME BAR (BOTTOM VIEWPORT ANCHORED) -->
+<div class="sticky bottom-3 mx-gutter-lg bg-surface-container-lowest/95 backdrop-blur-md rounded-xl p-space-sm shadow-xl flex flex-col sm:flex-row items-center justify-between gap-space-sm border-t border-surface-container">
+<div class="flex items-center gap-space-md flex-wrap">
+<div class="flex items-center gap-1.5 font-label-code text-label-code text-on-surface">
+<span class="material-symbols-outlined text-primary text-[16px]">memory</span>
+<span class="font-bold">FastDDS v2.14</span>
+</div>
+<div class="flex items-center gap-1.5 font-label-code text-label-code text-on-surface">
+<span class="material-symbols-outlined text-tertiary text-[16px]">key</span>
+<span>SROS2 Keystore: <strong class="text-tertiary">3 Valid Enclave Keys</strong></span>
+</div>
+<div class="hidden md:flex items-center gap-2">
+<span class="font-label-kpi text-label-kpi uppercase text-on-surface-variant">Emergency Rate Limiter:</span>
+<input class="accent-primary cursor-pointer w-24 h-1.5 bg-surface-container rounded-lg" max="100" min="10" type="range" value="45"/>
+<span class="font-label-code text-label-code font-semibold text-primary">45 Hz Clamp</span>
+</div>
+</div>
+<!-- AI Sentinel Status Trigger Badge -->
+<div class="flex items-center gap-space-xs">
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container shadow-md font-label-badge text-label-badge font-semibold cursor-pointer hover:opacity-95 transition-all">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>AI Sentinel Active (Zero Trust)</span>
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse ml-1"></span>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-code text-label-code font-bold transition-all shadow-sm" onclick="alert('Air-gap lock engaged. All SROS2 endpoints frozen to current cryptographic baseline.')" type="button">
+        Lock Air-Gap
+      </button>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] py-space-sm"><div class="w-full px-gutter-lg flex flex-col md:flex-row items-center justify-between gap-space-xs text-on-surface-variant"><div class="flex items-center gap-space-md"><span class="font-label-code text-label-code text-on-surface font-semibold">ROBOGUARD AI</span><span class="font-body-sm text-body-sm">Mission-Critical ROS 2 Jazzy &amp; SROS2 Defense Security Operations Center</span></div><div class="flex items-center gap-space-lg"><span class="font-label-code text-label-code">RTPS DISCOVERY: DDS DOMAIN 0</span><span class="font-label-code text-label-code">SEC-PROFILE: NIST SP 800-82r3</span><span class="font-label-code text-label-code text-tertiary">AIR-GAP SECURED</span></div></div></footer></body></html>

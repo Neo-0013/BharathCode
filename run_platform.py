@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-ROBOGUARD AI — Unified Launcher
-Starts the Hero server (FastAPI/port 8000) and the SOC Dashboard (Streamlit/port 8501)
-in parallel, then opens the hero page in the default browser.
+ROBOGUARD AI — Unified Platform Launcher
+Starts the unified high-performance platform server (FastAPI on port 8000)
+which serves both the Storytelling Hero Landing Page and the full 3D Robotics SOC Dashboard.
 
 Usage:
-    python3 launch.py
-    python3 launch.py --no-browser
-    python3 launch.py --hero-port 3000 --soc-port 8080
+    python3 run_platform.py
+    python3 run_platform.py --no-browser
+    python3 run_platform.py --port 8080
+    python3 run_platform.py --with-streamlit  # optionally launch secondary Streamlit instance on 8501
 """
 
 import argparse
@@ -23,37 +24,43 @@ ROOT = Path(__file__).resolve().parent
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Launch ROBOGUARD AI platform")
-    p.add_argument("--hero-port", type=int, default=8000,
-                   help="Port for the Hero landing page server (default: 8000)")
-    p.add_argument("--soc-port",  type=int, default=8501,
-                   help="Port for the SOC Streamlit dashboard (default: 8501)")
+    p = argparse.ArgumentParser(description="Launch ROBOGUARD AI Unified Platform")
+    p.add_argument("--port", type=int, default=8000,
+                   help="Port for the unified server (default: 8000)")
+    p.add_argument("--hero-port", type=int, default=None,
+                   help="Alias for --port")
+    p.add_argument("--soc-port", type=int, default=8501,
+                   help="Port for optional secondary Streamlit server (default: 8501)")
+    p.add_argument("--with-streamlit", action="store_true",
+                   help="Also start the secondary Streamlit app on port 8501")
     p.add_argument("--no-browser", action="store_true",
                    help="Don't open a browser automatically")
     p.add_argument("--host", default="0.0.0.0",
-                   help="Bind host for both servers (default: 0.0.0.0)")
+                   help="Bind host (default: 0.0.0.0)")
     return p.parse_args()
 
 
-def banner(hero_port: int, soc_port: int):
-    print("""
+def banner(port: int, with_streamlit: bool = False, soc_port: int = 8501):
+    stream_line = f"║  📊  Streamlit Dev →  http://localhost:{soc_port:<5}       ║\n" if with_streamlit else ""
+    print(f"""
 ╔══════════════════════════════════════════════════════╗
-║          🛡️  ROBOGUARD AI — Launching...            ║
+║     🛡️  ROBOGUARD AI — Unified Platform Server      ║
 ╠══════════════════════════════════════════════════════╣
 ║                                                      ║
-║  🌐  Hero Landing  →  http://localhost:{hero:<5}       ║
-║  🛡️  SOC Dashboard →  http://localhost:{soc:<5}       ║
-║                                                      ║
-║  Press Ctrl+C to stop both servers                   ║
+║  🌐  Hero Landing  →  http://localhost:{port:<5}       ║
+║  🛡️  SOC Dashboard →  http://localhost:{port:<5}/soc   ║
+║  ⚡  Single Unified FastAPI Server (Sub-10ms latency)║
+{stream_line}║                                                      ║
+║  Press Ctrl+C to stop the platform                   ║
 ╚══════════════════════════════════════════════════════╝
-""".format(hero=hero_port, soc=soc_port))
+""")
 
 
-def start_hero(host: str, port: int) -> subprocess.Popen:
-    """Start the FastAPI hero server via uvicorn."""
+def start_server(host: str, port: int) -> subprocess.Popen:
+    """Start the unified FastAPI server via uvicorn."""
     cmd = [
         sys.executable, "-m", "uvicorn",
-        "hero_server:app",
+        "server:app",
         "--host", host,
         "--port", str(port),
         "--log-level", "warning",
@@ -61,8 +68,8 @@ def start_hero(host: str, port: int) -> subprocess.Popen:
     return subprocess.Popen(cmd, cwd=str(ROOT))
 
 
-def start_soc(host: str, port: int) -> subprocess.Popen:
-    """Start the Streamlit SOC dashboard."""
+def start_streamlit(host: str, port: int) -> subprocess.Popen:
+    """Start the secondary Streamlit dashboard if requested."""
     cmd = [
         sys.executable, "-m", "streamlit", "run", "app.py",
         "--server.port", str(port),
@@ -71,11 +78,11 @@ def start_soc(host: str, port: int) -> subprocess.Popen:
         "--browser.gatherUsageStats", "false",
     ]
     env = os.environ.copy()
-    env["ROBOGUARD_HERO_URL"] = f"http://localhost:{port - 1}"  # hero port
+    env["ROBOGUARD_HERO_URL"] = f"http://localhost:8000"
     return subprocess.Popen(cmd, cwd=str(ROOT), env=env)
 
 
-def wait_for_server(port: int, timeout: float = 15.0, label: str = "server") -> bool:
+def wait_for_server(port: int, timeout: float = 12.0, label: str = "server") -> bool:
     """Poll until the server responds or timeout."""
     import socket
     deadline = time.time() + timeout
@@ -91,29 +98,34 @@ def wait_for_server(port: int, timeout: float = 15.0, label: str = "server") -> 
 
 def main():
     args = parse_args()
-    banner(args.hero_port, args.soc_port)
+    port = args.hero_port if args.hero_port is not None else args.port
+    banner(port, with_streamlit=args.with_streamlit, soc_port=args.soc_port)
 
     procs = []
 
-    print("  ⏳ Starting Hero server (FastAPI)…")
-    hero_proc = start_hero(args.host, args.hero_port)
-    procs.append(hero_proc)
+    print("  ⏳ Starting Unified High-Performance Server (FastAPI)…")
+    srv_proc = start_server(args.host, port)
+    procs.append(srv_proc)
 
-    print("  ⏳ Starting SOC Dashboard (Streamlit)…")
-    soc_proc = start_soc(args.host, args.soc_port)
-    procs.append(soc_proc)
+    if args.with_streamlit:
+        print("  ⏳ Starting secondary Streamlit server…")
+        st_proc = start_streamlit(args.host, args.soc_port)
+        procs.append(st_proc)
 
-    # Wait for hero to be ready before opening browser
-    if wait_for_server(args.hero_port, timeout=12, label="Hero"):
-        print(f"  ✅ Hero page ready at http://localhost:{args.hero_port}")
-    if wait_for_server(args.soc_port, timeout=20, label="SOC Dashboard"):
-        print(f"  ✅ SOC Dashboard ready at http://localhost:{args.soc_port}")
+    # Wait for server to be ready
+    if wait_for_server(port, timeout=10, label="Unified Platform"):
+        print(f"  ✅ Unified Platform ready at http://localhost:{port}")
+        print(f"     • Hero Landing Page : http://localhost:{port}/")
+        print(f"     • SOC Operations    : http://localhost:{port}/soc")
+
+    if args.with_streamlit and wait_for_server(args.soc_port, timeout=15, label="Streamlit"):
+        print(f"  ✅ Secondary Streamlit ready at http://localhost:{args.soc_port}")
 
     if not args.no_browser:
-        webbrowser.open(f"http://localhost:{args.hero_port}")
-        print(f"\n  🌐 Browser opened → http://localhost:{args.hero_port}")
+        webbrowser.open(f"http://localhost:{port}")
+        print(f"\n  🌐 Browser opened → http://localhost:{port}")
 
-    print("\n  🟢 Both servers running. Press Ctrl+C to stop.\n")
+    print("\n  🟢 ROBOGUARD AI is live. Press Ctrl+C to stop.\n")
 
     def _shutdown(sig, frame):
         print("\n  🛑 Shutting down ROBOGUARD AI...")
@@ -122,14 +134,13 @@ def main():
                 p.terminate()
             except Exception:
                 pass
-        # Give them a moment to die gracefully
-        time.sleep(1.5)
+        time.sleep(1.0)
         for p in procs:
             try:
                 p.kill()
             except Exception:
                 pass
-        print("  ✅ All servers stopped.")
+        print("  ✅ Platform stopped cleanly.")
         sys.exit(0)
 
     signal.signal(signal.SIGINT,  _shutdown)

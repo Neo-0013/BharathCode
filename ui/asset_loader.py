@@ -23,8 +23,9 @@ _VENDOR_MAP = {
     "gsap.min.js": "gsap.min.js",
     "ScrollTrigger.min.js": "ScrollTrigger.min.js",
     "ScrollToPlugin.min.js": "ScrollToPlugin.min.js",
+    "tailwindcss.js": "tailwindcss.js",
 }
-_SCRIPT_RE = re.compile(r'<script\s+src="https?://[^"]*/([^"/]+\.js)"\s*></script>')
+_SCRIPT_RE = re.compile(r'<script\s+src=[\"\']https?://([^\"\']+)[\"\']\s*></script>')
 _GRAPH_MARKER = "/*__ROBOGUARD_GRAPH_DATA__*/null"
 
 
@@ -40,7 +41,11 @@ def _vendor_text(name: str) -> Optional[str]:
 def inline_vendor_scripts(html: str) -> str:
     """Replace CDN script tags with inlined vendored copies when available."""
     def _sub(match: "re.Match[str]") -> str:
-        vendored = _VENDOR_MAP.get(match.group(1))
+        url = match.group(1)
+        if "tailwindcss" in url:
+            vendored = "tailwindcss.js"
+        else:
+            vendored = _VENDOR_MAP.get(url.split("/")[-1].split("?")[0])
         text = _vendor_text(vendored) if vendored else None
         if text is None:
             return match.group(0)  # leave CDN tag as a fallback
