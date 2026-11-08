@@ -114,8 +114,8 @@ def render_graph_explorer_page(diagnostic_engine):
             tree_eval = tf_analyzer.analyze_tf_tree(tf_edges)
             st.markdown(f"""
             <div class="rg-card">
-                <div style="font-weight: 600; color: #F8FAFC; font-size: 0.9rem;">REP-105 Coordinate Framework Conformance</div>
-                <div style="font-size: 0.8rem; color: #CBD5E1; margin-top: 0.35rem;">
+                <div style="font-weight: 700; color: #0F172A; font-size: 0.9rem;">REP-105 Coordinate Framework Conformance</div>
+                <div style="font-size: 0.8rem; color: #475569; margin-top: 0.35rem;">
                     Canonical Root Frames: <code>{', '.join(tree_eval['roots'])}</code><br>
                     Leaf Frames: <code>{', '.join(tree_eval['leaves'])}</code><br>
                     Total Frames: <b>{tree_eval['total_frames']}</b>

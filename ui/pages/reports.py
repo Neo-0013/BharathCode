@@ -20,7 +20,7 @@ def render_reports_page():
     if not current_analysis or not current_analysis.get("findings"):
         st.markdown(f"""
         <div class="rg-card" style="text-align: center; padding: 2.5rem 1rem;">
-            <div style="font-size: 1.05rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.5rem;">No Active Report to Generate</div>
+            <div style="font-size: 1.05rem; font-weight: 600; color: {UI_THEME['text_primary']}; margin-bottom: 0.5rem;">No Active Report to Generate</div>
             <div style="font-size: 0.85rem; color: {UI_THEME['text_secondary']}; max-width: 500px; margin: 0 auto;">
                 Perform an analysis or load a demonstration scenario first before generating exportable engineering reports.
             </div>

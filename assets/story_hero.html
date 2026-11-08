@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROBOGUARD AI — Autonomous Robotics Cybersecurity &amp; Diagnostics</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js & OrbitControls for 3D Hardware Simulation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- GSAP for Silky Smooth Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       CLASSIC AEROSPACE LIGHT SYSTEM (TREMOR & LINEAR INSPIRED)
+       ========================================================================== */
+    :root {
+      --bg-page: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --border-subtle: #E2E8F0;
+      --border-strong: #CBD5E1;
+      
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      
+      --primary: #1D4ED8;
+      --primary-hover: #1E40AF;
+      --primary-subtle: #EFF6FF;
+      --primary-border: #BFDBFE;
+
+      --emerald: #059669;
+      --emerald-subtle: #ECFDF5;
+      --emerald-border: #A7F3D0;
+
+      --rose: #DC2626;
+      --rose-subtle: #FEF2F2;
+      --rose-border: #FECACA;
+
+      --amber: #D97706;
+      --cyan: #0284C7;
+
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Navigation Bar */
+    .hero-navbar {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+    }
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .brand-pill {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.15rem 0.45rem;
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-link {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      color: var(--primary);
+      background: var(--bg-subtle);
+    }
+
+    .btn-launch-soc {
+      background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid #1E40AF;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-launch-soc:hover {
+      background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    }
+
+    /* Hero Section Container */
+    .hero-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem 2rem;
+    }
+
+    /* Hero Header Banner */
+    .hero-story-header {
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto 2.5rem auto;
+    }
+    .mission-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0.85rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+      margin-bottom: 1rem;
+    }
+    .hero-story-header h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0F172A;
+      line-height: 1.18;
+      margin-bottom: 1rem;
+    }
+    .hero-story-header h1 span {
+      background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-story-header p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* 3D Simulation Grid */
+    .story-viewport-grid {
+      display: grid;
+      grid-template-columns: 2.1fr 1fr;
+      gap: 1.5rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+    }
+    @media (max-width: 1024px) {
+      .story-viewport-grid { grid-template-columns: 1fr; }
+    }
+
+    /* 3D Canvas Box */
+    .canvas-3d-wrapper {
+      position: relative;
+      height: 560px;
+      background: linear-gradient(180deg, #F1F5F9 0%, #E2E8F0 100%);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+    #hero3dCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 3D Floating Overlays */
+    .canvas-top-pills {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+    .sim-pill {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border-strong);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dot-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .canvas-camera-controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      z-index: 10;
+    }
+    .cam-btn {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .cam-btn:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateX(-2px);
+    }
+
+    .canvas-bottom-telemetry {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .telem-box {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border-strong);
+      padding: 0.45rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-primary);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* Storytelling & Attack Interactive Card */
+    .story-card-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+    .story-step-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      transition: all 0.2s ease;
+    }
+    .story-step-box.active {
+      background: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.08);
+    }
+    .step-tag {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .step-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.35rem;
+    }
+    .step-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    /* Attack Triggers */
+    .attack-grid-triggers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .story-atk-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .story-atk-btn:hover {
+      border-color: var(--rose);
+      background: var(--rose-subtle);
+      color: var(--rose);
+    }
+    .story-atk-btn.active {
+      border-color: var(--rose);
+      background: var(--rose-subtle);
+      color: var(--rose);
+    }
+
+    .btn-tackle-action {
+      background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+      border: 1px solid #047857;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s ease;
+      margin-top: 0.5rem;
+    }
+    .btn-tackle-action:hover {
+      background: linear-gradient(135deg, #047857 0%, #059669 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+
+    /* ==========================================================================
+       PERSISTENT FLOATING LIVE AI COPILOT SENTINEL BOT
+       ========================================================================== */
+    .floating-ai-sentinel {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+    }
+    @keyframes sentinelFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes sentinelPulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.45); }
+      70% { box-shadow: 0 0 0 16px rgba(29, 78, 216, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
+    }
+    .sentinel-trigger-btn {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 100%);
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 8px 24px rgba(29, 78, 216, 0.35);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: #FFFFFF;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      animation: sentinelFloat 3.5s ease-in-out infinite, sentinelPulseRing 4s infinite;
+    }
+    .sentinel-trigger-btn:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 12px 30px rgba(29, 78, 216, 0.5);
+    }
+    .sentinel-hover-bubble {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 250px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 0.75rem 0.95rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      display: none;
+      pointer-events: none;
+      animation: slideUp 0.2s ease;
+    }
+    .floating-ai-sentinel:hover .sentinel-hover-bubble {
+      display: block;
+    }
+    .sentinel-badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--rose);
+      color: #FFFFFF;
+      font-size: 0.65rem;
+      font-weight: 800;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #FFFFFF;
+    }
+
+    /* Proactive Attack Pop-Up Alert Bubble */
+    .proactive-alert-bubble {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 320px;
+      background: #FFFFFF;
+      border: 1px solid var(--rose-border);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      display: none;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .alert-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .alert-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 0.15rem 0.5rem;
+      background: var(--rose-subtle);
+      color: var(--rose);
+      border-radius: 9999px;
+    }
+    .alert-body-text {
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      line-height: 1.45;
+    }
+
+    /* Expanded Chat Drawer */
+    .sentinel-chat-box {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 360px;
+      height: 480px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.25s ease;
+    }
+    .chat-header {
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-messages-scroll {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .chat-bubble {
+      padding: 0.75rem 0.95rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      max-width: 88%;
+    }
+    .chat-bubble.bot {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      align-self: flex-start;
+      border: 1px solid var(--border-subtle);
+    }
+    .chat-bubble.user {
+      background: var(--primary);
+      color: #FFFFFF;
+      align-self: flex-end;
+    }
+    .chat-input-bar {
+      padding: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 0.5rem;
+      background: #FFFFFF;
+    }
+    .chat-input-field {
+      flex: 1;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.8rem;
+      font-family: var(--font-sans);
+      outline: none;
+    }
+    .chat-input-field:focus {
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP STICKY NAVIGATION -->
+  <header class="hero-navbar">
+    <div class="brand-wrap">
+      <div class="brand-logo-icon">🛡️</div>
+      <div class="brand-title">
+        ROBOGUARD AI <span class="brand-pill">MISSION STORY · 3D</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <span class="nav-link" onclick="StoryApp.scrollTo('mission-story')">📖 Mission Brief</span>
+      <span class="nav-link" onclick="StoryApp.scrollTo('threat-model')">⚡ Threat Simulation</span>
+      <span class="nav-link" onclick="RobotHero3D.toggleTeardown()">📐 3D Hardware Teardown</span>
+      <button class="btn-launch-soc" onclick="StoryApp.launchDashboard()">
+        🚀 Launch SOC Dashboard
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO STORY CONTENT -->
+  <main class="hero-container" id="mission-story">
+    <div class="hero-story-header">
+      <div class="mission-badge">
+        <span>● LIVE ROBOTICS TELEMETRY</span> · ROS 2 JAZZY JALISCO
+      </div>
+      <h1>
+        Understand Your Robot.<br>
+        <span>Diagnose Failures. Tackle Cyberattacks.</span>
+      </h1>
+      <p>
+        Autonomous Mobile Robots face silent DDS middleware drops and unauthenticated actuation threats. ROBOGUARD AI delivers real-time 3D telemetry, deterministic QoS verification, and automated cryptographic tackling.
+      </p>
+    </div>
+
+    <!-- 3D SIMULATION GRID -->
+    <div class="story-viewport-grid" id="threat-model">
+      <!-- Left: Three.js 3D Viewport -->
+      <div class="canvas-3d-wrapper">
+        <canvas id="hero3dCanvas"></canvas>
+
+        <!-- Top Left Status Pills -->
+        <div class="canvas-top-pills">
+          <div class="sim-pill">
+            <span class="dot-pulse"></span>
+            AMR Unit: <b>ROBOGUARD-X1</b>
+          </div>
+          <div class="sim-pill" id="heroDefensePill">
+            Status: <span style="color: #059669;">Operational (REP-105)</span>
+          </div>
+        </div>
+
+        <!-- Top Right Camera Presets -->
+        <div class="canvas-camera-controls">
+          <button class="cam-btn" onclick="RobotHero3D.setCam('orbit')">🎥 Orbit 360°</button>
+          <button class="cam-btn" onclick="RobotHero3D.setCam('sensor')">👀 Sensor POV</button>
+          <button class="cam-btn" onclick="RobotHero3D.setCam('compute')">💻 Edge Compute Enclave</button>
+          <button class="cam-btn" id="btnHeroTeardown" onclick="RobotHero3D.toggleTeardown()">📐 Hardware Teardown</button>
+        </div>
+
+        <!-- Bottom Telemetry Bar -->
+        <div class="canvas-bottom-telemetry">
+          <div class="telem-box">
+            Velocity: <span id="lblVel" style="color: var(--primary);">0.45 m/s</span> · LiDAR: <span id="lblLidar" style="color: var(--emerald);">15.0 Hz</span> · Heading: <span id="lblHeading">14.2°</span>
+          </div>
+          <div class="telem-box" id="lblShieldStatus">
+            Cyber Shield: READY · Enclave: SROS2
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Story Chapter & Attack Tackle Console -->
+      <div class="story-card-sidebar">
+        <!-- Chapter 1 -->
+        <div class="story-step-box active">
+          <div class="step-tag">Step 1 · Mission State</div>
+          <div class="step-title">Autonomous Facility Patrol</div>
+          <div class="step-desc">
+            Roboguard-X1 is operating autonomously. The spinning LiDAR sweeps 360°, streaming depth data to Nav2, while the edge compute unit coordinates wheel kinematics.
+          </div>
+        </div>
+
+        <!-- Chapter 2 -->
+        <div class="story-step-box">
+          <div class="step-tag">Step 2 · Simulated Attack Vector</div>
+          <div class="step-title">Trigger Cyber-Physical Threat</div>
+          <div class="step-desc">
+            Select an adversarial vector to simulate real-time injection on the physical robot:
+          </div>
+
+          <div class="attack-grid-triggers">
+            <button class="story-atk-btn" id="btnAtk1" onclick="StoryApp.runAttack(1)">
+              <span>⚡ Attack 1: Rogue /cmd_vel Injection</span>
+              <span style="font-size: 0.68rem; font-weight: 800; color: var(--rose);">ACTUATION</span>
+            </button>
+            <button class="story-atk-btn" id="btnAtk2" onclick="StoryApp.runAttack(2)">
+              <span>⚡ Attack 2: LiDAR Phantom Obstacle</span>
+              <span style="font-size: 0.68rem; font-weight: 800; color: var(--rose);">PERCEPTION</span>
+            </button>
+            <button class="story-atk-btn" id="btnAtk3" onclick="StoryApp.runAttack(3)">
+              <span>⚡ Attack 3: DDS Multicast Flood</span>
+              <span style="font-size: 0.68rem; font-weight: 800; color: var(--rose);">NETWORK</span>
+            </button>
+          </div>
+
+          <!-- Tackle Countermeasure Button -->
+          <button class="btn-tackle-action" onclick="StoryApp.tackleAttack()">
+            🛡️ Tackle Attack &amp; Restore Mission
+          </button>
+        </div>
+
+        <!-- Action Card -->
+        <div style="background: var(--primary-subtle); border: 1px solid var(--primary-border); border-radius: 10px; padding: 1rem; text-align: center;">
+          <div style="font-size: 0.85rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">Ready to inspect full telemetry?</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Explore dynamic computational graphs, SROS2 policy generators, and 1-click Git patches.</div>
+          <button class="btn-launch-soc" style="width: 100%; justify-content: center;" onclick="StoryApp.launchDashboard()">
+            🚀 Enter Enterprise Robotics SOC
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PERSISTENT FLOATING LIVE AI COPILOT SENTINEL BOT -->
+  <div class="floating-ai-sentinel">
+    <!-- Proactive Attack Alert Pop-up -->
+    <div class="proactive-alert-bubble" id="proactiveAlert">
+      <div class="alert-head">
+        <span class="alert-tag">🚨 THREAT DETECTED</span>
+        <button onclick="StoryApp.closeAlert()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">✕</button>
+      </div>
+      <div class="alert-body-text" id="alertText">
+        <b>Rogue /cmd_vel injection detected!</b> Unauthenticated DDS participant transmitting velocity overrides. Recommend immediate SROS2 enclave enforcement.
+      </div>
+      <button class="btn-tackle-action" style="width: 100%; font-size: 0.75rem; padding: 0.5rem;" onclick="StoryApp.tackleAttack()">
+        🛡️ Engage Cyber Shield &amp; Tackle Threat
+      </button>
+    </div>
+
+    <!-- Floating Chat Drawer -->
+    <div class="sentinel-chat-box" id="sentinelChat">
+      <div class="chat-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.1rem;">🛡️</span>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 800;">ROBOGUARD AI Copilot</div>
+            <div style="font-size: 0.68rem; color: var(--emerald); font-weight: 700;">● Online · ROS 2 Jazzy SROS2 Sentinel</div>
+          </div>
+        </div>
+        <button onclick="StoryApp.toggleChat()" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1rem;">✕</button>
+      </div>
+
+      <div class="chat-messages-scroll" id="chatThread">
+        <div class="chat-bubble bot">
+          👋 Hello! I am your <b>Roboguard AI Sentinel</b>. I continuously monitor DDS middleware traffic, validate REP-105 coordinate trees, and intercept unauthorized velocity commands. How can I assist your robotics mission?
+        </div>
+      </div>
+
+      <div style="padding: 0.5rem 0.75rem; display: flex; gap: 0.35rem; overflow-x: auto; background: #F8FAFC; border-top: 1px solid var(--border-subtle);">
+        <button class="cam-btn" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="StoryApp.askQuick('Explain active attack')">⚡ Active Threat</button>
+        <button class="cam-btn" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="StoryApp.askQuick('How does SROS2 tackle attacks?')">🛡️ SROS2 Policy</button>
+        <button class="cam-btn" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="StoryApp.askQuick('Explain Mecanum kinematics')">⚙️ Kinematics</button>
+      </div>
+
+      <div class="chat-input-bar">
+        <input type="text" class="chat-input-field" id="userMsgInput" placeholder="Ask about QoS, TF2, or SROS2..." onkeydown="if(event.key==='Enter') StoryApp.sendUserMsg()">
+        <button class="btn-launch-soc" style="padding: 0.55rem 0.85rem;" onclick="StoryApp.sendUserMsg()">➤</button>
+      </div>
+    </div>
+
+    <!-- Hover speech bubble -->
+    <div class="sentinel-hover-bubble" id="sentinelHoverBubble">
+      <div style="font-weight: 800; color: #1D4ED8; margin-bottom: 0.15rem;">💬 Roboguard AI Sentinel</div>
+      <div style="font-size: 0.72rem; color: #64748B;">Click to consult on DDS threats, kinematics, and SROS2 auto-remediation!</div>
+    </div>
+
+    <!-- Trigger Button with Pulsing Beacon -->
+    <button class="sentinel-trigger-btn" id="btnSentinelTrigger" onclick="StoryApp.toggleChat()">
+      🛡️
+      <div class="sentinel-badge-count" id="sentinelBadge">!</div>
+    </button>
+  </div>
+
+  <!-- ==========================================================================
+       THREE.JS HIGH-DETAIL HARDWARE 3D AMR ROBOT & CYBER SIMULATION
+       ========================================================================== -->
+  <script>
+    const StoryApp = {
+      activeAttack: 0,
+      chatOpen: false,
+
+      scrollTo(id) {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      },
+
+      launchDashboard() {
+        try {
+          if (window.parent) {
+            window.parent.postMessage({ type: 'ROBOGUARD_NAVIGATE', page: '🛡️ 3D Robotics SOC' }, '*');
+            const topBtn = window.parent.document.querySelector('button[kind="primary"]');
+            if (topBtn) {
+              topBtn.click();
+              return;
+            }
+          }
+        } catch(e) {}
+        try {
+          if (window.top) {
+            window.top.location.search = '?nav=soc';
+            return;
+          }
+        } catch(e) {}
+        const badge = document.getElementById('heroDefensePill');
+        if (badge) {
+          badge.innerHTML = 'Status: <span style="color: #2563EB;">Click "🚀 Enter Enterprise Robotics SOC" above</span>';
+        }
+      },
+
+      runAttack(num) {
+        this.activeAttack = num;
+        document.querySelectorAll('.story-atk-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.getElementById(`btnAtk${num}`);
+        if (btn) btn.classList.add('active');
+
+        RobotHero3D.triggerAttack(num);
+
+        // Show Proactive Alert Popup
+        const alertBox = document.getElementById('proactiveAlert');
+        const alertText = document.getElementById('alertText');
+        alertBox.style.display = 'block';
+
+        if (num === 1) {
+          alertText.innerHTML = "<b>CRITICAL: Rogue /cmd_vel injection detected!</b> Unauthenticated DDS participant [GUID: 01:0f:e4] transmitting linear.x=3.5 m/s overrides. Chassis perturbation active!";
+        } else if (num === 2) {
+          alertText.innerHTML = "<b>WARNING: LiDAR Phantom Obstacle spoofed!</b> Injected laser reflection at range=0.42m. Nav2 costmap halt active!";
+        } else if (num === 3) {
+          alertText.innerHTML = "<b>HIGH: DDS RTPS Multicast UDP Flooding!</b> Jitter spiked to 94ms. Edge compute packet saturation!";
+        }
+
+        // Animate trigger button pulse
+        gsap.fromTo('#btnSentinelTrigger', { scale: 1.25 }, { scale: 1, duration: 0.4, ease: 'bounce.out' });
+      },
+
+      tackleAttack() {
+        RobotHero3D.tackle();
+        this.closeAlert();
+        this.activeAttack = 0;
+        document.querySelectorAll('.story-atk-btn').forEach(b => b.classList.remove('active'));
+
+        // Append victory message to chat
+        const thread = document.getElementById('chatThread');
+        const msg = document.createElement('div');
+        msg.className = 'chat-bubble bot';
+        msg.innerHTML = "✅ <b>Countermeasure Deployed:</b> SROS2 cryptographic enclave active. Unauthorized DDS participant rejected at transport layer. 1-click unified Git patch available in Diagnostics tab!";
+        thread.appendChild(msg);
+        thread.scrollTop = thread.scrollHeight;
+      },
+
+      closeAlert() {
+        document.getElementById('proactiveAlert').style.display = 'none';
+      },
+
+      toggleChat() {
+        this.chatOpen = !this.chatOpen;
+        const chatBox = document.getElementById('sentinelChat');
+        chatBox.style.display = this.chatOpen ? 'flex' : 'none';
+        if (this.chatOpen) this.closeAlert();
+      },
+
+      askQuick(query) {
+        if (!this.chatOpen) this.toggleChat();
+        const input = document.getElementById('userMsgInput');
+        input.value = query;
+        this.sendUserMsg();
+      },
+
+      sendUserMsg() {
+        const input = document.getElementById('userMsgInput');
+        const val = input.value.trim();
+        if (!val) return;
+
+        const thread = document.getElementById('chatThread');
+        const uMsg = document.createElement('div');
+        uMsg.className = 'chat-bubble user';
+        uMsg.textContent = val;
+        thread.appendChild(uMsg);
+        input.value = '';
+
+        // Contextual AI Response
+        setTimeout(() => {
+          const bMsg = document.createElement('div');
+          bMsg.className = 'chat-bubble bot';
+          
+          const q = val.toLowerCase();
+          if (q.includes('threat') || q.includes('attack') || q.includes('active')) {
+            bMsg.innerHTML = `🛡️ <b>Threat Analysis:</b> The AMR is subjected to DDS RTPS packet injection on Domain 0. Because default ROS 2 lacks authentication, unverified nodes can publish to <code>/cmd_vel</code>. Enabling SROS2 with signed X.509 certificates ensures only authorized enclaves transmit velocity.`;
+          } else if (q.includes('sros2') || q.includes('policy') || q.includes('tackle')) {
+            bMsg.innerHTML = `🔐 <b>SROS2 Policy Recommendation:</b> Create security enclaves via <code>ros2 security create_enclave /nav_enclave</code> and enforce <code>ROS_SECURITY_ENABLE=true</code> and <code>ROS_SECURITY_STRATEGY=Enforce</code>. This drops rogue participants with zero CPU overhead!`;
+          } else if (q.includes('kinematic') || q.includes('mecanum') || q.includes('wheel')) {
+            bMsg.innerHTML = `⚙️ <b>Mecanum Kinematics:</b> 4 Mecanum wheels with 45° angled rollers provide 3-DOF holonomic locomotion (forward, lateral strafe, yaw rotation) governed by <code>V_wheel = R * [vx, vy, w_z]^T</code>.`;
+          } else {
+            bMsg.innerHTML = `🤖 <b>Analysis for "${val}":</b> Under ROS 2 Jazzy, ensuring deterministic QoS contracts (Reliable/BestEffort) and SROS2 enclave policies on Domain 42 guarantees resilient operation. Check the <b>Enterprise SOC</b> for live telemetry charts!`;
+          }
+          
+          thread.appendChild(bMsg);
+          thread.scrollTop = thread.scrollHeight;
+        }, 450);
+      }
+    };
+
+    /* Three.js 3D Engine for AMR Rover */
+    const RobotHero3D = {
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      robot: null,
+      lidarPuck: null,
+      laserFan: null,
+      wheels: [],
+      shield: null,
+      phantomBox: null,
+      attackBeam: null,
+      estop: null,
+      beacon: null,
+      beaconLight: null,
+      chevrons: null,
+      oledScreen: null,
+      isTeardown: false,
+      attackState: 0,
+      clock: new THREE.Clock(),
+
+      init() {
+        const container = document.getElementById('hero3dCanvas').parentElement;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xF1F5F9);
+        this.scene.fog = new THREE.FogExp2(0xF1F5F9, 0.035);
+
+        this.camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+        this.camera.position.set(3.5, 2.5, 4.5);
+
+        this.renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('hero3dCanvas'), antialias: true });
+        this.renderer.setSize(w, h);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.shadowMap.enabled = true;
+
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.06;
+        this.controls.maxPolarAngle = Math.PI / 2 - 0.04;
+        this.controls.target.set(0, 0.6, 0);
+
+        // Lighting
+        const amb = new THREE.AmbientLight(0xFFFFFF, 1.3);
+        this.scene.add(amb);
+
+        const dir = new THREE.DirectionalLight(0xFFFFFF, 1.5);
+        dir.position.set(6, 12, 8);
+        dir.castShadow = true;
+        this.scene.add(dir);
+
+        const blueFill = new THREE.PointLight(0x0284C7, 1.8, 12);
+        blueFill.position.set(-3, 3, -2);
+        this.scene.add(blueFill);
+
+        // Ground Grid (Technical Aerospace Look)
+        const grid = new THREE.GridHelper(26, 26, 0xCBD5E1, 0xE2E8F0);
+        grid.position.y = 0;
+        this.scene.add(grid);
+
+        this.buildRobot();
+        this.buildCyberShield();
+        this.buildThreats();
+
+        window.addEventListener('resize', () => this.resize());
+        this.animate();
+      },
+
+      buildRobot() {
+        this.robot = new THREE.Group();
+
+        // 1. Lower Machined Chassis with Bevels & Corner Bumpers
+        const chassisMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.25, metalness: 0.85 });
+        const chassis = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.42, 1.16), chassisMat);
+        chassis.position.y = 0.42;
+        chassis.castShadow = true;
+        this.robot.add(chassis);
+
+        // Corner Heavy-Duty Rubber Bumpers
+        const bumperMat = new THREE.MeshStandardMaterial({ color: 0x090D16, roughness: 0.9 });
+        const bCoords = [
+          [0.83, 0.42, 0.57], [-0.83, 0.42, 0.57],
+          [0.83, 0.42, -0.57], [-0.83, 0.42, -0.57]
+        ];
+        bCoords.forEach(c => {
+          const bmp = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 0.14), bumperMat);
+          bmp.position.set(c[0], c[1], c[2]);
+          this.robot.add(bmp);
+        });
+
+        // Side Livery Accent Racing Stripes (Cobalt & Cyan)
+        const stripeMatBlue = new THREE.MeshBasicMaterial({ color: 0x2563EB });
+        const stripeMatCyan = new THREE.MeshBasicMaterial({ color: 0x00E5FF });
+        [-0.59, 0.59].forEach(z => {
+          const strB = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 0.01), stripeMatBlue);
+          strB.position.set(0, 0.48, z);
+          this.robot.add(strB);
+          const strC = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.02, 0.01), stripeMatCyan);
+          strC.position.set(0, 0.44, z);
+          this.robot.add(strC);
+        });
+
+        // Dual Front High-Intensity Projector Headlights
+        const headBezelMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, metalness: 0.9 });
+        const headLensMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
+        [0.26, -0.26].forEach(z => {
+          const bezel = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.05, 16), headBezelMat);
+          bezel.rotation.z = Math.PI / 2;
+          bezel.position.set(0.85, 0.38, z);
+          this.robot.add(bezel);
+
+          const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 16), headLensMat);
+          lens.rotation.z = Math.PI / 2;
+          lens.position.set(0.86, 0.38, z);
+          this.robot.add(lens);
+
+          // Forward Projector Light Cone
+          const spot = new THREE.SpotLight(0x00E5FF, 2.0, 7.0, Math.PI / 5, 0.4);
+          spot.position.set(0.88, 0.38, z);
+          spot.target.position.set(3.5, 0.05, z);
+          this.scene.add(spot.target);
+          this.robot.add(spot);
+        });
+
+        // Rear Red Brake / Telemetry LED Strip
+        const rearLedMat = new THREE.MeshBasicMaterial({ color: 0xEF4444 });
+        const rearLed = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.04, 0.8), rearLedMat);
+        rearLed.position.set(-0.85, 0.46, 0);
+        this.robot.add(rearLed);
+
+        // Internal High-Voltage Modular Lithium Battery Pack (Exposed during teardown)
+        this.batteryPack = new THREE.Group();
+        this.batteryPack.position.set(0, 0.50, 0);
+        const battBody = new THREE.Mesh(
+          new THREE.BoxGeometry(0.72, 0.22, 0.62),
+          new THREE.MeshStandardMaterial({ color: 0x0A0E17, metalness: 0.8, roughness: 0.3 })
+        );
+        this.batteryPack.add(battBody);
+        // Orange HV Terminals
+        const termMat = new THREE.MeshStandardMaterial({ color: 0xF97316, metalness: 0.5 });
+        const term1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.06, 12), termMat);
+        term1.position.set(0.2, 0.12, 0.18);
+        this.batteryPack.add(term1);
+        const term2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.06, 12), termMat);
+        term2.position.set(0.2, 0.12, -0.18);
+        this.batteryPack.add(term2);
+        this.robot.add(this.batteryPack);
+
+        // Upper Detachable Equipment Deck Plate
+        this.deck = new THREE.Mesh(
+          new THREE.BoxGeometry(1.54, 0.06, 1.06),
+          new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.35, metalness: 0.75 })
+        );
+        this.deck.position.set(0, 0.66, 0);
+        this.robot.add(this.deck);
+
+        // 2. High-Precision Mecanum Wheels with 8 Angled Barrel Rollers Each
+        const tireMat = new THREE.MeshStandardMaterial({ color: 0x090D14, roughness: 0.85 });
+        const hubMat = new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.95, roughness: 0.15 });
+        const rollerMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.6, metalness: 0.7 });
+
+        const wPositions = [
+          [-0.6, 0.24, 0.66],
+          [0.6, 0.24, 0.66],
+          [-0.6, 0.24, -0.66],
+          [0.6, 0.24, -0.66]
+        ];
+
+        this.wheels = [];
+        wPositions.forEach((p, wIdx) => {
+          const wGrp = new THREE.Group();
+
+          // Central Rim & Axle
+          const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.16, 24), tireMat);
+          tire.rotation.x = Math.PI / 2;
+          wGrp.add(tire);
+
+          const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.18, 16), hubMat);
+          hub.rotation.x = Math.PI / 2;
+          wGrp.add(hub);
+
+          // 8 Angled Mecanum Rollers
+          const rollerGroup = new THREE.Group();
+          for (let r = 0; r < 8; r++) {
+            const angle = (r / 8) * Math.PI * 2;
+            const rx = Math.cos(angle) * 0.21;
+            const ry = Math.sin(angle) * 0.21;
+            const roller = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.11, 8), rollerMat);
+            roller.position.set(rx, ry, 0);
+            roller.rotation.z = angle + (wIdx % 2 === 0 ? Math.PI / 4 : -Math.PI / 4);
+            rollerGroup.add(roller);
+          }
+          wGrp.add(rollerGroup);
+          wGrp.userData = { rollerGroup: rollerGroup };
+
+          wGrp.position.set(p[0], p[1], p[2]);
+          this.robot.add(wGrp);
+          this.wheels.push(wGrp);
+        });
+
+        // 3. Rotating Velodyne/Ouster 360° LiDAR Riser
+        this.lidarGroup = new THREE.Group();
+        this.lidarGroup.position.set(0.12, 0.74, 0);
+
+        // Mounting Riser Pylon
+        const pylon = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.07, 0.09, 0.16, 16),
+          new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9 })
+        );
+        pylon.position.y = 0.08;
+        this.lidarGroup.add(pylon);
+
+        const lidarBase = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.19, 0.22, 0.10, 24),
+          new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.9 })
+        );
+        lidarBase.position.y = 0.20;
+        this.lidarGroup.add(lidarBase);
+
+        this.lidarPuck = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.19, 0.19, 0.15, 24),
+          new THREE.MeshStandardMaterial({ color: 0x090D16, metalness: 0.95, roughness: 0.1 })
+        );
+        this.lidarPuck.position.y = 0.32;
+
+        // Glowing Blue Laser Emitter Ring
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(0.192, 0.014, 8, 32),
+          new THREE.MeshBasicMaterial({ color: 0x00E5FF })
+        );
+        ring.rotation.x = Math.PI / 2;
+        this.lidarPuck.add(ring);
+        this.lidarGroup.add(this.lidarPuck);
+
+        // Sweeping Laser Scan Fan (Volumetric Sector)
+        this.laserFan = new THREE.Mesh(
+          new THREE.ConeGeometry(3.8, 0.06, 20, 1, true, 0, Math.PI / 3.2),
+          new THREE.MeshBasicMaterial({ color: 0x0284C7, transparent: true, opacity: 0.28, side: THREE.DoubleSide })
+        );
+        this.laserFan.rotation.x = Math.PI / 2;
+        this.laserFan.position.y = 0.32;
+        this.lidarGroup.add(this.laserFan);
+
+        // Laser Scan Hit Cloud Ring on Floor
+        const ptCount = 48;
+        const ptGeo = new THREE.BufferGeometry();
+        const ptPos = new Float32Array(ptCount * 3);
+        for (let i = 0; i < ptCount; i++) {
+          const theta = (i / ptCount) * Math.PI * 2;
+          const rad = 3.6 + Math.sin(theta * 3) * 0.25;
+          ptPos[i * 3] = Math.cos(theta) * rad;
+          ptPos[i * 3 + 1] = 0.02;
+          ptPos[i * 3 + 2] = Math.sin(theta) * rad;
+        }
+        ptGeo.setAttribute('position', new THREE.BufferAttribute(ptPos, 3));
+        this.lidarHits = new THREE.Points(ptGeo, new THREE.PointsMaterial({ color: 0x0284C7, size: 0.06 }));
+        this.lidarGroup.add(this.lidarHits);
+
+        this.robot.add(this.lidarGroup);
+
+        // 4. Stereo Perception Depth Camera (Intel RealSense / ZED Style)
+        const cam = new THREE.Mesh(
+          new THREE.BoxGeometry(0.54, 0.11, 0.09),
+          new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.85, roughness: 0.3 })
+        );
+        cam.position.set(0.84, 0.52, 0);
+
+        const lensMat = new THREE.MeshBasicMaterial({ color: 0x00E5FF });
+        [-0.17, 0.17].forEach(cz => {
+          const lensRing = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.015, 16), hubMat);
+          lensRing.rotation.z = Math.PI / 2;
+          lensRing.position.set(0.046, 0, cz);
+          cam.add(lensRing);
+
+          const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.02, 16), lensMat);
+          lens.rotation.z = Math.PI / 2;
+          lens.position.set(0.05, 0, cz);
+          cam.add(lens);
+        });
+        this.robot.add(cam);
+
+        // 5. Rugged NVIDIA Jetson Edge Compute Enclave with Heatsink Fins & Status LEDs
+        this.compute = new THREE.Group();
+        this.compute.position.set(-0.46, 0.74, 0);
+
+        const compBody = new THREE.Mesh(
+          new THREE.BoxGeometry(0.54, 0.16, 0.54),
+          new THREE.MeshStandardMaterial({ color: 0x0A0E17, metalness: 0.9, roughness: 0.25 })
+        );
+        this.compute.add(compBody);
+
+        // 9 Aluminum Cooling Heatsink Fins
+        for (let f = -0.22; f <= 0.22; f += 0.05) {
+          const fin = new THREE.Mesh(
+            new THREE.BoxGeometry(0.50, 0.07, 0.016),
+            new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.95, roughness: 0.2 })
+          );
+          fin.position.set(0, 0.11, f);
+          this.compute.add(fin);
+        }
+
+        // 3 Active LED Status Indicators
+        const ledPwr = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), new THREE.MeshBasicMaterial({ color: 0x10B981 }));
+        ledPwr.position.set(0.28, 0.04, 0.16);
+        this.compute.add(ledPwr);
+
+        const ledDds = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), new THREE.MeshBasicMaterial({ color: 0xF59E0B }));
+        ledDds.position.set(0.28, 0.04, 0);
+        this.compute.add(ledDds);
+
+        const ledSec = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), new THREE.MeshBasicMaterial({ color: 0x2563EB }));
+        ledSec.position.set(0.28, 0.04, -0.16);
+        this.compute.add(ledSec);
+
+        // Dual Articulated Fleet Telemetry Antennas
+        [-0.18, 0.18].forEach(az => {
+          const ant = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.008, 0.008, 0.32, 8),
+            new THREE.MeshStandardMaterial({ color: 0x0F172A, metalness: 0.8 })
+          );
+          ant.position.set(-0.22, 0.22, az);
+          ant.rotation.z = -0.15;
+          this.compute.add(ant);
+        });
+
+        // Onboard Telemetry OLED Display Panel on Compute Enclave
+        const oledFrame = new THREE.Mesh(
+          new THREE.BoxGeometry(0.02, 0.12, 0.32),
+          new THREE.MeshStandardMaterial({ color: 0x0F172A, metalness: 0.9 })
+        );
+        oledFrame.position.set(0.28, 0, 0);
+        this.oledScreen = new THREE.Mesh(
+          new THREE.BoxGeometry(0.022, 0.09, 0.28),
+          new THREE.MeshBasicMaterial({ color: 0x0284C7 })
+        );
+        this.oledScreen.position.set(0.282, 0, 0);
+        this.compute.add(oledFrame);
+        this.compute.add(this.oledScreen);
+
+        this.robot.add(this.compute);
+
+        // Ultrasonic / Sonar Distance Transducers (4 Front, 2 Rear)
+        const sonarHousingMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.4 });
+        const sonarDiaphragmMat = new THREE.MeshStandardMaterial({ color: 0xF59E0B, metalness: 0.9, roughness: 0.2 });
+        [-0.36, -0.12, 0.12, 0.36].forEach(sz => {
+          const snr = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.03, 12), sonarHousingMat);
+          snr.rotation.z = Math.PI / 2;
+          snr.position.set(0.85, 0.28, sz);
+          const dia = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.032, 12), sonarDiaphragmMat);
+          dia.rotation.z = Math.PI / 2;
+          dia.position.set(0.852, 0.28, sz);
+          this.robot.add(snr);
+          this.robot.add(dia);
+        });
+        [-0.24, 0.24].forEach(sz => {
+          const snr = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.03, 12), sonarHousingMat);
+          snr.rotation.z = Math.PI / 2;
+          snr.position.set(-0.85, 0.28, sz);
+          const dia = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.032, 12), sonarDiaphragmMat);
+          dia.rotation.z = Math.PI / 2;
+          dia.position.set(-0.852, 0.28, sz);
+          this.robot.add(snr);
+          this.robot.add(dia);
+        });
+
+        // Industrial Physical Emergency Stop (E-Stop) Mushroom Button
+        this.estop = new THREE.Group();
+        this.estop.position.set(0.55, 0.69, 0.38);
+        const estopBase = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.065, 0.065, 0.02, 16),
+          new THREE.MeshStandardMaterial({ color: 0xFACC15, roughness: 0.3 })
+        );
+        this.estop.add(estopBase);
+        const estopCap = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.05, 0.06, 0.04, 16),
+          new THREE.MeshStandardMaterial({ color: 0xDC2626, roughness: 0.25 })
+        );
+        estopCap.position.y = 0.025;
+        this.estop.add(estopCap);
+        this.robot.add(this.estop);
+
+        // Industrial Flashing Amber Safety Strobe Beacon Tower
+        this.beacon = new THREE.Group();
+        this.beacon.position.set(-0.68, 0.69, -0.42);
+        const mast = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.012, 0.012, 0.22, 12),
+          new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9 })
+        );
+        mast.position.y = 0.11;
+        this.beacon.add(mast);
+        const beaconBase = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.04, 0.04, 0.025, 16),
+          new THREE.MeshStandardMaterial({ color: 0x0F172A, metalness: 0.8 })
+        );
+        beaconBase.position.y = 0.22;
+        this.beacon.add(beaconBase);
+        const dome = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.035, 0.035, 0.06, 16),
+          new THREE.MeshStandardMaterial({ color: 0xF59E0B, transparent: true, opacity: 0.85, roughness: 0.1 })
+        );
+        dome.position.y = 0.26;
+        this.beacon.add(dome);
+        this.beaconLight = new THREE.PointLight(0xF59E0B, 1.2, 5.0);
+        this.beaconLight.position.y = 0.26;
+        this.beacon.add(this.beaconLight);
+        this.robot.add(this.beacon);
+
+        // Projected Ground Motion Direction Chevrons (Trajectory Vector)
+        this.chevrons = new THREE.Group();
+        for (let c = 0; c < 3; c++) {
+          const chGeo = new THREE.ConeGeometry(0.18, 0.28, 3);
+          const chMat = new THREE.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.45 - c * 0.12 });
+          const ch = new THREE.Mesh(chGeo, chMat);
+          ch.rotation.x = -Math.PI / 2;
+          ch.rotation.z = Math.PI;
+          ch.position.set(1.4 + c * 0.45, 0.02, 0);
+          this.chevrons.add(ch);
+        }
+        this.scene.add(this.chevrons);
+
+        // 6. Ground Safety Hazard Circle with Forward Arrow Indicator
+        this.hazardRing = new THREE.Mesh(
+          new THREE.RingGeometry(1.85, 1.92, 48),
+          new THREE.MeshBasicMaterial({ color: 0xDC2626, side: THREE.DoubleSide, transparent: true, opacity: 0.45 })
+        );
+        this.hazardRing.rotation.x = Math.PI / 2;
+        this.hazardRing.position.y = 0.02;
+        this.scene.add(this.hazardRing);
+
+        this.scene.add(this.robot);
+      },
+
+      buildCyberShield() {
+        const geo = new THREE.IcosahedronGeometry(1.65, 2);
+        const mat = new THREE.MeshBasicMaterial({ color: 0x1D4ED8, wireframe: true, transparent: true, opacity: 0.0 });
+        this.shield = new THREE.Mesh(geo, mat);
+        this.shield.position.set(0, 0.6, 0);
+        this.scene.add(this.shield);
+      },
+
+      buildThreats() {
+        // Attack Beam Particles
+        const pCount = 200;
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = new Float32Array(pCount * 3);
+        for (let i = 0; i < pCount * 3; i += 3) {
+          pPos[i] = 4.2 + (Math.random() - 0.5) * 1.5;
+          pPos[i+1] = 0.8 + (Math.random() - 0.5) * 1.2;
+          pPos[i+2] = (Math.random() - 0.5) * 2;
+        }
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        this.attackBeam = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xDC2626, size: 0.08, transparent: true, opacity: 0.0 }));
+        this.scene.add(this.attackBeam);
+
+        // Phantom 3D Obstacle Box
+        this.phantomBox = new THREE.Mesh(
+          new THREE.BoxGeometry(0.75, 1.0, 0.75),
+          new THREE.MeshBasicMaterial({ color: 0xDC2626, wireframe: true, transparent: true, opacity: 0.0 })
+        );
+        this.phantomBox.position.set(2.3, 0.5, 0);
+        this.scene.add(this.phantomBox);
+      },
+
+      toggleTeardown() {
+        this.isTeardown = !this.isTeardown;
+        const btn = document.getElementById('btnHeroTeardown');
+        if (btn) btn.textContent = this.isTeardown ? '🧩 Assemble AMR' : '📐 Hardware Teardown';
+        
+        gsap.to(this.lidarGroup.position, { y: this.isTeardown ? 1.55 : 0.74, duration: 0.7, ease: 'power2.inOut' });
+        gsap.to(this.deck.position, { y: this.isTeardown ? 1.10 : 0.66, duration: 0.7, ease: 'power2.inOut' });
+        gsap.to(this.compute.position, { y: this.isTeardown ? 1.35 : 0.74, x: this.isTeardown ? -0.65 : -0.46, duration: 0.7, ease: 'power2.inOut' });
+        if (this.estop) {
+          gsap.to(this.estop.position, { y: this.isTeardown ? 1.35 : 0.69, duration: 0.7, ease: 'power2.inOut' });
+        }
+        if (this.beacon) {
+          gsap.to(this.beacon.position, { y: this.isTeardown ? 1.35 : 0.69, duration: 0.7, ease: 'power2.inOut' });
+        }
+        if (this.batteryPack) {
+          gsap.to(this.batteryPack.position, { y: this.isTeardown ? 0.85 : 0.50, duration: 0.7, ease: 'power2.inOut' });
+        }
+        
+        gsap.to(this.wheels[0].position, { z: this.isTeardown ? 1.05 : 0.66, duration: 0.7, ease: 'power2.inOut' });
+        gsap.to(this.wheels[1].position, { z: this.isTeardown ? 1.05 : 0.66, duration: 0.7, ease: 'power2.inOut' });
+        gsap.to(this.wheels[2].position, { z: this.isTeardown ? -1.05 : -0.66, duration: 0.7, ease: 'power2.inOut' });
+        gsap.to(this.wheels[3].position, { z: this.isTeardown ? -1.05 : -0.66, duration: 0.7, ease: 'power2.inOut' });
+
+        if (this.isTeardown) {
+          document.getElementById('lblShieldStatus').textContent = 'Mode: HARDWARE TEARDOWN · Subsystems Decoupled';
+          document.getElementById('lblShieldStatus').style.color = '#2563EB';
+        } else {
+          document.getElementById('lblShieldStatus').textContent = 'Cyber Shield: READY · Enclave: SROS2';
+          document.getElementById('lblShieldStatus').style.color = '#059669';
+        }
+      },
+
+      setCam(type) {
+        if (type === 'orbit') {
+          gsap.to(this.camera.position, { x: 3.5, y: 2.5, z: 4.5, duration: 1.0, ease: 'power2.inOut' });
+          this.controls.target.set(0, 0.6, 0);
+        } else if (type === 'sensor') {
+          gsap.to(this.camera.position, { x: 1.2, y: 0.7, z: 0, duration: 1.0, ease: 'power2.inOut' });
+          this.controls.target.set(5.0, 0.6, 0);
+        } else if (type === 'compute') {
+          gsap.to(this.camera.position, { x: -1.4, y: 1.4, z: 0.9, duration: 1.0, ease: 'power2.inOut' });
+          this.controls.target.set(-0.48, 0.76, 0);
+        }
+      },
+
+      triggerAttack(num) {
+        this.attackState = num;
+        if (num === 1) {
+          gsap.to(this.attackBeam.material, { opacity: 0.9, duration: 0.3 });
+          document.getElementById('lblShieldStatus').textContent = 'Cyber Shield: VULNERABLE · Infiltration ACTIVE';
+          document.getElementById('lblShieldStatus').style.color = '#DC2626';
+        } else if (num === 2) {
+          gsap.to(this.phantomBox.material, { opacity: 0.85, duration: 0.3 });
+          this.laserFan.material.color.setHex(0xDC2626);
+        } else if (num === 3) {
+          gsap.to(this.attackBeam.material, { opacity: 1.0, duration: 0.3 });
+        }
+      },
+
+      tackle() {
+        this.attackState = 0;
+        gsap.to(this.attackBeam.material, { opacity: 0.0, duration: 0.4 });
+        gsap.to(this.phantomBox.material, { opacity: 0.0, duration: 0.4 });
+        this.laserFan.material.color.setHex(0x0284C7);
+
+        // Pulse Geodesic Cyber Shield
+        this.shield.material.opacity = 0.85;
+        this.shield.material.color.setHex(0x059669);
+        gsap.to(this.shield.material, { opacity: 0.0, duration: 1.2, ease: 'power2.out' });
+
+        this.robot.position.set(0, 0, 0);
+        this.robot.rotation.y = 0;
+
+        document.getElementById('lblShieldStatus').textContent = 'Cyber Shield: ENGAGED · SROS2 Verified';
+        document.getElementById('lblShieldStatus').style.color = '#059669';
+      },
+
+      resize() {
+        const c = document.getElementById('hero3dCanvas').parentElement;
+        this.camera.aspect = c.clientWidth / c.clientHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(c.clientWidth, c.clientHeight);
+      },
+
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        const dt = this.clock.getDelta();
+        const t = this.clock.getElapsedTime();
+
+        // Spin LiDAR puck and laser fan
+        if (this.lidarPuck) this.lidarPuck.rotation.y += dt * 5.5;
+        if (this.laserFan) this.laserFan.rotation.z += dt * 5.5;
+
+        // Spin Mecanum wheels & rollers
+        this.wheels.forEach(w => {
+          w.children[0].rotation.y += dt * 4.0;
+          if (w.userData && w.userData.rollerGroup) {
+            w.userData.rollerGroup.rotation.y += dt * 4.0;
+          }
+        });
+
+        // Attack 1: Rogue cmd_vel perturbation
+        if (this.attackState === 1) {
+          this.robot.rotation.y = Math.sin(t * 10) * 0.22;
+          this.robot.position.x = Math.cos(t * 8) * 0.25;
+        }
+
+        // Particle beam translation
+        if (this.attackBeam && this.attackBeam.material.opacity > 0) {
+          const p = this.attackBeam.geometry.attributes.position.array;
+          for (let i = 0; i < p.length; i += 3) {
+            p[i] -= dt * 6.0;
+            if (p[i] < 0.2) p[i] = 4.2 + Math.random();
+          }
+          this.attackBeam.geometry.attributes.position.needsUpdate = true;
+        }
+
+        // Hazard ring pulse
+        if (this.hazardRing) {
+          this.hazardRing.material.opacity = 0.3 + Math.sin(t * 4) * 0.2;
+          this.hazardRing.rotation.z += dt * 0.2;
+        }
+
+        // Pulsate safety strobe beacon
+        if (this.beaconLight) {
+          this.beaconLight.intensity = 0.8 + Math.sin(t * 9) * 0.7;
+        }
+
+        // Animate ground forward direction chevrons
+        if (this.chevrons) {
+          this.chevrons.children.forEach((ch, idx) => {
+            ch.material.opacity = 0.2 + 0.35 * Math.sin(t * 5 - idx * 0.9);
+          });
+        }
+
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      RobotHero3D.init();
+    });
+  </script>
+</body>
+</html>

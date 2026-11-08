@@ -219,12 +219,12 @@ class DynamicGraphGenerator:
             hovertext=node_text,
             text=[G.nodes[n].get("label", n).split('/')[-1] for n in G.nodes()],
             textposition="top center",
-            textfont=dict(family="JetBrains Mono", size=10, color="#CBD5E1"),
+            textfont=dict(family="JetBrains Mono", size=10, color="#0F172A"),
             marker=dict(
                 size=node_size,
                 color=node_color,
                 symbol=node_symbol,
-                line=dict(width=1.5, color="#1E2330")
+                line=dict(width=1.5, color="#CBD5E1")
             )
         )
 

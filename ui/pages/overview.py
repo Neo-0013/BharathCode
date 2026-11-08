@@ -53,7 +53,7 @@ def render_overview_page(diagnostic_engine, explanation_engine):
             </svg>
             <span>AI Diagnostic Copilot & Observability Intelligence</span>
         </div>
-        <div style="font-size: 0.875rem; color: #CBD5E1; line-height: 1.5;">
+        <div style="font-size: 0.875rem; color: #475569; line-height: 1.5;">
             ROBOGUARD AI integrates formal ROS 2 Jazzy deterministic rules with the 
             <b>BharatCode Model API</b>. All AI-generated root cause analyses and troubleshooting 
             steps are strictly grounded in empirical log traces, QoS profiles, and coordinate transform trees.
@@ -78,12 +78,12 @@ def render_overview_page(diagnostic_engine, explanation_engine):
         for sid, name, filename, desc in scenarios:
             with st.container():
                 st.markdown(f"""
-                <div style="background-color: {UI_THEME['bg_surface']}; border: 1px solid {UI_THEME['border_subtle']}; border-radius: 6px; padding: 0.85rem 1rem; margin-bottom: 0.65rem;">
+                <div style="background-color: {UI_THEME['bg_surface']}; border: 1px solid {UI_THEME['border_subtle']}; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.65rem; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
                     <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                        <span style="font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; color: {UI_THEME['accent_primary']};">{sid}</span>
+                        <span style="font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: {UI_THEME['accent_primary']};">{sid}</span>
                         <span style="font-size: 0.7rem; color: {UI_THEME['text_muted']};">Synthetic Ground Truth</span>
                     </div>
-                    <div style="font-weight: 600; font-size: 0.95rem; color: #F8FAFC; margin-top: 0.2rem;">{name}</div>
+                    <div style="font-weight: 700; font-size: 0.95rem; color: #0F172A; margin-top: 0.2rem;">{name}</div>
                     <div style="font-size: 0.8rem; color: {UI_THEME['text_secondary']}; margin-top: 0.25rem;">{desc}</div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -136,8 +136,8 @@ def render_overview_page(diagnostic_engine, explanation_engine):
         # Target Environment Card
         st.markdown(f"""
         <div class="rg-card" style="margin-top: 1rem;">
-            <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: {UI_THEME['text_secondary']};">Target Environment</div>
-            <div style="margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #E2E8F0;">
+            <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: {UI_THEME['text_secondary']};">Target Environment</div>
+            <div style="margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #0F172A; line-height: 1.6;">
                 <div>Distribution: <b>ROS 2 Jazzy Jalisco</b></div>
                 <div>Middleware: <b>FastDDS / CycloneDDS</b></div>
                 <div>DDS Security: <b>SROS2 (X.509 + AES-GCM)</b></div>
@@ -158,14 +158,14 @@ def render_overview_page(diagnostic_engine, explanation_engine):
 
     with col_ch1:
         fig_hz = go.Figure()
-        fig_hz.add_trace(go.Scatter(x=timestamps, y=[28, 30, 29, 31, 15, 0, 0, 10, 28, 30, 30, 31], name="/scan (LiDAR)", line=dict(color="#00E5FF", width=2)))
-        fig_hz.add_trace(go.Scatter(x=timestamps, y=[48, 50, 50, 49, 50, 51, 48, 49, 50, 50, 49, 50], name="/odom", line=dict(color="#10B981", width=2)))
-        fig_hz.add_trace(go.Scatter(x=timestamps, y=[10, 10, 12, 10, 5, 0, 0, 0, 8, 10, 10, 10], name="/cmd_vel", line=dict(color="#F59E0B", width=2)))
+        fig_hz.add_trace(go.Scatter(x=timestamps, y=[28, 30, 29, 31, 15, 0, 0, 10, 28, 30, 30, 31], name="/scan (LiDAR)", line=dict(color="#0284C7", width=2.5)))
+        fig_hz.add_trace(go.Scatter(x=timestamps, y=[48, 50, 50, 49, 50, 51, 48, 49, 50, 50, 49, 50], name="/odom", line=dict(color="#059669", width=2.5)))
+        fig_hz.add_trace(go.Scatter(x=timestamps, y=[10, 10, 12, 10, 5, 0, 0, 0, 8, 10, 10, 10], name="/cmd_vel", line=dict(color="#D97706", width=2.5)))
         fig_hz.update_layout(
-            template="plotly_dark",
-            paper_bgcolor=UI_THEME["bg_surface"],
-            plot_bgcolor=UI_THEME["bg_surface"],
-            title=dict(text="<b>Topic Publishing Frequency (Hz)</b>", font=dict(size=13, color="#F8FAFC")),
+            template="plotly_white",
+            paper_bgcolor="#FFFFFF",
+            plot_bgcolor="#FFFFFF",
+            title=dict(text="<b>Topic Publishing Frequency (Hz)</b>", font=dict(family="Plus Jakarta Sans", size=13, color="#0F172A")),
             height=280,
             margin=dict(l=30, r=20, t=35, b=20),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
@@ -177,15 +177,15 @@ def render_overview_page(diagnostic_engine, explanation_engine):
         fig_err.add_trace(go.Scatter(
             x=timestamps, y=[0, 0, 2, 0, 78, 95, 90, 45, 5, 0, 0, 0],
             name="DDS QoS Drops (%)",
-            line=dict(color="#EF4444", width=2.5),
+            line=dict(color="#DC2626", width=2.5),
             fill='tozeroy',
-            fillcolor='rgba(239, 68, 68, 0.15)'
+            fillcolor='rgba(220, 38, 38, 0.08)'
         ))
         fig_err.update_layout(
-            template="plotly_dark",
-            paper_bgcolor=UI_THEME["bg_surface"],
-            plot_bgcolor=UI_THEME["bg_surface"],
-            title=dict(text="<b>DDS Transport Error & Packet Drop Rate (%)</b>", font=dict(size=13, color="#F8FAFC")),
+            template="plotly_white",
+            paper_bgcolor="#FFFFFF",
+            plot_bgcolor="#FFFFFF",
+            title=dict(text="<b>DDS Transport Error & Packet Drop Rate (%)</b>", font=dict(family="Plus Jakarta Sans", size=13, color="#0F172A")),
             height=280,
             margin=dict(l=30, r=20, t=35, b=20),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)

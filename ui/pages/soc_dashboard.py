@@ -13,14 +13,14 @@ from config.settings import UI_THEME
 def render_soc_dashboard_page():
     """Renders the embedded 3D Robotics SOC & Cyber-Physical Defense Center."""
     
-    st.markdown("""
+    st.markdown(f"""
     <div style="margin-bottom: 0.75rem;">
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <div>
-                <h2 style="font-size: 1.4rem; font-weight: 800; color: #FFFFFF; margin: 0; letter-spacing: -0.02em;">
+                <h2 style="font-size: 1.4rem; font-weight: 800; color: {UI_THEME['text_primary']}; margin: 0; letter-spacing: -0.02em;">
                     🛡️ 3D Robotics SOC &amp; Cyber-Physical Defense Center
                 </h2>
-                <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 0.2rem;">
+                <div style="font-size: 0.8rem; color: {UI_THEME['text_secondary']}; margin-top: 0.2rem;">
                     Hardware-Engineered AMR 3D Digital Twin · SROS2 Cyberattack Tackling Simulator · Dynamic Python Computational Graph
                 </div>
             </div>

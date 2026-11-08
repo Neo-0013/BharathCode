@@ -60,7 +60,7 @@ def render_diagnostics_page(diagnostic_engine, explanation_engine):
     if not current_analysis or not current_analysis.get("findings"):
         st.markdown(f"""
         <div class="rg-card" style="text-align: center; padding: 3rem 1rem;">
-            <div style="font-size: 1.1rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.5rem;">No Diagnostic Analysis Active</div>
+            <div style="font-size: 1.1rem; font-weight: 600; color: {UI_THEME['text_primary']}; margin-bottom: 0.5rem;">No Diagnostic Analysis Active</div>
             <div style="font-size: 0.85rem; color: {UI_THEME['text_secondary']}; max-width: 500px; margin: 0 auto 1.5rem auto;">
                 Upload a log file above, paste terminal output, or launch one of the 5 interactive demo scenarios from the Command Center.
             </div>

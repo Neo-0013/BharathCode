@@ -43,7 +43,7 @@ def render_security_page(diagnostic_engine, security_engine):
     with col_meta:
         st.markdown(f"""
         <div class="rg-card">
-            <div style="font-size: 0.85rem; font-weight: 600; color: #F8FAFC; margin-bottom: 0.5rem;">Transparent Scoring Methodology</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: #0F172A; margin-bottom: 0.5rem;">Transparent Scoring Methodology</div>
             <div style="font-size: 0.8rem; color: {UI_THEME['text_secondary']}; line-height: 1.5;">
                 {posture['transparency_note']}
             </div>
@@ -121,7 +121,7 @@ def render_security_page(diagnostic_engine, security_engine):
     with st.container():
         st.markdown(f"""
         <div class="rg-card">
-            <div style="font-weight: 600; color: #F8FAFC; font-size: 0.9rem; margin-bottom: 0.5rem;">Defensive Simulation Testbed</div>
+            <div style="font-weight: 700; color: #0F172A; font-size: 0.9rem; margin-bottom: 0.5rem;">Defensive Simulation Testbed</div>
             <div style="font-size: 0.8rem; color: {UI_THEME['text_secondary']};">
                 Test how your robot's DDS communication layer reacts to unauthorized packet injection across local Wi-Fi and Ethernet subnets.
             </div>
@@ -153,24 +153,31 @@ def render_security_page(diagnostic_engine, security_engine):
             st.markdown("#### Simulation Execution Trace")
             
             if "Default" in defense_mode:
+                st.session_state["active_attack_event"] = {
+                    "type": attack_type,
+                    "mode": defense_mode,
+                    "status": "EXPLOIT_CONFIRMED"
+                }
                 st.markdown(f"""
-                <div class="rg-diff-box" style="border-color: #EF4444; margin-bottom: 0.75rem;">
-                    <div style="color: #F8FAFC; font-weight: 600;">[PACKET DISPATCH] Multicast UDP 239.255.0.1:7400 -> Node /motor_controller</div>
-                    <div style="color: #94A3B8; font-size: 0.75rem;">Payload: geometry_msgs/Twist (linear.x=2.5, angular.z=1.2) | SROS2 Signature: NONE</div>
-                    <div style="color: #EF4444; font-weight: 700; margin-top: 0.5rem;">❌ VULNERABILITY CONFIRMED: Message accepted without authentication.</div>
-                    <div style="color: #CBD5E1; font-size: 0.8rem; margin-top: 0.25rem;">
+                <div class="rg-diff-box" style="border-color: #DC2626; margin-bottom: 0.75rem;">
+                    <div style="color: #0F172A; font-weight: 700;">[PACKET DISPATCH] Multicast UDP 239.255.0.1:7400 -> Node /motor_controller</div>
+                    <div style="color: #64748B; font-size: 0.75rem;">Payload: geometry_msgs/Twist (linear.x=2.5, angular.z=1.2) | SROS2 Signature: NONE</div>
+                    <div style="color: #DC2626; font-weight: 700; margin-top: 0.5rem;">❌ VULNERABILITY CONFIRMED: Message accepted without authentication.</div>
+                    <div style="color: #334155; font-size: 0.8rem; margin-top: 0.25rem;">
                         <b>Physical Impact:</b> Robot locomotion overridden by unauthorized network host. Emergency stop triggered by collision safety limit.
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
                 st.error("🚨 Exploit Succeeded: The unhardened robot accepted spoofed commands from an unauthorized subnet participant.")
+                st.info("💡 **Roboguard AI Sentinel has surfaced a proactive threat alert.** Click the floating sentinel bot in the bottom right to review the SROS2 defense enclave patch.")
             else:
+                st.session_state["active_attack_event"] = None
                 st.markdown(f"""
-                <div class="rg-diff-box" style="border-color: #10B981; margin-bottom: 0.75rem;">
-                    <div style="color: #F8FAFC; font-weight: 600;">[PACKET DISPATCH] Multicast UDP 239.255.0.1:7410 -> Node /motor_controller</div>
-                    <div style="color: #94A3B8; font-size: 0.75rem;">Payload: geometry_msgs/Twist | Enclave Check: /teleop_enclave | Handshake: TLS 1.3 X.509</div>
-                    <div style="color: #10B981; font-weight: 700; margin-top: 0.5rem;">✅ ATTACK REJECTED: DDS Security Access Control Violation.</div>
-                    <div style="color: #CBD5E1; font-size: 0.8rem; margin-top: 0.25rem;">
+                <div class="rg-diff-box" style="border-color: #059669; margin-bottom: 0.75rem;">
+                    <div style="color: #0F172A; font-weight: 700;">[PACKET DISPATCH] Multicast UDP 239.255.0.1:7410 -> Node /motor_controller</div>
+                    <div style="color: #64748B; font-size: 0.75rem;">Payload: geometry_msgs/Twist | Enclave Check: /teleop_enclave | Handshake: TLS 1.3 X.509</div>
+                    <div style="color: #059669; font-weight: 700; margin-top: 0.5rem;">✅ ATTACK REJECTED: DDS Security Access Control Violation.</div>
+                    <div style="color: #334155; font-size: 0.8rem; margin-top: 0.25rem;">
                         <b>Security Result:</b> Rogue participant rejected at DDS RTPS discovery layer. Packet dropped with zero CPU overhead on motion controller.
                     </div>
                 </div>

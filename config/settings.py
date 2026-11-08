@@ -89,24 +89,24 @@ class Confidence(str, Enum):
     SUSPECTED = "Suspected"
     INFORMATIONAL = "Informational"
 
-# UI Color Tokens (Anti-AI-slop Dark Slate/Graphite Theme)
+# UI Color Tokens (Classic Tremor Light System: White/Slate Surfaces, Cobalt Accents)
 UI_THEME = {
-    "bg_base": "#0B0D13",
-    "bg_surface": "#131620",
-    "bg_surface_elevated": "#1B1F2D",
-    "border_subtle": "#232A3B",
-    "border_strong": "#2E374D",
-    "accent_primary": "#00E5FF",      # Telemetry Cyan
-    "accent_secondary": "#3B82F6",    # Engineering Blue
-    "accent_highlight": "#818CF8",    # Indigo
-    "text_primary": "#F1F5F9",
-    "text_secondary": "#94A3B8",
+    "bg_base": "#F8FAFC",
+    "bg_surface": "#FFFFFF",
+    "bg_surface_elevated": "#FFFFFF",
+    "border_subtle": "#E2E8F0",
+    "border_strong": "#CBD5E1",
+    "accent_primary": "#2563EB",      # Cobalt Blue
+    "accent_secondary": "#0284C7",    # Sky Cyan
+    "accent_highlight": "#4F46E5",    # Indigo
+    "text_primary": "#0F172A",
+    "text_secondary": "#475569",
     "text_muted": "#64748B",
     "severity_colors": {
-        Severity.CRITICAL: {"color": "#EF4444", "bg": "#3B1417", "border": "#7F1D1D"},
-        Severity.HIGH: {"color": "#F97316", "bg": "#38190B", "border": "#7C2D12"},
-        Severity.MEDIUM: {"color": "#F59E0B", "bg": "#38290B", "border": "#78350F"},
-        Severity.LOW: {"color": "#10B981", "bg": "#0B3020", "border": "#064E3B"},
-        Severity.INFO: {"color": "#38BDF8", "bg": "#0C2D42", "border": "#0369A1"}
+        Severity.CRITICAL: {"color": "#DC2626", "bg": "#FEF2F2", "border": "#FECACA"},
+        Severity.HIGH: {"color": "#D97706", "bg": "#FFFBEB", "border": "#FDE68A"},
+        Severity.MEDIUM: {"color": "#D97706", "bg": "#FFFBEB", "border": "#FDE68A"},
+        Severity.LOW: {"color": "#059669", "bg": "#ECFDF5", "border": "#A7F3D0"},
+        Severity.INFO: {"color": "#2563EB", "bg": "#EFF6FF", "border": "#BFDBFE"}
     }
 }
