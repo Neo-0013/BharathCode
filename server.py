@@ -334,6 +334,113 @@ async def engage_estop():
     })
 
 
+@app.post("/api/ai/chat")
+async def ai_chat(payload: Dict[str, Any] = Body(...)):
+    """AI Sentinel conversational and diagnostic endpoint."""
+    user_query = payload.get("message", "").strip()
+    scenario = payload.get("scenario", STATE["active_scenario"])
+    q = user_query.lower()
+
+    action = None
+    recommendations = []
+
+    if any(k in q for k in ["cve", "vuln", "actuation", "teleop", "rogue", "cmd_vel"]):
+        reply = (
+            "### 🚨 Security Incident: [SEC-SROS2-001] Rogue /cmd_vel Actuation\n\n"
+            "**Classification:** CRITICAL (CVE-2024-41123) | **Vector:** Remote RTPS Injection\n\n"
+            "**Root Cause:** FastDDS `permissions.xml` contains wildcard `<allow_unauthenticated_participants>`, "
+            "allowing an unauthorized node (`/teleop_keyboard`, GUID `01.0f.d4.9a`) to inject unverified velocity commands at 42Hz.\n\n"
+            "**Recommended Action:**\n"
+            "1. Apply eBPF Rule #4092 to clamp socket `fd:28` at kernel level.\n"
+            "2. Apply Git Patch `SEC-SROS2-001` to enforce strict PKCS#11 enclave policies."
+        )
+        action = "isolate_node"
+        recommendations = ["Isolate Rogue Publisher via eBPF", "Apply Git Patch SEC-SROS2-001"]
+    elif any(k in q for k in ["qos", "mismatch", "drift", "reliable", "best_effort"]):
+        reply = (
+            "### ⚠️ Middleware Finding: [QOS-REL-001] QoS Contract Incompatibility\n\n"
+            "**Classification:** HIGH Drift | **Violation:** Reliability Policy Mismatch\n\n"
+            "**Root Cause:** Nav2 controller publishes with `BEST_EFFORT` reliability while `/base_controller` "
+            "subscriber requires `RELIABLE`. Under RTPS network contention, packet drops cause dead-reckoning starvation.\n\n"
+            "**Remediation:** Commit automated patch `QOS-REL-001` to harmonize QoS profiles."
+        )
+        action = "apply_patch"
+        recommendations = ["Harmonize QoS Reliability Policy", "Apply Patch QOS-REL-001"]
+    elif any(k in q for k in ["isolate", "ebpf", "quarantine"]):
+        reply = (
+            "### 🛡️ eBPF Enforcer Status: Rule #4092 Ready\n\n"
+            "Target Socket: `fd:28` | Remote GUID: `01.0f.d4.9a.12.34` | Interface: `eth0`\n"
+            "Enforcing kernel-level packet drop on Domain ID 0 to prevent malicious payload ingestion before DDS deserialization."
+        )
+        action = "isolate_node"
+        recommendations = ["Execute eBPF Rule #4092", "Verify Enclave Integrity"]
+    elif any(k in q for k in ["estop", "halt", "stop", "emergency"]):
+        reply = (
+            "### 🛑 Emergency Fleet Command: E-STOP\n\n"
+            "Actuation cut signal broadcasted across Domain 0. All 6 AMR enclaves (AMR-01 through AMR-06) "
+            "will be clamped to 0.0 m/s with mechanical dynamic braking engaged."
+        )
+        action = "engage_estop"
+        recommendations = ["Engage Fleet E-STOP", "Initiate Safe Fleet Quarantine"]
+    elif any(k in q for k in ["status", "posture", "score", "audit"]):
+        reply = (
+            f"### 📊 Security Posture Assessment: {STATE['posture_score']}%\n\n"
+            f"- **Active Scenario:** {STATE['scenario_name']}\n"
+            f"- **Critical Vulnerabilities:** {STATE['critical_vulnerabilities']}\n"
+            f"- **QoS Mismatches:** {STATE['qos_mismatches']}\n"
+            f"- **RTPS Wire Throughput:** {STATE['wire_throughput']} msgs/sec\n"
+            f"- **Hardware Enclave:** {STATE['hardware_enclave']}"
+        )
+        recommendations = ["Audit SROS2 Keystore", "Run Full Attack Simulation"]
+    else:
+        reply = (
+            f"**ROBOGUARD AI Sentinel Online** (Zero-Trust Autonomous Defense).\n\n"
+            f"Currently monitoring **{STATE['scenario_name']}** at Domain 0. "
+            "I can explain detected CVEs, trace rogue RTPS edges, harmonize QoS contracts, "
+            "or trigger automated eBPF isolation.\n\n"
+            "*Try asking:* 'Explain CVE-2024-41123', 'How to fix QoS mismatch?', 'Isolate rogue node', or 'Audit posture'."
+        )
+        recommendations = ["Explain CVE-2024-41123", "Isolate Rogue Node", "Fix QoS Mismatch"]
+
+    return JSONResponse({
+        "reply": reply,
+        "source": "ROBOGUARD AI Sentinel (Deterministic / Zero-Trust)",
+        "action": action,
+        "recommendations": recommendations,
+    })
+
+
+@app.get("/api/rosbag/dump")
+async def download_rosbag():
+    """Download simulated incident telemetry bag metadata."""
+    content = (
+        "# ROBOGUARD AI — Incident Telemetry MCAP Record\n"
+        "format: mcap/ros2\n"
+        f"scenario: {STATE['active_scenario']}\n"
+        f"timestamp: 2026-11-08T18:30:00Z\n"
+        "duration_sec: 900\n"
+        "topics:\n"
+        "  - name: /cmd_vel\n"
+        "    type: geometry_msgs/msg/Twist\n"
+        "    messages: 37800\n"
+        "    anomaly: UNVERIFIED_REMOTE_INJECTION\n"
+        "  - name: /scan\n"
+        "    type: sensor_msgs/msg/LaserScan\n"
+        "    messages: 18000\n"
+        "  - name: /tf\n"
+        "    type: tf2_msgs/msg/TFMessage\n"
+        "    messages: 90000\n"
+        "security_profile:\n"
+        "  sros2_active: true\n"
+        "  enclave: /amr_navigation_enclave\n"
+    )
+    return Response(
+        content=content,
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": "attachment; filename=incident_telemetry_dump.mcap"},
+    )
+
+
 @app.get("/api/export/html")
 async def export_offline_html():
     """Generate and download a self-contained offline HTML audit report."""

@@ -135,3 +135,23 @@ def test_api_export_html():
     assert "attachment" in res.headers["content-disposition"]
     text = res.body.decode("utf-8")
     assert "ROBOGUARD" in text
+
+
+def test_api_ai_chat():
+    from server import ai_chat
+    res = asyncio.run(ai_chat({"message": "Explain CVE-2024-41123"}))
+    assert res.status_code == 200
+    data = json.loads(res.body.decode("utf-8"))
+    assert "reply" in data
+    assert "CVE-2024-41123" in data["reply"]
+    assert data["action"] == "isolate_node"
+
+
+def test_api_rosbag_dump():
+    from server import download_rosbag
+    res = asyncio.run(download_rosbag())
+    assert res.status_code == 200
+    assert "attachment" in res.headers["content-disposition"]
+    text = res.body.decode("utf-8")
+    assert "/cmd_vel" in text
+    assert "mcap" in text
