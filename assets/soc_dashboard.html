@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROBOGUARD AI — Enterprise 3D Robotics SOC & Cyber-Physical Defense Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js & OrbitControls for 3D Cyber-Physical Simulation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    /* ==========================================================================
+       ELITE AEROSPACE CYBERSECURITY SOC DESIGN SYSTEM (DARK-FIRST THEME)
+       ========================================================================== */
+    :root {
+      --bg-app: #080A0F;
+      --bg-panel: #0E121C;
+      --bg-card: #141926;
+      --bg-elevated: #1B2234;
+      --bg-input: #0A0D14;
+      
+      --border-subtle: #1F283D;
+      --border-strong: #2D3A56;
+      --border-accent: #00E5FF;
+      
+      --text-main: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+
+      /* Primary Brand & Status Palette */
+      --cyan: #00E5FF;
+      --cyan-glow: rgba(0, 229, 255, 0.25);
+      --blue: #0284C7;
+      --emerald: #10B981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --rose: #EF4444;
+      --rose-glow: rgba(239, 68, 68, 0.25);
+      --amber: #F59E0B;
+      --amber-glow: rgba(245, 158, 11, 0.25);
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Aerospace Command Header */
+    .soc-header {
+      background: linear-gradient(180deg, #111624 0%, var(--bg-panel) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #0284C7 0%, var(--cyan) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+    .brand-text h1 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: var(--cyan);
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .brand-sub {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .header-telemetry {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .telemetry-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .telemetry-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .telemetry-val {
+      font-family: var(--font-mono);
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulseDot 1.8s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Primary Navigation Bar (Tabs) */
+    .soc-nav-bar {
+      background-color: #0B0E17;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0 1.25rem;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.825rem;
+      padding: 0.85rem 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .nav-tab-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .nav-tab-btn.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+      background: rgba(0, 229, 255, 0.05);
+    }
+
+    /* Main Container */
+    .soc-viewport {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 2rem 1.25rem;
+    }
+
+    /* Stat Banner Strip */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .stat-box {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--blue);
+    }
+    .stat-box.crit::before { background: var(--rose); }
+    .stat-box.success::before { background: var(--emerald); }
+    .stat-box.cyan::before { background: var(--cyan); }
+    .stat-box-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .stat-box-val {
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #FFFFFF;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .stat-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+    }
+    .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .pill-red { background: rgba(239, 68, 68, 0.15); color: var(--rose); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .pill-cyan { background: rgba(0, 229, 255, 0.15); color: var(--cyan); border: 1px solid rgba(0, 229, 255, 0.3); }
+
+    /* Panels & Viewports */
+    .soc-panel {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 0.85rem 1.25rem;
+      background: linear-gradient(90deg, #121824 0%, var(--bg-panel) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel-sub {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    .panel-body {
+      padding: 1.25rem;
+    }
+
+    /* 3D Hero Viewport & Grid Layout */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 1080px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    .canvas-3d-container {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      background-color: #05070B;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #heroCanvas3D {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    
+    /* 3D Floating HUD Overlays */
+    .hud-overlay-top {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+    .hud-badge {
+      background: rgba(14, 18, 28, 0.85);
+      border: 1px solid var(--border-strong);
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: #E2E8F0;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hud-overlay-right {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      z-index: 10;
+    }
+    .hud-btn {
+      background: rgba(18, 24, 38, 0.85);
+      border: 1px solid var(--border-strong);
+      color: #E2E8F0;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .hud-btn:hover {
+      background: var(--bg-elevated);
+      border-color: var(--cyan);
+      color: #FFFFFF;
+    }
+
+    .hud-overlay-bottom {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .hud-telemetry-pill {
+      background: rgba(8, 10, 15, 0.85);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--cyan);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Attack & Tackling Control Console */
+    .attack-console {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .console-header {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.6rem;
+    }
+    .mode-toggle-group {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 3px;
+    }
+    .mode-toggle-btn {
+      flex: 1;
+      padding: 0.4rem 0.6rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .mode-toggle-btn.active.insecure {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FFA5A5;
+      border: 1px solid var(--rose);
+    }
+    .mode-toggle-btn.active.hardened {
+      background: rgba(16, 185, 129, 0.2);
+      color: #A7F3D0;
+      border: 1px solid var(--emerald);
+    }
+
+    .attack-btn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .action-attack-btn {
+      background: #141A28;
+      border: 1px solid #29354E;
+      color: #F8FAFC;
+      padding: 0.7rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .action-attack-btn:hover {
+      background: #1D263B;
+      border-color: #38BDF8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+    .action-attack-btn.active {
+      border-color: var(--rose);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .tackle-btn {
+      background: linear-gradient(135deg, #0284C7 0%, var(--cyan) 100%);
+      border: 1px solid var(--cyan);
+      color: #07090E;
+      font-weight: 700;
+      font-size: 0.825rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 16px var(--cyan-glow);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .tackle-btn:hover {
+      background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+      color: #FFFFFF;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.5);
+    }
+
+    .terminal-out {
+      background: #05070B;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #CBD5E1;
+      height: 125px;
+      overflow-y: auto;
+      line-height: 1.45;
+    }
+
+    /* Force-Directed Graph Layout */
+    .graph-viewport-box {
+      width: 100%;
+      height: 520px;
+      background: #06080E;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    #dynamicGraphCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    #dynamicGraphCanvas:active {
+      cursor: grabbing;
+    }
+    .graph-legend-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(14, 18, 28, 0.9);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 1rem;
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+    .graph-inspector-drawer {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 320px;
+      background: rgba(14, 18, 28, 0.95);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 1rem;
+      backdrop-filter: blur(10px);
+      display: none;
+      z-index: 20;
+    }
+
+    /* ROSBAG Scrubber */
+    .bag-strip {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    .bag-btn {
+      background: #1E2538;
+      border: 1px solid #334155;
+      color: #FFFFFF;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .bag-slider {
+      flex: 1;
+      accent-color: var(--cyan);
+      height: 6px;
+      background: #1B2234;
+      border-radius: 3px;
+    }
+
+    /* General Utilities */
+    .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 900px) { .grid-2col { grid-template-columns: 1fr; } }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP AEROSPACE COMMAND HEADER -->
+  <header class="soc-header">
+    <div class="brand-group">
+      <div class="brand-icon">🛡️</div>
+      <div class="brand-text">
+        <h1>ROBOGUARD AI <span class="brand-badge">JAZZY · SROS2 HARDENED</span></h1>
+        <div class="brand-sub">Enterprise 3D Cyber-Physical Robotics SOC &amp; Auto-Remediation Engine</div>
+      </div>
+    </div>
+
+    <div class="header-telemetry">
+      <div class="telemetry-item">
+        <span class="telemetry-label">Cyber Defense Status</span>
+        <span class="telemetry-val" id="topEnclaveState"><span class="live-dot"></span> SROS2 ENCLAVE ACTIVE</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">DDS RTPS Network Throughput</span>
+        <span class="telemetry-val" id="topThroughput">284.2 msgs/sec</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">Active Scenario</span>
+        <span class="telemetry-val" style="color: #FFFFFF;" id="topScenarioTag">Scenario 5: Insecure Robot Fleet</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="soc-nav-bar">
+    <button class="nav-tab-btn active" onclick="switchSocTab('tab-hero3d')">🤖 3D Robot &amp; Cyberattack Arena</button>
+    <button class="nav-tab-btn" onclick="switchSocTab('tab-dynamic-graph')">🌐 Dynamic Python Computational Graph</button>
+    <button class="nav-tab-btn" onclick="switchSocTab('tab-findings')">🔍 Diagnostic Findings &amp; Patches</button>
+    <button class="nav-tab-btn" onclick="switchSocTab('tab-sros2-wizard')">🧙 SROS2 Keystore &amp; Policy Studio</button>
+  </nav>
+
+  <!-- MAIN SOC VIEWPORT -->
+  <main class="soc-viewport">
+
+    <!-- STAT BANNER STRIP -->
+    <section class="stat-strip">
+      <div class="stat-box crit">
+        <div class="stat-box-label">Critical Vulnerabilities</div>
+        <div class="stat-box-val" id="statCrit">2 <span class="stat-pill pill-red">Unauthenticated Actuation</span></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">QoS Contract Mismatches</div>
+        <div class="stat-box-val" id="statQoS">1 <span class="stat-pill pill-red">Reliability Violation</span></div>
+      </div>
+      <div class="stat-box success">
+        <div class="stat-box-label">Security Posture Score</div>
+        <div class="stat-box-val" id="statScore">45% <span class="stat-pill pill-green">Evaluated</span></div>
+      </div>
+      <div class="stat-box cyan">
+        <div class="stat-box-label">Hardware Sensor Enclave</div>
+        <div class="stat-box-val" id="statSensors">6 / 6 <span class="stat-pill pill-cyan">REP-105 Compliant</span></div>
+      </div>
+    </section>
+
+    <!-- TAB 1: 3D ROBOT HERO & ATTACK ARENA -->
+    <div id="tab-hero3d" class="tab-content active">
+      <div class="hero-grid">
+        <!-- Left: Three.js 3D Interactive Cyber-Physical Viewport -->
+        <div class="canvas-3d-container">
+          <canvas id="heroCanvas3D"></canvas>
+          
+          <!-- Top Left Floating HUD -->
+          <div class="hud-overlay-top">
+            <div class="hud-badge">AMR Rover: <b>ROBOGUARD-X1</b></div>
+            <div class="hud-badge" id="hudModeBadge">Mode: <span style="color: #EF4444;">Vulnerable ROS 2 (Plaintext)</span></div>
+          </div>
+
+          <!-- Top Right Camera Presets & Teardown Toggle -->
+          <div class="hud-overlay-right">
+            <button class="hud-btn" onclick="Robot3D.setCameraPreset('orbit')">🎥 Cinematic 360°</button>
+            <button class="hud-btn" onclick="Robot3D.setCameraPreset('pov')">👀 Sensor POV</button>
+            <button class="hud-btn" onclick="Robot3D.setCameraPreset('compute')">💻 Edge Compute Enclave</button>
+            <button class="hud-btn" id="btnTeardown" onclick="Robot3D.toggleTeardown()">📐 Hardware Teardown View</button>
+          </div>
+
+          <!-- Bottom Telemetry Pill -->
+          <div class="hud-overlay-bottom">
+            <div class="hud-telemetry-pill">
+              Velocity: <span id="telemetryVel">0.0 m/s</span> · Heading: <span id="telemetryHeading">0.0°</span> · LiDAR: <span id="telemetryLidar">15.0 Hz</span>
+            </div>
+            <div class="hud-telemetry-pill" id="defenseStatePill">
+              Shield: INACTIVE · Enclave: UNPROTECTED
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Attack Simulation & Tackling Controls -->
+        <div class="attack-console">
+          <div class="console-header">
+            <span>⚡ Cyber-Physical Attack Simulator</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">Real-time RTPS Injection</span>
+          </div>
+
+          <!-- Insecure vs Hardened Mode Switcher -->
+          <div>
+            <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; text-transform: uppercase;">Robot Defense Profile:</label>
+            <div class="mode-toggle-group">
+              <button class="mode-toggle-btn active insecure" id="btnModeInsecure" onclick="setDefenseMode('insecure')">❌ Insecure ROS 2 (Default)</button>
+              <button class="mode-toggle-btn" id="btnModeHardened" onclick="setDefenseMode('hardened')">🛡️ Hardened SROS2 (Enclave)</button>
+            </div>
+          </div>
+
+          <!-- Attack Vectors -->
+          <div>
+            <label style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; text-transform: uppercase;">Select Attack Vector:</label>
+            <div class="attack-btn-list">
+              <button class="action-attack-btn" id="btnAtk1" onclick="launchAttack(1)">
+                <span>⚡ Attack 1: Rogue /cmd_vel Injection</span>
+                <span class="stat-pill pill-red">Spoofing</span>
+              </button>
+              <button class="action-attack-btn" id="btnAtk2" onclick="launchAttack(2)">
+                <span>⚡ Attack 2: LiDAR Phantom Obstacle</span>
+                <span class="stat-pill pill-red">Sensor Deception</span>
+              </button>
+              <button class="action-attack-btn" id="btnAtk3" onclick="launchAttack(3)">
+                <span>⚡ Attack 3: DDS Multicast Storm</span>
+                <span class="stat-pill pill-red">DoS / Jitter</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tackle Attack Button -->
+          <button class="tackle-btn" id="btnTackle" onclick="tackleActiveAttack()">
+            🛡️ Tackle Attack &amp; Engage Countermeasure
+          </button>
+
+          <!-- Real-Time Terminal Output -->
+          <div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 0.25rem;">DEFENSE EXECUTION LOGS:</div>
+            <div class="terminal-out" id="terminalLog">
+              <span style="color: #64748B;">[SYSTEM READY] ROBOGUARD AI 3D Cyber-Physical Security Engine initialized.</span><br>
+              <span style="color: #00E5FF;">[TELEMETRY] ROS 2 Jazzy AMR Rover model loaded. Three.js PBR shaders ready.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROSBAG Playback Scrubber -->
+      <div class="bag-strip">
+        <button class="bag-btn" id="btnPlayBag" onclick="toggleBagPlayback()">▶</button>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: #FFFFFF;" id="bagTimeLabel">10:15:30.000</span>
+        <input type="range" class="bag-slider" id="bagScrubber" min="0" max="100" value="30" oninput="scrubBag(this.value)">
+        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary);" id="bagMsgRate">524 msgs/sec</span>
+      </div>
+    </div>
+
+    <!-- TAB 2: DYNAMIC PYTHON COMPUTATIONAL GRAPH -->
+    <div id="tab-dynamic-graph" class="tab-content">
+      <div class="soc-panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span>🌐 Dynamic Physics-Driven ROS 2 Computational Graph</span>
+            <span class="panel-sub">Spring-force simulation computed via Python NetworkX engine</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="hud-btn" onclick="DynamicGraphSim.resetForces()">🔄 Recenter Physics</button>
+            <button class="hud-btn" onclick="DynamicGraphSim.toggleErrorsOnly()">⚠️ Toggle Incompatible Edges</button>
+          </div>
+        </div>
+        <div class="panel-body" style="padding: 0.75rem;">
+          <div class="graph-viewport-box">
+            <canvas id="dynamicGraphCanvas"></canvas>
+            
+            <!-- Graph Legend -->
+            <div class="graph-legend-bar">
+              <span style="color: #10B981;">● Active Node</span>
+              <span style="color: #F59E0B;">● Inactive/Lifecycle Node</span>
+              <span style="color: #00E5FF;">◆ Topic</span>
+              <span style="color: #EF4444;">━ ━ QoS Incompatible Edge</span>
+              <span style="color: #38BDF8;">● Live Data Packet Pulse</span>
+            </div>
+
+            <!-- Click Inspector Drawer -->
+            <div class="graph-inspector-drawer" id="graphInspector">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <b id="inspectName" style="color: var(--cyan); font-size: 0.85rem;">/cmd_vel</b>
+                <button onclick="document.getElementById('graphInspector').style.display='none'" style="background: none; border: none; color: #94A3B8; cursor: pointer;">✕</button>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5;" id="inspectDetails">
+                Type: geometry_msgs/msg/Twist<br>
+                Publishers: /teleop_keyboard, /planner_server<br>
+                Subscribers: /controller_server, /diff_drive_base<br>
+                QoS Policy: <span style="color: #EF4444; font-weight: 700;">INCOMPATIBLE (BEST_EFFORT Offered vs RELIABLE Requested)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DIAGNOSTIC FINDINGS & PATCHES -->
+    <div id="tab-findings" class="tab-content">
+      <div class="soc-panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span>🔍 Active Diagnostic Findings &amp; 1-Click Git Patches</span>
+            <span class="panel-sub">Deterministic OMG DDS &amp; SROS2 Violation Ledger</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Finding Item 1 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <b style="font-size: 0.85rem; color: #FFFFFF;">[QOS-REL-001] QoS Reliability Policy Incompatibility</b>
+                <span class="stat-pill pill-red">CRITICAL</span>
+              </div>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Subscriber requested RELIABLE durability on topic <code>/cmd_vel</code>, but publisher offers BEST_EFFORT. Messages are silently dropped by DDS middleware.
+              </p>
+              <div style="background: #05070B; border: 1px solid #1E2538; border-radius: 6px; padding: 0.6rem 0.8rem; font-family: var(--font-mono); font-size: 0.72rem; color: #A7F3D0; margin-bottom: 0.75rem;">
+                +++ b/src/robot_navigation/subscriber.py<br>
+                + qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT)
+              </div>
+              <button class="hud-btn" style="color: var(--cyan); border-color: var(--cyan);" onclick="downloadPatch('qos_fix.patch')">📥 Download .patch File</button>
+            </div>
+
+            <!-- Finding Item 2 -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <b style="font-size: 0.85rem; color: #FFFFFF;">[SEC-SROS2-001] Disabled SROS2 Security Enclave &amp; Default Domain ID 0</b>
+                <span class="stat-pill pill-red">HIGH</span>
+              </div>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Environment variable <code>ROS_SECURITY_ENABLE=false</code> permits unauthenticated DDS discovery. Any device on local Wi-Fi can inject velocity commands.
+              </p>
+              <button class="hud-btn" style="color: var(--cyan); border-color: var(--cyan);" onclick="downloadPatch('sros2_hardening.patch')">📥 Download SROS2 Enclave Patch</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SROS2 KEYSTORE WIZARD -->
+    <div id="tab-sros2-wizard" class="tab-content">
+      <div class="soc-panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span>🧙 Visual SROS2 Keystore &amp; Policy XML Studio</span>
+            <span class="panel-sub">Zero-Touch Compliant Cryptographic Enclave Generator for ROS 2 Jazzy</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="grid-2col">
+            <div>
+              <label style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.35rem;">Target Enclave Node Name:</label>
+              <input type="text" id="wizNodeName" value="/controller_server" style="width: 100%; background: #0A0D14; border: 1px solid var(--border-subtle); padding: 0.6rem; border-radius: 6px; color: #FFFFFF; font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 1rem;">
+
+              <label style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.35rem;">DDS Cryptographic Plugin:</label>
+              <select style="width: 100%; background: #0A0D14; border: 1px solid var(--border-subtle); padding: 0.6rem; border-radius: 6px; color: #FFFFFF; font-size: 0.8rem; margin-bottom: 1rem;">
+                <option>FastDDS PKI (ECDSA prime256v1 + AES-GCM-256)</option>
+                <option>CycloneDDS Security (X.509 Cryptographic Token)</option>
+              </select>
+
+              <button class="tackle-btn" onclick="generateSrosXml()">✨ Generate Enclave Governance XML</button>
+            </div>
+
+            <div>
+              <label style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700; display: block; margin-bottom: 0.35rem;">Generated SROS2 Policy XML:</label>
+              <pre id="srosXmlOut" style="background: #05070B; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.72rem; color: #A7F3D0; height: 180px; overflow-y: auto;">
+&lt;!-- SROS2 Cryptographic Enclave for /controller_server --&gt;
+&lt;dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;domain_access_rules&gt;
+    &lt;domain_rule&gt;
+      &lt;domains&gt;&lt;id&gt;42&lt;/id&gt;&lt;/domains&gt;
+      &lt;allow_rule&gt;
+        &lt;domains&gt;&lt;id&gt;42&lt;/id&gt;&lt;/domains&gt;
+        &lt;publish&gt;&lt;topics&gt;&lt;topic&gt;rt/cmd_vel&lt;/topic&gt;&lt;/topics&gt;&lt;/publish&gt;
+        &lt;subscribe&gt;&lt;topics&gt;&lt;topic&gt;rt/odom&lt;/topic&gt;&lt;/topics&gt;&lt;/subscribe&gt;
+      &lt;/allow_rule&gt;
+    &lt;/domain_rule&gt;
+  &lt;/domain_access_rules&gt;
+&lt;/dds&gt;</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================================================
+       THREE.JS 3D AMR ROBOT & CYBERATTACK TACKLING ENGINE
+       ========================================================================== -->
+  <script>
+    // Tab Switching Logic
+    function switchSocTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+
+      const tabs = ['tab-hero3d', 'tab-dynamic-graph', 'tab-findings', 'tab-sros2-wizard'];
+      const idx = tabs.indexOf(tabId);
+      if (idx !== -1 && document.querySelectorAll('.nav-tab-btn')[idx]) {
+        document.querySelectorAll('.nav-tab-btn')[idx].classList.add('active');
+      }
+
+      if (tabId === 'tab-hero3d' && window.Robot3D) {
+        setTimeout(() => Robot3D.onWindowResize(), 50);
+      }
+      if (tabId === 'tab-dynamic-graph' && window.DynamicGraphSim) {
+        setTimeout(() => DynamicGraphSim.resize(), 50);
+      }
+    }
+
+    // Global State
+    let currentDefenseMode = 'insecure'; // 'insecure' or 'hardened'
+    let currentAttack = 0; // 0: none, 1: cmd_vel, 2: lidar, 3: dds_storm
+    let isBagPlaying = true;
+    let bagPosition = 30;
+
+    function setDefenseMode(mode) {
+      currentDefenseMode = mode;
+      const btnInsecure = document.getElementById('btnModeInsecure');
+      const btnHardened = document.getElementById('btnModeHardened');
+      const hudBadge = document.getElementById('hudModeBadge');
+      const topEnclave = document.getElementById('topEnclaveState');
+
+      if (mode === 'insecure') {
+        btnInsecure.className = 'mode-toggle-btn active insecure';
+        btnHardened.className = 'mode-toggle-btn';
+        hudBadge.innerHTML = 'Mode: <span style="color: #EF4444;">Vulnerable ROS 2 (Plaintext)</span>';
+        topEnclave.innerHTML = '<span class="live-dot" style="background: #EF4444; box-shadow: 0 0 8px #EF4444;"></span> SROS2 DISABLED (DOMAIN 0)';
+        logTerminal('[CONFIG] Switched to Vulnerable Mode: ROS_SECURITY_ENABLE=false. UDP Multicast unencrypted.', '#F87171');
+      } else {
+        btnInsecure.className = 'mode-toggle-btn';
+        btnHardened.className = 'mode-toggle-btn active hardened';
+        hudBadge.innerHTML = 'Mode: <span style="color: #10B981;">Hardened SROS2 (Enclave Active)</span>';
+        topEnclave.innerHTML = '<span class="live-dot" style="background: #10B981; box-shadow: 0 0 8px #10B981;"></span> SROS2 ENCLAVE ACTIVE';
+        logTerminal('[CONFIG] Switched to Hardened SROS2 Mode: Mutual TLS X.509 enabled on Domain 42.', '#34D399');
+      }
+      Robot3D.updateDefenseVisuals();
+    }
+
+    function logTerminal(msg, color = '#CBD5E1') {
+      const term = document.getElementById('terminalLog');
+      const line = document.createElement('div');
+      line.style.color = color;
+      const time = new Date().toISOString().substring(11, 19);
+      line.innerHTML = `[${time}] ${msg}`;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function launchAttack(num) {
+      currentAttack = num;
+      document.querySelectorAll('.action-attack-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btnAtk${num}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (num === 1) {
+        logTerminal('🚨 ATTACK 1 LAUNCHED: Rogue /cmd_vel publisher injecting linear.x=3.5 m/s, angular.z=2.8 rad/s!', '#EF4444');
+      } else if (num === 2) {
+        logTerminal('🚨 ATTACK 2 LAUNCHED: LiDAR distance spoofing! Injecting phantom obstacle at range=0.45m!', '#EF4444');
+      } else if (num === 3) {
+        logTerminal('🚨 ATTACK 3 LAUNCHED: DDS RTPS Multicast UDP Flooding storm (62,000 pkts/sec) targeting Edge Compute!', '#EF4444');
+      }
+      Robot3D.triggerAttack(num);
+    }
+
+    function tackleActiveAttack() {
+      if (currentAttack === 0) {
+        logTerminal('ℹ️ No active cyberattack. Deploying SROS2 security posture verification sweep.', '#00E5FF');
+        Robot3D.pulseShield();
+        return;
+      }
+      logTerminal(`🛡️ TACKLING ATTACK ${currentAttack}: Engaging automated countermeasure and cryptographic enclave barrier!`, '#34D399');
+      Robot3D.tackleAttack(currentAttack);
+      currentAttack = 0;
+      document.querySelectorAll('.action-attack-btn').forEach(b => b.classList.remove('active'));
+    }
+
+    function toggleBagPlayback() {
+      isBagPlaying = !isBagPlaying;
+      document.getElementById('btnPlayBag').textContent = isBagPlaying ? '⏸' : '▶';
+      logTerminal(isBagPlaying ? '▶ ROSBAG playback resumed.' : '⏸ ROSBAG playback paused.');
+    }
+
+    function scrubBag(val) {
+      bagPosition = val;
+      const secs = (val * 0.3).toFixed(2);
+      document.getElementById('bagTimeLabel').textContent = `10:15:${secs}`;
+      document.getElementById('telemetryVel').textContent = `${(0.4 + (val % 5)*0.1).toFixed(2)} m/s`;
+      document.getElementById('telemetryHeading').textContent = `${(val * 3.6 % 360).toFixed(1)}°`;
+    }
+
+    function downloadPatch(filename) {
+      const patchContent = `--- a/src/robot_navigation/subscriber.py\n+++ b/src/robot_navigation/subscriber.py\n@@ -15,4 +15,6 @@\n- self.sub = self.create_subscription(Twist, '/cmd_vel', self.cb, 10)\n+ # HARDENED: Explicitly match offered QoS\n+ qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT)\n+ self.sub = self.create_subscription(Twist, '/cmd_vel', self.cb, qos)\n`;
+      const blob = new Blob([patchContent], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      logTerminal(`📥 Downloaded automated remediation patch: ${filename}`, '#00E5FF');
+    }
+
+    function generateSrosXml() {
+      const node = document.getElementById('wizNodeName').value;
+      logTerminal(`✨ Generated SROS2 security policy for ${node}`, '#34D399');
+    }
+
+    /* ==========================================================================
+       THREE.JS 3D ROBOT & CYBER-PHYSICAL SCENE
+       ========================================================================== */
+    const Robot3D = {
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      robotGroup: null,
+      chassis: null,
+      lidarPuck: null,
+      laserScanBeam: null,
+      wheels: [],
+      shieldMesh: null,
+      attackParticles: null,
+      phantomObstacle: null,
+      edgeComputeBox: null,
+      hazardRing: null,
+      teardownActive: false,
+      attackActive: 0,
+      clock: new THREE.Clock(),
+
+      init() {
+        const container = document.getElementById('heroCanvas3D').parentElement;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        // Scene
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x06080E);
+        this.scene.fog = new THREE.FogExp2(0x06080E, 0.04);
+
+        // Camera
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        this.camera.position.set(3.2, 2.2, 4.2);
+
+        // Renderer
+        this.renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('heroCanvas3D'), antialias: true });
+        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.shadowMap.enabled = true;
+
+        // Controls
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.06;
+        this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
+        this.controls.minDistance = 1.5;
+        this.controls.maxDistance = 15;
+        this.controls.target.set(0, 0.5, 0);
+
+        // Lighting
+        const ambLight = new THREE.AmbientLight(0x2A354D, 1.2);
+        this.scene.add(ambLight);
+
+        const dirLight = new THREE.DirectionalLight(0xFFFFFF, 1.4);
+        dirLight.position.set(5, 10, 7);
+        dirLight.castShadow = true;
+        this.scene.add(dirLight);
+
+        const blueAccent = new THREE.PointLight(0x00E5FF, 2.0, 10);
+        blueAccent.position.set(-3, 3, -3);
+        this.scene.add(blueAccent);
+
+        // Ground Grid
+        const gridHelper = new THREE.GridHelper(24, 24, 0x1E293B, 0x0F172A);
+        gridHelper.position.y = 0;
+        this.scene.add(gridHelper);
+
+        // Build 3D AMR Robot
+        this.buildRobot();
+
+        // Build Cyber Shield
+        this.buildCyberShield();
+
+        // Build Attack Particles
+        this.buildAttackParticles();
+
+        // Build Hazard Floor Ring
+        this.buildHazardRing();
+
+        window.addEventListener('resize', () => this.onWindowResize());
+        this.animate();
+      },
+
+      buildRobot() {
+        this.robotGroup = new THREE.Group();
+
+        // 1. Lower Machined Chassis
+        const chassisGeo = new THREE.BoxGeometry(1.6, 0.45, 1.1);
+        const chassisMat = new THREE.MeshStandardMaterial({
+          color: 0x1E222D,
+          roughness: 0.35,
+          metalness: 0.8
+        });
+        this.chassis = new THREE.Mesh(chassisGeo, chassisMat);
+        this.chassis.position.y = 0.42;
+        this.chassis.castShadow = true;
+        this.robotGroup.add(this.chassis);
+
+        // Upper Deck Plate (Separate for teardown mode)
+        const deckGeo = new THREE.BoxGeometry(1.45, 0.08, 0.95);
+        const deckMat = new THREE.MeshStandardMaterial({ color: 0x11141E, roughness: 0.5, metalness: 0.6 });
+        this.deckPlate = new THREE.Mesh(deckGeo, deckMat);
+        this.deckPlate.position.set(0, 0.68, 0);
+        this.robotGroup.add(this.deckPlate);
+
+        // 2. Heavy-Duty Mecanum Wheels (4 Wheels)
+        const wheelGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.16, 24);
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0D0F14, roughness: 0.8 });
+        const hubMat = new THREE.MeshStandardMaterial({ color: 0x94A3B8, metalness: 0.9, roughness: 0.2 });
+
+        const wheelPositions = [
+          [-0.6, 0.24, 0.62],
+          [0.6, 0.24, 0.62],
+          [-0.6, 0.24, -0.62],
+          [0.6, 0.24, -0.62]
+        ];
+
+        this.wheels = [];
+        wheelPositions.forEach((pos, i) => {
+          const wGroup = new THREE.Group();
+          const wMesh = new THREE.Mesh(wheelGeo, wheelMat);
+          wMesh.rotation.x = Math.PI / 2;
+          wGroup.add(wMesh);
+
+          const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.18, 12), hubMat);
+          hub.rotation.x = Math.PI / 2;
+          wGroup.add(hub);
+
+          wGroup.position.set(pos[0], pos[1], pos[2]);
+          this.robotGroup.add(wGroup);
+          this.wheels.push(wGroup);
+        });
+
+        // 3. Velodyne/Ouster Style Cylindrical LiDAR Turret
+        this.lidarGroup = new THREE.Group();
+        this.lidarGroup.position.set(0, 0.76, 0.1);
+
+        const lidarBase = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.18, 0.2, 0.15, 24),
+          new THREE.MeshStandardMaterial({ color: 0x1A1F2B, metalness: 0.8, roughness: 0.3 })
+        );
+        this.lidarGroup.add(lidarBase);
+
+        // Rotating LiDAR Puck with Emissive Blue Aperture
+        this.lidarPuck = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.18, 0.18, 0.14, 24),
+          new THREE.MeshStandardMaterial({ color: 0x0F131D, metalness: 0.9, roughness: 0.2 })
+        );
+        this.lidarPuck.position.y = 0.14;
+
+        // Glowing Blue Laser Ring
+        const ringGeo = new THREE.TorusGeometry(0.182, 0.015, 8, 32);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00E5FF });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        this.lidarPuck.add(ring);
+        this.lidarGroup.add(this.lidarPuck);
+
+        // Sweeping LiDAR Laser Scan Fan
+        const laserGeo = new THREE.ConeGeometry(3.5, 0.05, 16, 1, true, 0, Math.PI / 4);
+        const laserMat = new THREE.MeshBasicMaterial({
+          color: 0x00E5FF,
+          transparent: true,
+          opacity: 0.25,
+          side: THREE.DoubleSide
+        });
+        this.laserScanBeam = new THREE.Mesh(laserGeo, laserMat);
+        this.laserScanBeam.rotation.x = Math.PI / 2;
+        this.laserScanBeam.position.y = 0.14;
+        this.lidarGroup.add(this.laserScanBeam);
+
+        this.robotGroup.add(this.lidarGroup);
+
+        // 4. Stereo Vision Camera Bar (Intel RealSense / ZED Style)
+        const camBarGeo = new THREE.BoxGeometry(0.5, 0.12, 0.08);
+        const camBarMat = new THREE.MeshStandardMaterial({ color: 0x1E2433, metalness: 0.7 });
+        const camBar = new THREE.Mesh(camBarGeo, camBarMat);
+        camBar.position.set(0.8, 0.52, 0);
+
+        // Dual Camera Lenses
+        const lensGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.02, 16);
+        const lensMat = new THREE.MeshBasicMaterial({ color: 0x00E5FF });
+        const lensL = new THREE.Mesh(lensGeo, lensMat);
+        lensL.rotation.z = Math.PI / 2;
+        lensL.position.set(0.04, 0, 0.15);
+        camBar.add(lensL);
+
+        const lensR = new THREE.Mesh(lensGeo, lensMat);
+        lensR.rotation.z = Math.PI / 2;
+        lensR.position.set(0.04, 0, -0.15);
+        camBar.add(lensR);
+        this.robotGroup.add(camBar);
+
+        // 5. Rugged Edge Compute Unit with Cooling Fins (NVIDIA Jetson / x86 Style)
+        this.edgeComputeBox = new THREE.Group();
+        this.edgeComputeBox.position.set(-0.45, 0.76, 0);
+
+        const compBody = new THREE.Mesh(
+          new THREE.BoxGeometry(0.48, 0.16, 0.52),
+          new THREE.MeshStandardMaterial({ color: 0x0B0D14, roughness: 0.4, metalness: 0.9 })
+        );
+        this.edgeComputeBox.add(compBody);
+
+        // Heatsink Cooling Fins
+        for (let f = -0.22; f <= 0.22; f += 0.04) {
+          const fin = new THREE.Mesh(
+            new THREE.BoxGeometry(0.46, 0.05, 0.015),
+            new THREE.MeshStandardMaterial({ color: 0x222B3D, metalness: 0.95 })
+          );
+          fin.position.set(0, 0.1, f);
+          this.edgeComputeBox.add(fin);
+        }
+
+        // Ethernet Status Blinking LED
+        this.netLed = new THREE.Mesh(
+          new THREE.SphereGeometry(0.02, 8, 8),
+          new THREE.MeshBasicMaterial({ color: 0x10B981 })
+        );
+        this.netLed.position.set(-0.24, 0, 0.18);
+        this.edgeComputeBox.add(this.netLed);
+        this.robotGroup.add(this.edgeComputeBox);
+
+        // 6. Dual Headlights
+        const headLightMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        const hlL = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 16), headLightMat);
+        hlL.rotation.z = Math.PI / 2;
+        hlL.position.set(0.81, 0.35, 0.35);
+        this.robotGroup.add(hlL);
+
+        const hlR = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 16), headLightMat);
+        hlR.rotation.z = Math.PI / 2;
+        hlR.position.set(0.81, 0.35, -0.35);
+        this.robotGroup.add(hlR);
+
+        this.scene.add(this.robotGroup);
+      },
+
+      buildCyberShield() {
+        const shieldGeo = new THREE.IcosahedronGeometry(1.6, 2);
+        const shieldMat = new THREE.MeshBasicMaterial({
+          color: 0x00E5FF,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.0
+        });
+        this.shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
+        this.shieldMesh.position.set(0, 0.6, 0);
+        this.scene.add(this.shieldMesh);
+      },
+
+      buildAttackParticles() {
+        const particleCount = 250;
+        const geo = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+          positions[i] = 4 + (Math.random() - 0.5) * 2;
+          positions[i + 1] = 1 + (Math.random() - 0.5) * 1.5;
+          positions[i + 2] = 2 + (Math.random() - 0.5) * 2;
+        }
+
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const mat = new THREE.PointsMaterial({
+          color: 0xEF4444,
+          size: 0.07,
+          transparent: true,
+          opacity: 0.0
+        });
+        this.attackParticles = new THREE.Points(geo, mat);
+        this.scene.add(this.attackParticles);
+
+        // Phantom Obstacle Cube
+        const obsGeo = new THREE.BoxGeometry(0.7, 0.9, 0.7);
+        const obsMat = new THREE.MeshBasicMaterial({
+          color: 0xEF4444,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.0
+        });
+        this.phantomObstacle = new THREE.Mesh(obsGeo, obsMat);
+        this.phantomObstacle.position.set(2.2, 0.45, 0);
+        this.scene.add(this.phantomObstacle);
+      },
+
+      buildHazardRing() {
+        const ringGeo = new THREE.RingGeometry(1.7, 1.76, 48);
+        const ringMat = new THREE.MeshBasicMaterial({
+          color: 0xEF4444,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.5
+        });
+        this.hazardRing = new THREE.Mesh(ringGeo, ringMat);
+        this.hazardRing.rotation.x = Math.PI / 2;
+        this.hazardRing.position.y = 0.02;
+        this.scene.add(this.hazardRing);
+      },
+
+      toggleTeardown() {
+        this.teardownActive = !this.teardownActive;
+        const btn = document.getElementById('btnTeardown');
+        btn.textContent = this.teardownActive ? '🧩 Assemble Robot' : '📐 Hardware Teardown View';
+        btn.style.color = this.teardownActive ? '#00E5FF' : '#E2E8F0';
+
+        logTerminal(
+          this.teardownActive 
+            ? '📐 Exploded Hardware Teardown View activated: LiDAR, Upper Deck, and Drive Wheels isolated.'
+            : '🧩 Hardware components re-assembled into production chassis configuration.',
+          '#00E5FF'
+        );
+      },
+
+      setCameraPreset(preset) {
+        if (preset === 'orbit') {
+          this.camera.position.set(3.2, 2.2, 4.2);
+          this.controls.target.set(0, 0.5, 0);
+        } else if (preset === 'pov') {
+          this.camera.position.set(1.1, 0.65, 0);
+          this.controls.target.set(5.0, 0.5, 0);
+        } else if (preset === 'compute') {
+          this.camera.position.set(-1.2, 1.3, 0.8);
+          this.controls.target.set(-0.45, 0.76, 0);
+        }
+      },
+
+      updateDefenseVisuals() {
+        const isHardened = currentDefenseMode === 'hardened';
+        this.shieldMesh.material.color.setHex(isHardened ? 0x10B981 : 0x00E5FF);
+        this.shieldMesh.material.opacity = isHardened ? 0.3 : 0.0;
+        document.getElementById('defenseStatePill').textContent = isHardened 
+          ? 'Shield: GEODESIC SROS2 · Enclave: MUTUAL TLS'
+          : 'Shield: INACTIVE · Enclave: UNPROTECTED';
+      },
+
+      triggerAttack(num) {
+        this.attackActive = num;
+        if (num === 1) {
+          // Rogue cmd_vel: tilt and wobble chassis
+          this.attackParticles.material.opacity = 0.9;
+        } else if (num === 2) {
+          // Phantom obstacle
+          this.phantomObstacle.material.opacity = 0.85;
+          this.laserScanBeam.material.color.setHex(0xEF4444);
+        } else if (num === 3) {
+          // DDS multicast storm on compute
+          this.attackParticles.material.opacity = 1.0;
+        }
+      },
+
+      tackleAttack(num) {
+        this.pulseShield();
+        this.attackActive = 0;
+        this.attackParticles.material.opacity = 0.0;
+        this.phantomObstacle.material.opacity = 0.0;
+        this.laserScanBeam.material.color.setHex(0x00E5FF);
+        this.robotGroup.position.set(0, 0, 0);
+        this.robotGroup.rotation.y = 0;
+      },
+
+      pulseShield() {
+        let op = 0.9;
+        this.shieldMesh.material.opacity = op;
+        const fade = setInterval(() => {
+          op -= 0.05;
+          if (op <= (currentDefenseMode === 'hardened' ? 0.3 : 0.0)) {
+            this.shieldMesh.material.opacity = (currentDefenseMode === 'hardened' ? 0.3 : 0.0);
+            clearInterval(fade);
+          } else {
+            this.shieldMesh.material.opacity = op;
+          }
+        }, 40);
+      },
+
+      onWindowResize() {
+        const container = document.getElementById('heroCanvas3D').parentElement;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(width, height);
+      },
+
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        const delta = this.clock.getDelta();
+        const time = this.clock.getElapsedTime();
+
+        // Rotate LiDAR Puck & Laser Sweep
+        if (this.lidarPuck) this.lidarPuck.rotation.y += delta * 6.0;
+        if (this.laserScanBeam) this.laserScanBeam.rotation.z += delta * 6.0;
+
+        // Animate Wheels
+        if (isBagPlaying) {
+          this.wheels.forEach(w => {
+            w.children[0].rotation.y += delta * 4.0;
+          });
+        }
+
+        // Teardown View Interpolation
+        const targetLidarY = this.teardownActive ? 1.4 : 0.76;
+        const targetDeckY = this.teardownActive ? 1.05 : 0.68;
+        this.lidarGroup.position.y += (targetLidarY - this.lidarGroup.position.y) * 0.1;
+        this.deckPlate.position.y += (targetDeckY - this.deckPlate.position.y) * 0.1;
+
+        if (this.teardownActive) {
+          this.wheels[0].position.z = 0.85;
+          this.wheels[1].position.z = 0.85;
+          this.wheels[2].position.z = -0.85;
+          this.wheels[3].position.z = -0.85;
+        } else {
+          this.wheels[0].position.z = 0.62;
+          this.wheels[1].position.z = 0.62;
+          this.wheels[2].position.z = -0.62;
+          this.wheels[3].position.z = -0.62;
+        }
+
+        // Attack 1: Rogue cmd_vel perturbation
+        if (this.attackActive === 1) {
+          if (currentDefenseMode === 'insecure') {
+            this.robotGroup.rotation.y = Math.sin(time * 12) * 0.25;
+            this.robotGroup.position.x = Math.cos(time * 8) * 0.3;
+          } else {
+            this.robotGroup.rotation.y = 0;
+            this.robotGroup.position.x = 0;
+          }
+        }
+
+        // Animate Attack Particles Stream
+        if (this.attackParticles && this.attackParticles.material.opacity > 0) {
+          const pos = this.attackParticles.geometry.attributes.position.array;
+          for (let i = 0; i < pos.length; i += 3) {
+            pos[i] -= delta * 5.0;
+            if (pos[i] < (this.attackActive === 3 ? -0.4 : 0.2)) {
+              pos[i] = 4.0 + Math.random();
+            }
+          }
+          this.attackParticles.geometry.attributes.position.needsUpdate = true;
+        }
+
+        // Pulse Hazard Floor Ring
+        if (this.hazardRing) {
+          this.hazardRing.material.opacity = 0.35 + Math.sin(time * 4) * 0.25;
+          this.hazardRing.rotation.z += delta * 0.2;
+        }
+
+        // Blinking Net LED
+        if (this.netLed) {
+          this.netLed.material.color.setHex(Math.sin(time * 15) > 0 ? 0x10B981 : 0x059669);
+        }
+
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+      }
+    };
+
+    /* ==========================================================================
+       DYNAMIC FORCE-DIRECTED PYTHON COMPUTATIONAL GRAPH SIMULATION
+       ========================================================================== */
+    const DynamicGraphSim = {
+      canvas: null,
+      ctx: null,
+      nodes: [],
+      edges: [],
+      draggedNode: null,
+      packets: [],
+      showErrorsOnly: false,
+
+      init() {
+        this.canvas = document.getElementById('dynamicGraphCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+
+        // Nodes & Topic Data (Sourced from Python NetworkX Model)
+        this.nodes = [
+          { id: "node:teleop", label: "/teleop_keyboard", type: "node", x: 140, y: 120, vx: 0, vy: 0, color: "#10B981" },
+          { id: "node:planner", label: "/planner_server", type: "node", x: 260, y: 240, vx: 0, vy: 0, color: "#10B981" },
+          { id: "node:controller", label: "/controller_server", type: "node", x: 380, y: 360, vx: 0, vy: 0, color: "#F59E0B" },
+          { id: "node:diff_drive", label: "/diff_drive_base", type: "node", x: 620, y: 260, vx: 0, vy: 0, color: "#10B981" },
+          { id: "node:lidar", label: "/lidar_driver", type: "node", x: 120, y: 340, vx: 0, vy: 0, color: "#10B981" },
+          { id: "node:camera", label: "/camera_driver", type: "node", x: 120, y: 460, vx: 0, vy: 0, color: "#10B981" },
+          { id: "topic:cmd_vel", label: "/cmd_vel", type: "topic", x: 480, y: 160, vx: 0, vy: 0, color: "#00E5FF", msg: "geometry_msgs/Twist" },
+          { id: "topic:scan", label: "/scan", type: "topic", x: 200, y: 300, vx: 0, vy: 0, color: "#00E5FF", msg: "sensor_msgs/LaserScan" },
+          { id: "topic:tf", label: "/tf", type: "topic", x: 500, y: 380, vx: 0, vy: 0, color: "#00E5FF", msg: "tf2_msgs/TFMessage" }
+        ];
+
+        this.edges = [
+          { from: "node:teleop", to: "topic:cmd_vel", error: false },
+          { from: "node:planner", to: "topic:cmd_vel", error: false },
+          { from: "topic:cmd_vel", to: "node:controller", error: true }, // QoS Mismatch
+          { from: "topic:cmd_vel", to: "node:diff_drive", error: true }, // QoS Mismatch
+          { from: "node:lidar", to: "topic:scan", error: false },
+          { from: "topic:scan", to: "node:planner", error: false },
+          { from: "node:diff_drive", to: "topic:tf", error: false },
+          { from: "topic:tf", to: "node:planner", error: false }
+        ];
+
+        // Seed live data packets
+        for (let i = 0; i < 14; i++) {
+          this.packets.push({
+            edgeIdx: Math.floor(Math.random() * this.edges.length),
+            progress: Math.random(),
+            speed: 0.006 + Math.random() * 0.008
+          });
+        }
+
+        this.setupEvents();
+        this.animate();
+      },
+
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+      },
+
+      setupEvents() {
+        window.addEventListener('resize', () => this.resize());
+
+        this.canvas.addEventListener('mousedown', (e) => {
+          const rect = this.canvas.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+          this.draggedNode = this.nodes.find(n => Math.hypot(n.x - mx, n.y - my) < 24);
+          
+          if (this.draggedNode) {
+            this.showInspector(this.draggedNode);
+          }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (!this.draggedNode) return;
+          const rect = this.canvas.getBoundingClientRect();
+          this.draggedNode.x = e.clientX - rect.left;
+          this.draggedNode.y = e.clientY - rect.top;
+        });
+
+        window.addEventListener('mouseup', () => {
+          this.draggedNode = null;
+        });
+      },
+
+      showInspector(node) {
+        const ins = document.getElementById('graphInspector');
+        document.getElementById('inspectName').textContent = node.label;
+        document.getElementById('inspectDetails').innerHTML = `
+          Category: <b>${node.type.toUpperCase()}</b><br>
+          Runtime State: <span style="color: ${node.color}; font-weight: 700;">ACTIVE</span><br>
+          Message Interface: <code>${node.msg || 'rclcpp::Node'}</code><br>
+          QoS Compatibility: ${node.id.includes('cmd_vel') ? '<span style="color: #EF4444; font-weight: 700;">FAIL (BEST_EFFORT vs RELIABLE)</span>' : '<span style="color: #10B981;">PASSED (COMPATIBLE)</span>'}
+        `;
+        ins.style.display = 'block';
+      },
+
+      resetForces() {
+        this.nodes.forEach(n => {
+          n.x = 100 + Math.random() * (this.canvas.width - 200);
+          n.y = 100 + Math.random() * (this.canvas.height - 200);
+          n.vx = 0; n.vy = 0;
+        });
+      },
+
+      toggleErrorsOnly() {
+        this.showErrorsOnly = !this.showErrorsOnly;
+      },
+
+      updatePhysics() {
+        // Simple spring attraction & repulsion
+        const repulsion = 1200;
+        const springLen = 140;
+        const k = 0.003;
+
+        for (let i = 0; i < this.nodes.length; i++) {
+          for (let j = i + 1; j < this.nodes.length; j++) {
+            const n1 = this.nodes[i];
+            const n2 = this.nodes[j];
+            const dx = n2.x - n1.x;
+            const dy = n2.y - n1.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            const force = repulsion / (dist * dist);
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+
+            if (n1 !== this.draggedNode) { n1.vx -= fx; n1.vy -= fy; }
+            if (n2 !== this.draggedNode) { n2.vx += fx; n2.vy += fy; }
+          }
+        }
+
+        this.edges.forEach(e => {
+          const n1 = this.nodes.find(n => n.id === e.from);
+          const n2 = this.nodes.find(n => n.id === e.to);
+          if (!n1 || !n2) return;
+
+          const dx = n2.x - n1.x;
+          const dy = n2.y - n1.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          const springForce = (dist - springLen) * k;
+          const fx = (dx / dist) * springForce;
+          const fy = (dy / dist) * springForce;
+
+          if (n1 !== this.draggedNode) { n1.vx += fx; n1.vy += fy; }
+          if (n2 !== this.draggedNode) { n2.vx -= fx; n2.vy -= fy; }
+        });
+
+        // Damping and boundary clamp
+        this.nodes.forEach(n => {
+          if (n === this.draggedNode) return;
+          n.x += n.vx;
+          n.y += n.vy;
+          n.vx *= 0.85;
+          n.vy *= 0.85;
+
+          n.x = Math.max(40, Math.min(this.canvas.width - 40, n.x));
+          n.y = Math.max(40, Math.min(this.canvas.height - 40, n.y));
+        });
+      },
+
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        this.updatePhysics();
+
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw Edges
+        this.edges.forEach(e => {
+          if (this.showErrorsOnly && !e.error) return;
+
+          const n1 = this.nodes.find(n => n.id === e.from);
+          const n2 = this.nodes.find(n => n.id === e.to);
+          if (!n1 || !n2) return;
+
+          ctx.beginPath();
+          ctx.moveTo(n1.x, n1.y);
+          ctx.lineTo(n2.x, n2.y);
+
+          if (e.error) {
+            ctx.strokeStyle = '#EF4444';
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([6, 6]);
+          } else {
+            ctx.strokeStyle = '#28354D';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([]);
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+        });
+
+        // Draw Animated Data Packets
+        this.packets.forEach(p => {
+          const edge = this.edges[p.edgeIdx];
+          if (!edge) return;
+          if (this.showErrorsOnly && !edge.error) return;
+
+          const n1 = this.nodes.find(n => n.id === edge.from);
+          const n2 = this.nodes.find(n => n.id === edge.to);
+          if (!n1 || !n2) return;
+
+          p.progress += p.speed;
+          if (p.progress >= 1.0) p.progress = 0;
+
+          const px = n1.x + (n2.x - n1.x) * p.progress;
+          const py = n1.y + (n2.y - n1.y) * p.progress;
+
+          ctx.beginPath();
+          ctx.arc(px, py, edge.error ? 4 : 3, 0, Math.PI * 2);
+          ctx.fillStyle = edge.error ? '#EF4444' : '#00E5FF';
+          ctx.shadowColor = edge.error ? '#EF4444' : '#00E5FF';
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        // Draw Nodes
+        this.nodes.forEach(n => {
+          ctx.save();
+          ctx.translate(n.x, n.y);
+
+          if (n.type === 'node') {
+            ctx.beginPath();
+            ctx.arc(0, 0, 16, 0, Math.PI * 2);
+            ctx.fillStyle = n.color;
+            ctx.shadowColor = n.color;
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          } else {
+            // Topic diamond
+            ctx.beginPath();
+            ctx.rotate(Math.PI / 4);
+            ctx.rect(-12, -12, 24, 24);
+            ctx.fillStyle = n.color;
+            ctx.shadowColor = n.color;
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+
+          ctx.restore();
+
+          // Text label
+          ctx.font = '600 11px JetBrains Mono';
+          ctx.fillStyle = '#CBD5E1';
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, n.x, n.y + 28);
+        });
+      }
+    };
+
+    // Auto-boot both 3D scene and Dynamic Graph on load
+    window.addEventListener('DOMContentLoaded', () => {
+      Robot3D.init();
+      DynamicGraphSim.init();
+    });
+  </script>
+</body>
+</html>

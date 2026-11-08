@@ -20,17 +20,13 @@ def render_graph_explorer_page(diagnostic_engine):
     topics = scenario_data.get("topics", [])
     qos_pairs = scenario_data.get("qos_pairs", [])
 
-    # If no structured nodes in active scenario, show demo topology or empty state
+    # If no structured nodes in active scenario, use default AMR Navigation Graph
     if not nodes and not topics:
-        st.markdown(f"""
-        <div class="rg-card" style="text-align: center; padding: 2.5rem 1rem;">
-            <div style="font-size: 1.05rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.5rem;">No Communication Graph Data Loaded</div>
-            <div style="font-size: 0.85rem; color: {UI_THEME['text_secondary']}; max-width: 520px; margin: 0 auto 1.5rem auto;">
-                To explore an interactive ROS 2 node and topic graph, load <b>Scenario 1</b> or <b>Scenario 2</b> from the Command Center, or upload a structured JSON topology dump.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        return
+        from core.dynamic_graph_generator import DynamicGraphGenerator
+        default_data = DynamicGraphGenerator()._get_default_scenario_data()
+        nodes = default_data.get("nodes", [])
+        topics = default_data.get("topics", [])
+        qos_pairs = default_data.get("qos_evaluations", [])
 
     tab_comp, tab_tf = st.tabs([
         "🌐 Computational Node & Topic Graph",

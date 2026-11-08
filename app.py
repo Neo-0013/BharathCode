@@ -87,6 +87,7 @@ with st.sidebar:
 
     # Navigation Menu
     nav_options = [
+        "🛡️ 3D Robotics SOC",
         "Command Center",
         "Diagnostics Workspace",
         "Cybersecurity Center",
@@ -140,6 +141,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 # Page Routing
+from ui.pages.soc_dashboard import render_soc_dashboard_page
 from ui.pages.overview import render_overview_page
 from ui.pages.diagnostics import render_diagnostics_page
 from ui.pages.security import render_security_page
@@ -147,7 +149,9 @@ from ui.pages.graph_explorer import render_graph_explorer_page
 from ui.pages.reports import render_reports_page
 from ui.pages.settings import render_settings_page
 
-if st.session_state["nav_selection"] == "Command Center":
+if st.session_state["nav_selection"] == "🛡️ 3D Robotics SOC":
+    render_soc_dashboard_page()
+elif st.session_state["nav_selection"] == "Command Center":
     render_overview_page(diagnostic_engine, explanation_engine)
 elif st.session_state["nav_selection"] == "Diagnostics Workspace":
     render_diagnostics_page(diagnostic_engine, explanation_engine)
