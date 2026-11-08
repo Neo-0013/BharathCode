@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROBOGUARD AI — Enterprise 3D Robotics SOC &amp; Cyber-Physical Defense Center</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <!-- Google Fonts: Plus Jakarta Sans, JetBrains Mono, Space Grotesk & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   
   <!-- Three.js, OrbitControls & GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -820,6 +821,390 @@
     @media (max-width: 900px) { .grid-2col { grid-template-columns: 1fr; } }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* ==========================================================================
+       DDS COCKPIT & TOPIC BURST HEATMAP (AEROSPACE COCKPIT STYLES)
+       ========================================================================== */
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+    }
+    .font-display { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; }
+    
+    .cockpit-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0.5rem 0 2rem 0;
+    }
+    
+    .cockpit-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 1.15rem;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+    }
+
+    .cockpit-bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .cockpit-bento-grid { grid-template-columns: 1fr; }
+    }
+
+    .cockpit-bento-card {
+      position: relative;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 0.95rem 1.15rem;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .cockpit-bento-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0; width: 4px;
+    }
+    .cockpit-bento-card.bar-rose::before { background: #F43F5E; }
+    .cockpit-bento-card.bar-amber::before { background: #F59E0B; }
+    .cockpit-bento-card.bar-emerald::before { background: #10B981; }
+    .cockpit-bento-card.bar-blue::before { background: #2563EB; }
+
+    .pulse-dot-rose {
+      width: 6px; height: 6px; border-radius: 50%; background: #E11D48;
+      display: inline-block; animation: pulse-rose 1.5s infinite;
+    }
+    @keyframes pulse-rose {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    
+    .pulse-ping-blue {
+      width: 6px; height: 6px; border-radius: 50%; background: #2563EB;
+      display: inline-block; position: relative;
+    }
+    .pulse-ping-blue::after {
+      content: ''; position: absolute; inset: -3px; border-radius: 50%;
+      border: 2px solid #2563EB; animation: ping-ring 1.5s cubic-bezier(0,0,0.2,1) infinite;
+    }
+    @keyframes ping-ring {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .heatmap-time-btn {
+      flex: 1;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: #64748B;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+    .heatmap-time-btn:hover { color: #0F172A; }
+    .heatmap-time-btn.active {
+      background: #FFFFFF;
+      color: #1D4ED8;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .heatmap-cell {
+      height: 24px;
+      border-radius: 4px;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.08);
+      filter: brightness(1.05);
+      z-index: 2;
+    }
+    
+    /* ==========================================================================
+       TAILWIND UTILITY SHIM FOR DDS COCKPIT (100% OFFLINE COMPLIANT)
+       ========================================================================== */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-row { flex-direction: row; }
+    .flex-1 { flex: 1 1 0%; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .items-end { align-items: flex-end; }
+    .items-baseline { align-items: baseline; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .self-start { align-self: flex-start; }
+    .shrink-0 { flex-shrink: 0; }
+    .space-x-1 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.25rem; }
+    .space-x-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.375rem; }
+    .space-x-2 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.5rem; }
+    .space-y-0\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.125rem; }
+    .space-y-1 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.25rem; }
+    .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.375rem; }
+    .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-2\.5 { gap: 0.625rem; }
+    .gap-3 { gap: 0.75rem; }
+
+    .grid { display: grid; }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    .grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .col-span-4 { grid-column: span 4 / span 4; }
+    .col-span-8 { grid-column: span 8 / span 8; }
+
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .inset-0 { inset: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .top-0 { top: 0; }
+    .bottom-0 { bottom: 0; }
+    .-top-1 { top: -0.25rem; }
+    .-mt-0\.5 { margin-top: -0.125rem; }
+
+    .w-full { width: 100%; }
+    .w-1 { width: 0.25rem; }
+    .w-1\.5 { width: 0.375rem; }
+    .w-2 { width: 0.5rem; }
+    .w-2\.5 { width: 0.625rem; }
+    .w-5 { width: 1.25rem; }
+    .w-7 { width: 1.75rem; }
+    .w-8 { width: 2rem; }
+    .w-10 { width: 2.5rem; }
+    .w-11 { width: 2.75rem; }
+    .min-w-0 { min-width: 0px; }
+    .min-w-\[76px\] { min-width: 76px; }
+    .max-w-full { max-width: 100%; }
+
+    .h-full { height: 100%; }
+    .h-0\.5 { height: 0.125rem; }
+    .h-1\.5 { height: 0.375rem; }
+    .h-2 { height: 0.5rem; }
+    .h-5 { height: 1.25rem; }
+    .h-6 { height: 1.5rem; }
+    .h-7 { height: 1.75rem; }
+    .h-8 { height: 2rem; }
+    .h-10 { height: 2.5rem; }
+
+    .p-0\.5 { padding: 0.125rem; }
+    .p-1\.5 { padding: 0.375rem; }
+    .p-2\.5 { padding: 0.625rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-3\.5 { padding: 0.875rem; }
+    .p-4 { padding: 1rem; }
+    .px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
+    .px-1\.5 { padding-left: 0.375rem; padding-right: 0.375rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .pt-1 { padding-top: 0.25rem; }
+    .pt-2 { padding-top: 0.5rem; }
+    .pb-0\.5 { padding-bottom: 0.125rem; }
+    .pr-1 { padding-right: 0.25rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mr-1 { margin-right: 0.25rem; }
+
+    .bg-white { background-color: #FFFFFF; }
+    .bg-slate-50 { background-color: #F8FAFC; }
+    .bg-slate-50\/70 { background-color: rgba(248, 250, 252, 0.7); }
+    .bg-slate-100 { background-color: #F1F5F9; }
+    .bg-slate-200 { background-color: #E2E8F0; }
+    .bg-slate-300 { background-color: #CBD5E1; }
+    .bg-blue-50 { background-color: #EFF6FF; }
+    .bg-blue-100 { background-color: #DBEAFE; }
+    .bg-blue-200 { background-color: #BFDBFE; }
+    .bg-blue-300 { background-color: #93C5FD; }
+    .bg-blue-400 { background-color: #60A5FA; }
+    .bg-blue-500 { background-color: #3B82F6; }
+    .bg-blue-600 { background-color: #2563EB; }
+    .bg-rose-50 { background-color: #FFF1F2; }
+    .bg-rose-50\/50 { background-color: rgba(255, 241, 242, 0.5); }
+    .bg-rose-100 { background-color: #FFE4E6; }
+    .bg-rose-100\/70 { background-color: rgba(255, 228, 230, 0.7); }
+    .bg-rose-200 { background-color: #FECDD3; }
+    .bg-rose-300 { background-color: #FDA4AF; }
+    .bg-rose-400 { background-color: #FB7185; }
+    .bg-rose-500 { background-color: #F43F5E; }
+    .bg-rose-600 { background-color: #E11D48; }
+    .bg-amber-50 { background-color: #FFFBEB; }
+    .bg-amber-100 { background-color: #FEF3C7; }
+    .bg-amber-200 { background-color: #FDE68A; }
+    .bg-amber-300 { background-color: #FCD34D; }
+    .bg-amber-400 { background-color: #FBBF24; }
+    .bg-amber-500 { background-color: #F59E0B; }
+    .bg-emerald-50 { background-color: #ECFDF5; }
+    .bg-emerald-100 { background-color: #D1FAE5; }
+    .bg-emerald-500 { background-color: #10B981; }
+    .bg-emerald-600 { background-color: #059669; }
+    .bg-cyan-100 { background-color: #CFFAFE; }
+    .bg-cyan-200 { background-color: #A5F3FC; }
+    .bg-cyan-400 { background-color: #22D3EE; }
+    .bg-cyan-500 { background-color: #06B6D4; }
+    .bg-cyan-600 { background-color: #0891B2; }
+    .bg-indigo-100 { background-color: #E0E7FF; }
+    .bg-indigo-300 { background-color: #A5B4FC; }
+    .bg-indigo-400 { background-color: #818CF8; }
+    .bg-indigo-500 { background-color: #6366F1; }
+    .bg-indigo-600 { background-color: #4F46E5; }
+
+    .text-white { color: #FFFFFF; }
+    .text-slate-400 { color: #94A3B8; }
+    .text-slate-500 { color: #64748B; }
+    .text-slate-600 { color: #475569; }
+    .text-slate-700 { color: #334155; }
+    .text-slate-800 { color: #1E293B; }
+    .text-slate-900 { color: #0F172A; }
+    .text-blue-600 { color: #2563EB; }
+    .text-blue-700 { color: #1D4ED8; }
+    .text-rose-500 { color: #F43F5E; }
+    .text-rose-600 { color: #E11D48; }
+    .text-rose-700 { color: #BE123C; }
+    .text-rose-800 { color: #9F1239; }
+    .text-rose-900 { color: #881337; }
+    .text-amber-500 { color: #F59E0B; }
+    .text-amber-600 { color: #D97706; }
+    .text-amber-700 { color: #B45309; }
+    .text-amber-800 { color: #92400E; }
+    .text-amber-900 { color: #78350F; }
+    .text-emerald-500 { color: #10B981; }
+    .text-emerald-600 { color: #059669; }
+    .text-emerald-700 { color: #047857; }
+    .text-cyan-600 { color: #0891B2; }
+    .text-indigo-600 { color: #4F46E5; }
+
+    .border { border-width: 1px; border-style: solid; }
+    .border-2 { border-width: 2px; border-style: solid; }
+    .border-t { border-top-width: 1px; border-top-style: solid; }
+    .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+    .border-slate-100 { border-color: #F1F5F9; }
+    .border-slate-200 { border-color: #E2E8F0; }
+    .border-slate-200\/50 { border-color: rgba(226, 232, 240, 0.5); }
+    .border-slate-200\/60 { border-color: rgba(226, 232, 240, 0.6); }
+    .border-slate-200\/70 { border-color: rgba(226, 232, 240, 0.7); }
+    .border-slate-200\/80 { border-color: rgba(226, 232, 240, 0.8); }
+    .border-blue-100 { border-color: #DBEAFE; }
+    .border-blue-200 { border-color: #BFDBFE; }
+    .border-blue-200\/70 { border-color: rgba(191, 219, 254, 0.7); }
+    .border-rose-200 { border-color: #FECDD3; }
+    .border-rose-200\/70 { border-color: rgba(254, 205, 211, 0.7); }
+    .border-rose-400 { border-color: #FB7185; }
+    .border-amber-200 { border-color: #FDE68A; }
+    .border-amber-200\/70 { border-color: rgba(253, 230, 138, 0.7); }
+    .border-amber-200\/80 { border-color: rgba(253, 230, 138, 0.8); }
+    .border-amber-300 { border-color: #FCD34D; }
+    .border-emerald-200 { border-color: #A7F3D0; }
+    .border-emerald-200\/70 { border-color: rgba(167, 243, 208, 0.7); }
+
+    .rounded { border-radius: 0.25rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-full { border-radius: 9999px; }
+
+    .font-sans { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .text-\[9px\] { font-size: 9px; }
+    .text-\[10px\] { font-size: 10px; }
+    .text-\[11px\] { font-size: 11px; }
+    .text-\[12px\] { font-size: 12px; }
+    .text-\[13px\] { font-size: 13px; }
+    .text-\[14px\] { font-size: 14px; }
+    .text-\[16px\] { font-size: 16px; }
+    .text-\[17px\] { font-size: 17px; }
+    .text-\[18px\] { font-size: 18px; }
+    .text-\[19px\] { font-size: 19px; }
+    .text-\[20px\] { font-size: 20px; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .uppercase { text-transform: uppercase; }
+    .tracking-tight { letter-spacing: -0.025em; }
+    .tracking-wide { letter-spacing: 0.025em; }
+    .tracking-wider { letter-spacing: 0.05em; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .text-center { text-align: center; }
+
+    .overflow-hidden { overflow: hidden; }
+    .overflow-visible { overflow: visible; }
+    .overflow-x-auto { overflow-x: auto; }
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    .shadow-xs { box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05); }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+    .cursor-pointer { cursor: pointer; }
+    .cursor-not-allowed { cursor: not-allowed; }
+    .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-colors { transition-property: color, background-color, border-color; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transform { transform: translate(var(--tw-translate-x, 0), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1)); }
+    .translate-x-0 { --tw-translate-x: 0px; transform: translateX(0px); }
+    .translate-x-5 { --tw-translate-x: 1.25rem; transform: translateX(1.25rem); }
+
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    .animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+    @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+    .animate-spin { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .animate-bounce { animation: bounce 1s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); } 50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); } }
+    
+    .hover\:bg-rose-700:hover { background-color: #BE123C; }
+    .hover\:bg-blue-700:hover { background-color: #1D4ED8; }
+    .hover\:bg-slate-100:hover { background-color: #F1F5F9; }
+    .hover\:text-slate-900:hover { color: #0F172A; }
+    .active\:scale-95:active { transform: scale(0.95); }
+    .accent-blue-600 { accent-color: #2563EB; }
   </style>
 </head>
 <body>
@@ -1107,83 +1492,506 @@
           </div>
         </div>
       </div>
-    <!-- TAB 5: DDS TELEMETRY & BURST HEATMAP -->
+    <!-- TAB 5: DDS TELEMETRY & BURST HEATMAP (AEROSPACE COCKPIT SUITE) -->
     <div id="tab-heatmap" class="tab-content">
-      <div class="soc-panel">
-        <div class="panel-head">
-          <div class="panel-title">
-            <span>📡 Real-Time ROS 2 DDS Topic Frequency &amp; Telemetry Heatmap</span>
-            <span class="panel-sub">Continuous DDS Dataflow Matrix · Rate-Spike Detection · Packet Drops</span>
+      <div class="cockpit-container">
+        
+        <!-- TOP SUBTITLE HEADER -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            <span class="font-mono text-[11px] font-semibold text-blue-700 tracking-wider uppercase">DDS RTPS Real-Time Bus Monitor</span>
           </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <button class="hud-btn" id="btnHeatmapFlood" style="color: var(--rose); border-color: var(--rose);" onclick="TelemetryHeatmap.simulateFlood()">💥 Inject /cmd_vel Flood (DoS)</button>
-            <button class="hud-btn" id="btnHeatmapStarve" style="color: var(--amber); border-color: var(--amber);" onclick="TelemetryHeatmap.simulateStarve()">⚠️ Starve /scan (Liveliness Loss)</button>
-            <button class="hud-btn" style="color: var(--emerald); border-color: var(--emerald);" onclick="TelemetryHeatmap.resetNominal()">🛡️ Enforce SROS2 Rate Limits</button>
+          <span class="font-mono text-[11px] text-slate-500">DOMAIN ID: <span class="text-slate-800 font-bold">42</span></span>
+        </div>
+
+        <!-- METRIC BENTO CARDS (Light Theme with Left Color Indicator Strips) -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Card 1: Critical Vulnerabilities (Red accent) -->
+          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500"></div>
+            <div class="flex items-start justify-between">
+              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Critical Vulnerabilities</span>
+              <span class="material-symbols-outlined text-rose-500 text-[18px]">gpp_bad</span>
+            </div>
+            <div class="flex items-baseline space-x-1 mt-1 mb-2">
+              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">2</span>
+            </div>
+            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-rose-50 border border-rose-200/70 text-rose-700 font-sans text-[10px] font-semibold truncate max-w-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1 shrink-0"></span>
+              <span class="truncate">Unauthenticated Actuation</span>
+            </div>
+          </div>
+
+          <!-- Card 2: QoS Contract Mismatches (Orange/Amber accent) -->
+          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500"></div>
+            <div class="flex items-start justify-between">
+              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">QoS Mismatches</span>
+              <span class="material-symbols-outlined text-amber-500 text-[18px]">warning</span>
+            </div>
+            <div class="flex items-baseline space-x-1 mt-1 mb-2">
+              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">1</span>
+              <span class="font-mono text-[10px] text-slate-400">Active</span>
+            </div>
+            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200/70 text-amber-800 font-sans text-[10px] font-semibold truncate max-w-full">
+              <span class="truncate">Reliability Violation</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Security Posture Score (Emerald green accent) -->
+          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+            <div class="flex items-start justify-between">
+              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Security Posture</span>
+              <span class="material-symbols-outlined text-emerald-600 text-[18px]">shield</span>
+            </div>
+            <div class="flex items-baseline space-x-1 mt-1 mb-2">
+              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">45%</span>
+            </div>
+            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/70 text-emerald-700 font-sans text-[10px] font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span>
+              <span>Evaluated</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Hardware Sensor Enclave (Blue accent) -->
+          <div class="relative bg-white rounded-xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col justify-between overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
+            <div class="flex items-start justify-between">
+              <span class="font-sans text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Sensor Enclave</span>
+              <span class="material-symbols-outlined text-blue-600 text-[18px]">verified_user</span>
+            </div>
+            <div class="flex items-baseline space-x-1 mt-1 mb-2">
+              <span class="font-display text-2xl font-bold text-slate-900 tracking-tight">6 / 6</span>
+            </div>
+            <div class="inline-flex items-center self-start px-2 py-0.5 rounded-md bg-blue-50 border border-blue-200/70 text-blue-700 font-sans text-[10px] font-semibold">
+              <span>REP-105 Compliant</span>
+            </div>
           </div>
         </div>
-        <div class="panel-body">
-          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
-            <!-- Left: Heatmap Canvas + Controls -->
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
-                  SLIDING TIME WINDOW: <b>LAST 24 SECONDS (1-SEC BUCKETS)</b>
-                </div>
-                <div style="display: flex; gap: 0.75rem; font-size: 0.7rem; align-items: center;">
-                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 2px;"></span> Inactive</span>
-                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #10B981; border-radius: 2px;"></span> Nominal (1-50 Hz)</span>
-                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #F59E0B; border-radius: 2px;"></span> Warning (50-100 Hz)</span>
-                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #EF4444; border-radius: 2px;"></span> Critical Flood (>100 Hz)</span>
-                </div>
-              </div>
 
-              <!-- Matrix Canvas Wrapper -->
-              <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow-x: auto;">
-                <canvas id="ddsHeatmapCanvas" style="width: 100%; height: 320px; display: block;"></canvas>
-              </div>
-
-              <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">
-                <span>← 24 seconds ago</span>
-                <span>Real-Time Live (Now) →</span>
+        <!-- RTPS THROUGHPUT & WAVEFORM CARD -->
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="material-symbols-outlined text-blue-600 text-[20px]">speed</span>
+              <div>
+                <span class="font-sans text-xs font-semibold text-slate-700">DDS RTPS Network Throughput</span>
+                <p class="font-sans text-[11px] text-slate-400">Live wire packet stream</p>
               </div>
             </div>
+            <div class="flex items-baseline space-x-1">
+              <span class="font-display text-xl font-bold text-blue-600">284.2</span>
+              <span class="font-mono text-[10px] text-slate-500">msgs/sec</span>
+            </div>
+          </div>
+          <!-- Crisp Blue Sparkline -->
+          <div class="py-2 bg-slate-50/70 rounded-lg px-2 border border-slate-100">
+            <svg class="w-full h-8 overflow-visible" fill="none" viewbox="0 0 100 24">
+              <defs>
+                <lineargradient id="blueSparkCockpit" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#2563eb" stop-opacity="0.18"></stop>
+                  <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"></stop>
+                </lineargradient>
+              </defs>
+              <path d="M0 16 L12 15 L22 18 L34 8 L46 14 L56 4 L68 12 L78 6 L88 19 L100 11" stroke="#2563eb" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+              <path d="M0 16 L12 15 L22 18 L34 8 L46 14 L56 4 L68 12 L78 6 L88 19 L100 11 L100 24 L0 24 Z" fill="url(#blueSparkCockpit)"></path>
+            </svg>
+          </div>
+          <div class="flex items-center justify-between font-mono text-[11px] pt-2 text-slate-500">
+            <span>Jitter: <span class="text-slate-800 font-semibold">1.4 ms</span></span>
+            <span>Loss: <span class="text-blue-600 font-semibold">0.02%</span></span>
+            <span>Burst Volatility: <span class="text-rose-600 font-bold">78/100 (Spike)</span></span>
+          </div>
+        </div>
 
-            <!-- Right: Interactive Topic Inspector -->
-            <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <!-- TOPIC BURST HEATMAP & SPECTRAL TIMELINE -->
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
+          <!-- Heatmap Header Controls -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
+                <span class="material-symbols-outlined text-[17px]">grid_goldenratio</span>
+              </div>
               <div>
-                <div style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Selected DDS Topic Inspector</div>
-                <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); margin-top: 0.25rem;" id="hmTopicName">/cmd_vel</div>
-                <div style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 0.85rem;" id="hmMsgType">geometry_msgs/msg/Twist</div>
+                <span class="font-display text-sm font-bold text-slate-900">Topic Burst Heatmap</span>
+                <span class="font-sans text-[11px] text-slate-400 block -mt-0.5">Real-time spectral matrix</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
+              <span class="font-mono text-[10px] font-bold text-rose-700 uppercase">Cyberattack Injected</span>
+            </div>
+          </div>
+          <!-- Time Range Selector Pill -->
+          <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/70">
+            <button class="flex-1 py-1 rounded-md font-sans text-xs text-slate-600 hover:text-slate-900 text-center font-medium heatmap-range-btn" onclick="selectCockpitRange(this, '5m')">5m</button>
+            <button class="flex-1 py-1 rounded-md bg-white font-sans text-xs text-blue-700 font-semibold text-center shadow-xs border border-slate-200/60 heatmap-range-btn active" onclick="selectCockpitRange(this, '15m')">15m (Active)</button>
+            <button class="flex-1 py-1 rounded-md font-sans text-xs text-slate-600 hover:text-slate-900 text-center font-medium heatmap-range-btn" onclick="selectCockpitRange(this, '1h')">1h</button>
+            <button class="flex-1 py-1 rounded-md font-sans text-xs text-blue-600 text-center font-medium flex items-center justify-center space-x-1 heatmap-range-btn" onclick="selectCockpitRange(this, 'live')">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span>
+              <span>Live WS</span>
+            </button>
+          </div>
+          <!-- Topic Heatmap Matrix Table -->
+          <div class="flex flex-col space-y-1.5 overflow-x-auto">
+            <!-- Time Bin Headers -->
+            <div class="grid grid-cols-12 gap-1.5 items-center pb-0.5">
+              <span class="col-span-4 font-mono text-[10px] font-bold text-slate-400 uppercase tracking-wider">ROS 2 Topic</span>
+              <div class="col-span-8 grid grid-cols-8 gap-1 text-center font-mono text-[10px] text-slate-400">
+                <span>-14m</span>
+                <span>-12m</span>
+                <span>-10m</span>
+                <span>-8m</span>
+                <span>-6m</span>
+                <span>-4m</span>
+                <span>-2m</span>
+                <span class="text-blue-600 font-bold">NOW</span>
+              </div>
+            </div>
+            <!-- Row 1: /cmd_vel (ATTACKED) -->
+            <div class="grid grid-cols-12 gap-1.5 items-center bg-rose-50/50 border border-rose-200/70 p-1.5 rounded-lg" id="hmRowCmdVel">
+              <div class="col-span-4 flex flex-col min-w-0 pr-1">
+                <div class="flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0"></span>
+                  <span class="font-mono text-xs text-rose-700 font-bold truncate">/cmd_vel</span>
+                </div>
+                <span class="font-sans text-[10px] text-slate-500 truncate">Actuator Influx</span>
+              </div>
+              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
+                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/cmd_vel -14m: 20 Hz"></div>
+                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/cmd_vel -12m: 20 Hz"></div>
+                <div class="h-full rounded bg-amber-200 heatmap-cell" title="/cmd_vel -10m: 75 Hz"></div>
+                <div class="h-full rounded bg-amber-400 heatmap-cell" title="/cmd_vel -8m: 95 Hz"></div>
+                <div class="h-full rounded bg-rose-300 text-center flex items-center justify-center heatmap-cell" title="/cmd_vel -6m: 140 Hz (Surge!)">
+                  <span class="font-mono text-[9px] text-rose-900 font-bold">!</span>
+                </div>
+                <div class="h-full rounded bg-rose-500 shadow-xs heatmap-cell" title="/cmd_vel -4m: 220 Hz (Attack)"></div>
+                <div class="h-full rounded bg-rose-600 shadow-xs animate-pulse heatmap-cell cell-pulse-rose" title="/cmd_vel -2m: 480 Hz (Overload)"></div>
+                <div class="h-full rounded bg-rose-600 heatmap-cell" title="/cmd_vel NOW: 480 Hz (Critical)"></div>
+              </div>
+            </div>
+            <!-- Row 2: /scan (LiDAR) -->
+            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
+              <div class="col-span-4 flex flex-col min-w-0 pr-1">
+                <div class="flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-600 shrink-0"></span>
+                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/scan</span>
+                </div>
+                <span class="font-sans text-[10px] text-slate-400 truncate">LiDAR 2D Array</span>
+              </div>
+              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
+                <div class="h-full rounded bg-cyan-100 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-200 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-400 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-400 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-500 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-500 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-400 heatmap-cell" title="/scan: 15 Hz"></div>
+                <div class="h-full rounded bg-cyan-200 heatmap-cell" title="/scan: 15 Hz"></div>
+              </div>
+            </div>
+            <!-- Row 3: /camera/depth -->
+            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
+              <div class="col-span-4 flex flex-col min-w-0 pr-1">
+                <div class="flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/camera/depth</span>
+                </div>
+                <span class="font-sans text-[10px] text-slate-400 truncate">Pointcloud XYZ</span>
+              </div>
+              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
+                <div class="h-full rounded bg-blue-100 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+                <div class="h-full rounded bg-blue-200 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+                <div class="h-full rounded bg-blue-200 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/camera/depth: 0 Hz"></div>
+                <div class="h-full rounded bg-blue-300 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+                <div class="h-full rounded bg-blue-500 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+                <div class="h-full rounded bg-blue-400 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+                <div class="h-full rounded bg-blue-300 heatmap-cell" title="/camera/depth: 30 Hz"></div>
+              </div>
+            </div>
+            <!-- Row 4: /tf (Transform Tree) -->
+            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
+              <div class="col-span-4 flex flex-col min-w-0 pr-1">
+                <div class="flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0"></span>
+                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/tf</span>
+                </div>
+                <span class="font-sans text-[10px] text-slate-400 truncate">Kinematics Tree</span>
+              </div>
+              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
+                <div class="h-full rounded bg-indigo-300 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-500 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-400 heatmap-cell" title="/tf: 50 Hz"></div>
+                <div class="h-full rounded bg-indigo-300 heatmap-cell" title="/tf: 50 Hz"></div>
+              </div>
+            </div>
+            <!-- Row 5: /diagnostics -->
+            <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-50 border border-slate-200/60 p-1.5 rounded-lg">
+              <div class="col-span-4 flex flex-col min-w-0 pr-1">
+                <div class="flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span class="font-mono text-xs text-slate-800 font-medium truncate">/diagnostics</span>
+                </div>
+                <span class="font-sans text-[10px] text-slate-400 truncate">Motor ESC Drops</span>
+              </div>
+              <div class="col-span-8 grid grid-cols-8 gap-1 h-6 items-center">
+                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/diagnostics: 1 Hz"></div>
+                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/diagnostics: 1 Hz"></div>
+                <div class="h-full rounded bg-amber-100 heatmap-cell" title="/diagnostics: 2 Hz"></div>
+                <div class="h-full rounded bg-slate-200 heatmap-cell" title="/diagnostics: 1 Hz"></div>
+                <div class="h-full rounded bg-amber-200 heatmap-cell" title="/diagnostics: 3 Hz"></div>
+                <div class="h-full rounded bg-amber-400 heatmap-cell" title="/diagnostics: 5 Hz"></div>
+                <div class="h-full rounded bg-amber-400 heatmap-cell" title="/diagnostics: 5 Hz"></div>
+                <div class="h-full rounded bg-amber-300 heatmap-cell" title="/diagnostics: 4 Hz"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Heatmap Legend (Light Palette) -->
+          <div class="flex items-center justify-between pt-2 border-t border-slate-100 font-mono text-[10px] text-slate-500">
+            <span>Throughput Scale:</span>
+            <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded bg-slate-200"></span>
+                <span>0</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded bg-cyan-300"></span>
+                <span>250</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded bg-blue-500"></span>
+                <span>600</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded bg-amber-400"></span>
+                <span class="font-bold text-amber-700">950</span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="w-2.5 h-2.5 rounded bg-rose-600"></span>
+                <span class="font-bold text-rose-700">&gt;1.2k (SURGE)</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <div style="display: flex; flex-direction: column; gap: 0.65rem;">
-                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
-                    <div style="font-size: 0.68rem; color: var(--text-muted);">Current Throughput</div>
-                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--primary); font-family: var(--font-mono);" id="hmCurrRate">20.0 Hz</div>
+        <!-- ROS 2 GRAPH TELEMETRY & ROGUE NODE ALERT -->
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
+                <span class="material-symbols-outlined text-[17px]">account_tree</span>
+              </div>
+              <div>
+                <span class="font-display text-sm font-bold text-slate-900">ROS 2 Graph Telemetry</span>
+                <span class="font-mono text-[10px] text-slate-500 ml-1">7 nodes / 4 topics</span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 font-mono text-[10px] font-bold flex items-center space-x-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span>
+              <span>1 ROGUE NODE</span>
+            </span>
+          </div>
+          <!-- Network Diagram Micro-Canvas -->
+          <div class="relative bg-slate-50 rounded-xl p-3.5 border border-slate-200/80 overflow-hidden" style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 12px 12px;">
+            <div class="relative flex flex-col space-y-3 z-10">
+              <!-- Malicious Injected Vector Banner -->
+              <div class="flex items-center justify-between bg-rose-100/70 border border-rose-200 px-2.5 py-1.5 rounded-lg">
+                <div class="flex items-center space-x-1.5">
+                  <span class="material-symbols-outlined text-rose-600 text-[16px]">gpp_maybe</span>
+                  <span class="font-mono text-[11px] text-rose-800 font-bold uppercase tracking-tight">Rogue Injection Edge Detected</span>
+                </div>
+                <span class="font-mono text-[10px] font-semibold text-rose-700">IP: 192.168.1.189</span>
+              </div>
+              <!-- Node Flow Representation -->
+              <div class="flex items-center justify-between gap-1 py-1">
+                <!-- Rogue joy -->
+                <div class="flex flex-col items-center min-w-[76px]">
+                  <div class="w-10 h-10 rounded-full bg-rose-100 border-2 border-rose-400 flex items-center justify-center shadow-xs" id="nodeRogueJoy">
+                    <span class="material-symbols-outlined text-rose-600 text-[19px]">sports_esports</span>
                   </div>
-
-                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
-                    <div style="font-size: 0.68rem; color: var(--text-muted);">QoS Reliability Contract</div>
-                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--rose);" id="hmQosContract">RELIABLE requested / BEST_EFFORT offered</div>
-                  </div>
-
-                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
-                    <div style="font-size: 0.68rem; color: var(--text-muted);">SROS2 Security State</div>
-                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--rose);" id="hmSecState">❌ Unauthenticated (Plaintext RTPS)</div>
-                  </div>
-
-                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
-                    <div style="font-size: 0.68rem; color: var(--text-muted);">Node Connectivity</div>
-                    <div style="font-size: 0.73rem; color: var(--text-secondary);" id="hmNodes">Pub: <code>/teleop_twist_keyboard</code> → Sub: <code>/diff_drive_controller</code></div>
+                  <span class="font-mono text-[11px] text-rose-700 font-bold mt-1 text-center truncate w-full">unauth_joy</span>
+                  <span class="font-mono text-[9px] text-slate-400">PID: 9021</span>
+                </div>
+                <!-- Connecting Vector (Red) -->
+                <div class="flex flex-col items-center justify-center flex-1 px-1">
+                  <span class="font-mono text-[10px] text-rose-600 font-bold">1.1 kHz</span>
+                  <div class="w-full h-0.5 bg-rose-500 relative">
+                    <span class="absolute right-0 -top-1 material-symbols-outlined text-rose-600 text-[10px]">arrow_forward</span>
                   </div>
                 </div>
+                <!-- cmd_vel_mux -->
+                <div class="flex flex-col items-center min-w-[76px]">
+                  <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-center shadow-xs">
+                    <span class="material-symbols-outlined text-amber-600 text-[19px]">alt_route</span>
+                  </div>
+                  <span class="font-mono text-[11px] text-slate-800 font-semibold mt-1 text-center truncate w-full">cmd_vel_mux</span>
+                  <span class="font-sans text-[9px] text-amber-700 font-medium">SROS2 Flaw</span>
+                </div>
+                <!-- Normal Vector -->
+                <div class="flex flex-col items-center justify-center flex-1 px-1">
+                  <span class="font-mono text-[10px] text-blue-600 font-medium">50 Hz</span>
+                  <div class="w-full h-0.5 bg-blue-500 relative">
+                    <span class="absolute right-0 -top-1 material-symbols-outlined text-blue-600 text-[10px]">arrow_forward</span>
+                  </div>
+                </div>
+                <!-- diff_drive -->
+                <div class="flex flex-col items-center min-w-[76px]">
+                  <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center shadow-xs">
+                    <span class="material-symbols-outlined text-blue-600 text-[19px]">precision_manufacturing</span>
+                  </div>
+                  <span class="font-mono text-[11px] text-slate-800 font-semibold mt-1 text-center truncate w-full">diff_drive</span>
+                  <span class="font-sans text-[9px] text-blue-600 font-medium">HW Actuator</span>
+                </div>
               </div>
+              <!-- Action footer -->
+              <div class="flex items-center justify-between pt-1 border-t border-slate-200/80">
+                <div class="flex items-center space-x-1">
+                  <span class="font-sans text-[11px] text-slate-500">Enclave Rule:</span>
+                  <span class="font-mono text-[10px] text-rose-700 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200" id="ruleBadgePermission">PERMISSION_DENIED</span>
+                </div>
+                <button class="px-3 py-1.5 rounded-lg bg-rose-600 text-white font-sans text-xs font-semibold flex items-center space-x-1 transition-all hover:bg-rose-700 active:scale-95 shadow-xs" id="quarantine-node-btn" onclick="quarantineRogueNodeCockpit()">
+                  <span class="material-symbols-outlined text-[14px]">block</span>
+                  <span>Isolate Rogue Node</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <button class="tackle-btn" style="width: 100%; margin-top: 1rem;" onclick="TelemetryHeatmap.isolateSelected()">
-                🛡️ Isolate / Clamp Topic Traffic
+        <!-- QoS CONTRACT DIAGNOSTIC -->
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+                <span class="material-symbols-outlined text-[17px]">verified</span>
+              </div>
+              <div>
+                <span class="font-display text-sm font-bold text-slate-900">QoS Contract Diagnostic</span>
+                <span class="font-sans text-[11px] text-slate-400 block -mt-0.5">RTPS Compatibility Engine</span>
+              </div>
+            </div>
+            <span class="font-mono text-[10px] text-slate-500 font-medium">REP-2001 Audited</span>
+          </div>
+          <!-- Contract Item 1: /cmd_vel (Mismatch) -->
+          <div class="bg-slate-50 rounded-xl p-3 border border-amber-200/80 space-y-2">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span class="font-mono text-xs font-bold text-slate-900">/cmd_vel</span>
+                </div>
+                <span class="font-sans text-[11px] text-slate-500">Nav2 Controller ➔ Base Actuator</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-mono text-[10px] font-bold border border-amber-200">
+                MISMATCH: RELIABILITY
+              </span>
+            </div>
+            <!-- Comparison Table -->
+            <div class="grid grid-cols-2 gap-2 font-mono text-[10px] bg-white p-2.5 rounded-lg border border-slate-200">
+              <div class="flex flex-col space-y-0.5">
+                <span class="text-slate-400 uppercase font-semibold text-[9px]">Publisher QoS</span>
+                <span class="text-blue-600 font-bold">BEST_EFFORT</span>
+                <span class="text-slate-500 text-[10px]">Durability: VOLATILE</span>
+              </div>
+              <div class="flex flex-col space-y-0.5">
+                <span class="text-slate-400 uppercase font-semibold text-[9px]">Subscriber QoS</span>
+                <span class="text-rose-600 font-bold">RELIABLE (Demanded)</span>
+                <span class="text-slate-500 text-[10px]">Durability: TRANSIENT</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <span class="font-sans text-[11px] text-rose-700 flex items-center space-x-1">
+                <span class="material-symbols-outlined text-rose-500 text-[14px]">warning</span>
+                <span>Risk: Safety frame drop</span>
+              </span>
+              <button class="px-2.5 py-1 rounded-md bg-blue-600 text-white font-sans text-xs font-semibold flex items-center space-x-1 hover:bg-blue-700 active:scale-95 shadow-xs" id="patch-sros2-policy" onclick="patchSros2PolicyCockpit()">
+                <span class="material-symbols-outlined text-[13px]">security_update_good</span>
+                <span>Apply SROS2 Fix</span>
               </button>
             </div>
           </div>
+          <!-- Contract Item 2: /scan (Matched) -->
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80 space-y-1.5">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-mono text-xs font-bold text-slate-900">/scan</span>
+                </div>
+                <span class="font-sans text-[11px] text-slate-500">RPLidar Driver ➔ Cartographer SLAM</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 font-mono text-[10px] font-bold flex items-center space-x-1">
+                <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                <span>100% MATCHED</span>
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-slate-500 pt-1 font-mono text-[10px] border-t border-slate-200/50">
+              <span>Profile: BEST_EFFORT</span>
+              <span>Deadline: 100ms</span>
+              <span>Durability: VOLATILE</span>
+            </div>
+          </div>
         </div>
+
+        <!-- ACTIVE COUNTERMEASURES & ACTIONS -->
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200/80 flex flex-col space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
+                <span class="material-symbols-outlined text-[17px]">tune</span>
+              </div>
+              <span class="font-display text-sm font-bold text-slate-900">Active Countermeasures</span>
+            </div>
+            <span class="font-mono text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">E-STOP Ready</span>
+          </div>
+          <!-- Emergency DDS Rate Limiter -->
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="font-sans text-xs font-semibold text-slate-800">Emergency DDS Rate Limiter</span>
+                <span class="font-sans text-[11px] text-slate-500">Clamp suspicious influx above 200 Hz</span>
+              </div>
+              <button class="w-11 h-6 rounded-full bg-blue-600 p-0.5 transition-colors relative flex items-center cursor-pointer" id="limiter-toggle" onclick="toggleLimiterCockpit()">
+                <span class="w-5 h-5 rounded-full bg-white transform translate-x-5 transition-transform shadow-xs" id="limiter-slider"></span>
+              </button>
+            </div>
+            <!-- Real-time Slider Visualizer -->
+            <div class="pt-1 flex flex-col space-y-1">
+              <div class="flex justify-between font-mono text-[10px] text-slate-500">
+                <span>Max Allowed: 200 msgs/s</span>
+                <span class="text-blue-600 font-bold" id="rate-limit-val">200 Hz Active</span>
+              </div>
+              <input class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" id="burst-range-input" max="1000" min="50" type="range" value="200" oninput="updateRateLimitVal(this.value)"/>
+            </div>
+          </div>
+          <!-- Forensic Export Actions -->
+          <div class="grid grid-cols-2 gap-2.5 pt-1">
+            <button class="h-10 px-3 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 transition-colors flex items-center justify-center space-x-1.5 active:scale-95 shadow-xs" id="pcap-dump-btn" onclick="triggerPcapExportCockpit()">
+              <span class="material-symbols-outlined text-[17px] text-blue-600">download</span>
+              <span class="font-sans text-xs font-semibold">MCAP / Rosbag</span>
+            </button>
+            <button class="h-10 px-3 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 transition-colors flex items-center justify-center space-x-1.5 active:scale-95 shadow-xs" id="html-export-btn" onclick="triggerHtmlExportCockpit()">
+              <span class="material-symbols-outlined text-[17px] text-slate-600">html</span>
+              <span class="font-sans text-xs font-semibold">Export HTML</span>
+            </button>
+          </div>
+          <!-- SROS2 Keystore Status Bar -->
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-[10px]">
+            <div class="flex items-center space-x-1.5">
+              <span class="material-symbols-outlined text-blue-600 text-[14px]">key</span>
+              <span class="text-slate-700 font-medium">CA Certificate: Valid (ECDSA-SECP256R1)</span>
+            </div>
+            <span class="text-blue-600 font-bold">EXP: 89d</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -2766,6 +3574,111 @@
         ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
       }
     };
+
+    /* ==========================================================================
+       DDS COCKPIT & TOPIC BURST MICRO-INTERACTIONS
+       ========================================================================== */
+    let isRateLimitedCockpit = true;
+
+    function selectCockpitRange(btn, range) {
+      document.querySelectorAll('.heatmap-range-btn').forEach(b => {
+        b.classList.remove('active', 'bg-white', 'text-blue-700', 'shadow-xs', 'border');
+        b.classList.add('text-slate-600');
+      });
+      btn.classList.add('active', 'bg-white', 'text-blue-700', 'shadow-xs', 'border');
+      btn.classList.remove('text-slate-600');
+      logTerminal(`📊 [BURST-MATRIX] Time range changed to ${range.toUpperCase()} window.`, '#2563EB');
+    }
+
+    function patchSros2PolicyCockpit() {
+      const btn = document.getElementById('patch-sros2-policy');
+      if (!btn) return;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[13px] animate-spin">refresh</span><span>Patching...</span>';
+      setTimeout(() => {
+        btn.innerHTML = '<span class="material-symbols-outlined text-[13px]">done_all</span><span>Enclave Active</span>';
+        btn.className = 'px-2.5 py-1 rounded-md bg-emerald-600 text-white font-sans text-xs font-semibold flex items-center space-x-1';
+        logTerminal("🛡️ [QOS-PATCH] SROS2 Security Policy updated for /cmd_vel. Mismatch resolved.", "#059669");
+        if (typeof gsap !== 'undefined') {
+          gsap.from(btn, { scale: 1.1, duration: 0.3, ease: 'back.out(2)' });
+        }
+      }, 900);
+    }
+
+    function quarantineRogueNodeCockpit() {
+      const btn = document.getElementById('quarantine-node-btn');
+      const badge = document.getElementById('ruleBadgePermission');
+      const node = document.getElementById('nodeRogueJoy');
+      if (!btn) return;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[14px]">lock</span><span>QUARANTINED</span>';
+      btn.className = 'px-3 py-1.5 rounded-lg bg-slate-300 text-slate-600 font-sans text-xs font-semibold flex items-center space-x-1 cursor-not-allowed';
+      if (badge) {
+        badge.textContent = 'ACCESS_REVOKED (QUARANTINED)';
+        badge.className = 'font-mono text-[10px] text-slate-700 font-bold bg-slate-100 px-1.5 py-0.5 rounded border border-slate-300';
+      }
+      if (node) {
+        node.style.borderColor = '#94A3B8';
+        node.style.backgroundColor = '#F1F5F9';
+      }
+      logTerminal("🚨 [SROS2-GUARD] Rogue participant unauth_joy isolated. RTPS packets dropped.", "#DC2626");
+      if (typeof gsap !== 'undefined') {
+        gsap.to('#hmRowCmdVel', { backgroundColor: '#F8FAFC', borderColor: '#E2E8F0', duration: 0.6 });
+      }
+    }
+
+    function toggleLimiterCockpit() {
+      const toggle = document.getElementById('limiter-toggle');
+      const slider = document.getElementById('limiter-slider');
+      const rateVal = document.getElementById('rate-limit-val');
+      const burstInput = document.getElementById('burst-range-input');
+      isRateLimitedCockpit = !isRateLimitedCockpit;
+
+      if (isRateLimitedCockpit) {
+        if (slider) {
+          slider.classList.remove('translate-x-0');
+          slider.classList.add('translate-x-5');
+        }
+        if (toggle) toggle.className = 'w-11 h-6 rounded-full bg-blue-600 p-0.5 transition-colors relative flex items-center cursor-pointer';
+        if (rateVal && burstInput) rateVal.textContent = burstInput.value + ' Hz Active';
+        logTerminal(`🛡️ [RATE-LIMITER] Clamp activated at ${burstInput ? burstInput.value : 200} Hz.`, '#2563EB');
+      } else {
+        if (slider) {
+          slider.classList.remove('translate-x-5');
+          slider.classList.add('translate-x-0');
+        }
+        if (toggle) toggle.className = 'w-11 h-6 rounded-full bg-slate-300 p-0.5 transition-colors relative flex items-center cursor-pointer';
+        if (rateVal) rateVal.textContent = 'Bypassed (Unsafe)';
+        logTerminal("⚠️ [RATE-LIMITER] Emergency rate limiter bypassed. Full bus traffic unfiltered.", "#D97706");
+      }
+    }
+
+    function updateRateLimitVal(val) {
+      const rateVal = document.getElementById('rate-limit-val');
+      if (rateVal && isRateLimitedCockpit) {
+        rateVal.textContent = val + ' Hz Active';
+      }
+    }
+
+    function triggerPcapExportCockpit() {
+      const btn = document.getElementById('pcap-dump-btn');
+      if (!btn) return;
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[17px] text-blue-600 animate-bounce">downloading</span><span class="font-sans text-xs font-semibold">Streaming...</span>';
+      setTimeout(() => {
+        btn.innerHTML = origText;
+        logTerminal("📥 [ROSBAG-DUMP] Active telemetry buffer exported to mcap stream.", "#059669");
+      }, 1400);
+    }
+
+    function triggerHtmlExportCockpit() {
+      const btn = document.getElementById('html-export-btn');
+      if (!btn) return;
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[17px] text-emerald-600">file_download_done</span><span class="font-sans text-xs font-semibold">Saved</span>';
+      setTimeout(() => {
+        btn.innerHTML = origText;
+        logTerminal("🌐 [OFFLINE-EXPORT] Standalone offline HTML snapshot saved.", "#059669");
+      }, 1400);
+    }
 
     /* ==========================================================================
        FLEET INCIDENT HORIZON & THREAT STREAM ENGINE
