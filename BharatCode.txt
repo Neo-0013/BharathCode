@@ -27,5 +27,6 @@ Security & Privacy Compliance:
 - Uploaded logs and configurations are parsed locally; external AI calls require explicit user action.
 
 Repository Root: /
-Entrypoint: app.py
+Unified Platform Entrypoint: run_platform.py (FastAPI on port 8000)
+Secondary Streamlit Workspace: app.py (port 8501)
 ================================================================================
