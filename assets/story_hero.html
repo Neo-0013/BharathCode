@@ -1442,8 +1442,6 @@
 
 </div>
 
-<!-- Streamlit CTA bridge (hidden) -->
-<div id="st-cta-proxy" aria-hidden="true"></div>
 
 <!-- ================================================================
      SCRIPTS
@@ -1457,14 +1455,30 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 /* ================================================================
    UTILITY FUNCTIONS
    ================================================================ */
+/* SOC_URL is injected by hero_server.py at serve time.
+   Falls back to same-host port 8501 when opened directly. */
+const SOC_URL = (function() {
+  const injected = '__SOC_URL__';
+  if (!injected.startsWith('__')) return injected;
+  return window.location.protocol + '//' + window.location.hostname + ':8501';
+})();
+
 function launchSOC() {
-  // Send message to Streamlit parent frame
+  // Robust navigation for both standalone browser window and embedded iframe
+  const target = SOC_URL.includes('nav=soc') ? SOC_URL : (SOC_URL + (SOC_URL.includes('?') ? '&nav=soc' : '?nav=soc'));
   try {
-    window.parent.postMessage({ type: 'streamlit:setComponentValue', value: 'launch_soc' }, '*');
+    if (window.top && window.top !== window) {
+      window.top.location.href = target;
+      return;
+    }
   } catch(e) {}
-  // Also try clicking the hidden proxy button
-  const proxy = document.querySelector('.st-key-hero_cta_proxy button');
-  if (proxy) proxy.click();
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.location.href = target;
+      return;
+    }
+  } catch(e) {}
+  window.location.href = target;
 }
 
 function scrollToSection(id) {

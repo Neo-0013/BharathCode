@@ -854,6 +854,8 @@
   <nav class="soc-nav-bar">
     <button class="nav-tab-btn active" onclick="switchSocTab('tab-dynamic-graph')">🌐 Dynamic Python Computational Graph</button>
     <button class="nav-tab-btn" onclick="switchSocTab('tab-hero3d')">🤖 3D Hardware Telemetry Twin &amp; Arena</button>
+    <button class="nav-tab-btn" onclick="switchSocTab('tab-heatmap')">📡 DDS Telemetry &amp; Burst Heatmap</button>
+    <button class="nav-tab-btn" onclick="switchSocTab('tab-timeline')">⚡ Fleet Incident Horizon &amp; Threat Stream</button>
     <button class="nav-tab-btn" onclick="switchSocTab('tab-findings')">🔍 Diagnostic Findings &amp; Patches</button>
     <button class="nav-tab-btn" onclick="switchSocTab('tab-sros2-wizard')">🧙 SROS2 Keystore &amp; Policy Studio</button>
   </nav>
@@ -1105,6 +1107,120 @@
           </div>
         </div>
       </div>
+    <!-- TAB 5: DDS TELEMETRY & BURST HEATMAP -->
+    <div id="tab-heatmap" class="tab-content">
+      <div class="soc-panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span>📡 Real-Time ROS 2 DDS Topic Frequency &amp; Telemetry Heatmap</span>
+            <span class="panel-sub">Continuous DDS Dataflow Matrix · Rate-Spike Detection · Packet Drops</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="hud-btn" id="btnHeatmapFlood" style="color: var(--rose); border-color: var(--rose);" onclick="TelemetryHeatmap.simulateFlood()">💥 Inject /cmd_vel Flood (DoS)</button>
+            <button class="hud-btn" id="btnHeatmapStarve" style="color: var(--amber); border-color: var(--amber);" onclick="TelemetryHeatmap.simulateStarve()">⚠️ Starve /scan (Liveliness Loss)</button>
+            <button class="hud-btn" style="color: var(--emerald); border-color: var(--emerald);" onclick="TelemetryHeatmap.resetNominal()">🛡️ Enforce SROS2 Rate Limits</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+            <!-- Left: Heatmap Canvas + Controls -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
+                  SLIDING TIME WINDOW: <b>LAST 24 SECONDS (1-SEC BUCKETS)</b>
+                </div>
+                <div style="display: flex; gap: 0.75rem; font-size: 0.7rem; align-items: center;">
+                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 2px;"></span> Inactive</span>
+                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #10B981; border-radius: 2px;"></span> Nominal (1-50 Hz)</span>
+                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #F59E0B; border-radius: 2px;"></span> Warning (50-100 Hz)</span>
+                  <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="width: 10px; height: 10px; background: #EF4444; border-radius: 2px;"></span> Critical Flood (>100 Hz)</span>
+                </div>
+              </div>
+
+              <!-- Matrix Canvas Wrapper -->
+              <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow-x: auto;">
+                <canvas id="ddsHeatmapCanvas" style="width: 100%; height: 320px; display: block;"></canvas>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">
+                <span>← 24 seconds ago</span>
+                <span>Real-Time Live (Now) →</span>
+              </div>
+            </div>
+
+            <!-- Right: Interactive Topic Inspector -->
+            <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Selected DDS Topic Inspector</div>
+                <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); margin-top: 0.25rem;" id="hmTopicName">/cmd_vel</div>
+                <div style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 0.85rem;" id="hmMsgType">geometry_msgs/msg/Twist</div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
+                    <div style="font-size: 0.68rem; color: var(--text-muted);">Current Throughput</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--primary); font-family: var(--font-mono);" id="hmCurrRate">20.0 Hz</div>
+                  </div>
+
+                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
+                    <div style="font-size: 0.68rem; color: var(--text-muted);">QoS Reliability Contract</div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--rose);" id="hmQosContract">RELIABLE requested / BEST_EFFORT offered</div>
+                  </div>
+
+                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
+                    <div style="font-size: 0.68rem; color: var(--text-muted);">SROS2 Security State</div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--rose);" id="hmSecState">❌ Unauthenticated (Plaintext RTPS)</div>
+                  </div>
+
+                  <div style="background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.5rem 0.75rem;">
+                    <div style="font-size: 0.68rem; color: var(--text-muted);">Node Connectivity</div>
+                    <div style="font-size: 0.73rem; color: var(--text-secondary);" id="hmNodes">Pub: <code>/teleop_twist_keyboard</code> → Sub: <code>/diff_drive_controller</code></div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="tackle-btn" style="width: 100%; margin-top: 1rem;" onclick="TelemetryHeatmap.isolateSelected()">
+                🛡️ Isolate / Clamp Topic Traffic
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: FLEET INCIDENT HORIZON & THREAT STREAM -->
+    <div id="tab-timeline" class="tab-content">
+      <div class="soc-panel">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span>⚡ Fleet Incident Horizon &amp; Cyberattack Event Stream</span>
+            <span class="panel-sub">Real-Time Security Event Feed · SROS2 Audits · QoS Drops · Dynamic Remediation</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="hud-btn" id="btnTimelineSim" style="color: var(--rose); border-color: var(--rose);" onclick="ThreatTimeline.injectIncident()">⚡ Simulate Rogue Injection</button>
+            <button class="hud-btn" style="color: var(--emerald); border-color: var(--emerald);" onclick="ThreatTimeline.resolveAll()">🛡️ Auto-Remediate All Incidents</button>
+            <button class="hud-btn" onclick="ThreatTimeline.exportAuditLog()">📥 Export Audit Log (.json)</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <!-- Timeline Filter Strip -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+            <div style="display: flex; gap: 0.5rem;" id="timelineFilters">
+              <button class="hud-btn active" style="background: var(--primary); color: #FFFFFF;" onclick="ThreatTimeline.setFilter('ALL')">All Events (<span id="countAll">5</span>)</button>
+              <button class="hud-btn" onclick="ThreatTimeline.setFilter('CRITICAL')">🚨 Critical (<span id="countCrit">2</span>)</button>
+              <button class="hud-btn" onclick="ThreatTimeline.setFilter('SECURITY')">🛡️ Security (<span id="countSec">3</span>)</button>
+              <button class="hud-btn" onclick="ThreatTimeline.setFilter('QOS')">⚠️ QoS &amp; Network (<span id="countQos">1</span>)</button>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--emerald); font-weight: 700; display: flex; align-items: center; gap: 0.35rem;">
+              <span class="live-dot"></span> LIVE AUDIT STREAM CONNECTED
+            </div>
+          </div>
+
+          <!-- Dynamic Event Cards Container -->
+          <div id="timelineContainer" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 480px; overflow-y: auto; padding-right: 0.5rem;">
+            <!-- Rendered dynamically by ThreatTimeline.render() -->
+          </div>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -1181,7 +1297,7 @@
       const target = document.getElementById(tabId);
       if (target) target.classList.add('active');
 
-      const tabs = ['tab-dynamic-graph', 'tab-hero3d', 'tab-findings', 'tab-sros2-wizard'];
+      const tabs = ['tab-dynamic-graph', 'tab-hero3d', 'tab-heatmap', 'tab-timeline', 'tab-findings', 'tab-sros2-wizard'];
       const idx = tabs.indexOf(tabId);
       if (idx !== -1 && document.querySelectorAll('.nav-tab-btn')[idx]) {
         document.querySelectorAll('.nav-tab-btn')[idx].classList.add('active');
@@ -1192,6 +1308,12 @@
       }
       if (tabId === 'tab-dynamic-graph' && typeof DynamicGraphSim !== 'undefined' && DynamicGraphSim.ready) {
         setTimeout(() => DynamicGraphSim.resize(), 50);
+      }
+      if (tabId === 'tab-heatmap' && typeof TelemetryHeatmap !== 'undefined') {
+        setTimeout(() => TelemetryHeatmap.initOrResize(), 50);
+      }
+      if (tabId === 'tab-timeline' && typeof ThreatTimeline !== 'undefined') {
+        setTimeout(() => ThreatTimeline.render(), 50);
       }
     }
 
@@ -2424,6 +2546,429 @@
       }
     };
 
+    /* ==========================================================================
+       DDS TELEMETRY & BURST HEATMAP ENGINE
+       ========================================================================== */
+    const TelemetryHeatmap = {
+      canvas: null,
+      ctx: null,
+      intervalId: null,
+      selectedIndex: 0,
+      isFlooding: false,
+      isStarving: false,
+      topics: [
+        { name: '/cmd_vel', type: 'geometry_msgs/msg/Twist', pub: '/teleop_twist_keyboard', sub: '/diff_drive_controller', qos: 'RELIABLE req / BEST_EFFORT off (VIOLATION)', sec: '❌ Unauthenticated Plaintext', nominal: 20, current: 20, history: [] },
+        { name: '/scan', type: 'sensor_msgs/msg/LaserScan', pub: '/rplidar_node', sub: '/costmap_2d', qos: 'BEST_EFFORT / VOLATILE (Nominal)', sec: '🔒 SROS2 Enclave Active', nominal: 15, current: 15, history: [] },
+        { name: '/tf', type: 'tf2_msgs/msg/TFMessage', pub: '/robot_state_publisher', sub: '/amcl', qos: 'VOLATILE / RELIABLE (Nominal)', sec: '🔒 SROS2 Enclave Active', nominal: 50, current: 50, history: [] },
+        { name: '/odom', type: 'nav_msgs/msg/Odometry', pub: '/diff_drive_controller', sub: '/ekf_filter_node', qos: 'BEST_EFFORT / VOLATILE', sec: '🔒 SROS2 Enclave Active', nominal: 30, current: 30, history: [] },
+        { name: '/amcl_pose', type: 'geometry_msgs/msg/PoseWithCovarianceStamped', pub: '/amcl', sub: '/bt_navigator', qos: 'TRANSIENT_LOCAL / RELIABLE', sec: '🔒 SROS2 Enclave Active', nominal: 10, current: 10, history: [] },
+        { name: '/diagnostics', type: 'diagnostic_msgs/msg/DiagnosticArray', pub: '/hardware_monitor', sub: '/roboguard_ai_agent', qos: 'RELIABLE / VOLATILE', sec: '🔒 SROS2 Enclave Active', nominal: 2, current: 2, history: [] },
+        { name: '/camera/image_raw', type: 'sensor_msgs/msg/Image', pub: '/stereo_camera_node', sub: '/obstacle_detector', qos: 'BEST_EFFORT / SENSOR_DATA', sec: '❌ Plaintext RTP Payload', nominal: 30, current: 30, history: [] },
+        { name: '/sros2/auth_events', type: 'ros_security_msgs/msg/AuthAudit', pub: '/sros2_keystore_daemon', sub: '/soc_sentinel', qos: 'RELIABLE / TRANSIENT_LOCAL', sec: '🔒 SROS2 Security Enforced', nominal: 1, current: 1, history: [] }
+      ],
+
+      init() {
+        this.canvas = document.getElementById('ddsHeatmapCanvas');
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        
+        // Populate initial 24 columns of historical data
+        this.topics.forEach(t => {
+          t.history = [];
+          for (let i = 0; i < 24; i++) {
+            const jitter = (Math.random() - 0.5) * (t.nominal * 0.15);
+            t.history.push(Math.max(0, Math.round(t.nominal + jitter)));
+          }
+        });
+
+        this.canvas.addEventListener('click', (e) => this.handleClick(e));
+        this.resize();
+
+        if (!this.intervalId) {
+          this.intervalId = setInterval(() => this.tick(), 1000);
+        }
+        this.updateInspector();
+      },
+
+      initOrResize() {
+        if (!this.canvas) this.init();
+        else this.resize();
+      },
+
+      resize() {
+        if (!this.canvas) return;
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        this.canvas.width = (rect.width - 24) * dpr;
+        this.canvas.height = 320 * dpr;
+        this.ctx.scale(dpr, dpr);
+        this.draw();
+      },
+
+      tick() {
+        this.topics.forEach(t => {
+          let val = t.nominal;
+          if (t.name === '/cmd_vel' && this.isFlooding) {
+            val = Math.round(380 + Math.random() * 120);
+          } else if (t.name === '/scan' && this.isStarving) {
+            val = 0;
+          } else {
+            val = Math.max(0, Math.round(t.nominal + (Math.random() - 0.5) * (t.nominal * 0.2)));
+          }
+          t.current = val;
+          t.history.shift();
+          t.history.push(val);
+        });
+
+        this.draw();
+        this.updateInspector();
+      },
+
+      getColor(rate, nominal) {
+        if (rate === 0) return '#475569'; // starved
+        if (rate > 100) return '#EF4444'; // critical flood
+        if (rate > 45) return '#F59E0B';  // warning
+        if (rate >= 1) return '#10B981';  // nominal
+        return '#EFF6FF';
+      },
+
+      draw() {
+        if (!this.ctx || !this.canvas) return;
+        const dpr = window.devicePixelRatio || 1;
+        const width = this.canvas.width / dpr;
+        const height = this.canvas.height / dpr;
+        const ctx = this.ctx;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const labelWidth = 150;
+        const gridLeft = labelWidth + 10;
+        const gridWidth = width - gridLeft - 10;
+        const numCols = 24;
+        const colWidth = Math.max(8, (gridWidth - (numCols - 1) * 3) / numCols);
+        const rowHeight = (height - 30) / this.topics.length;
+
+        // Draw rows
+        this.topics.forEach((t, rIdx) => {
+          const y = 15 + rIdx * rowHeight;
+          const isSelected = rIdx === this.selectedIndex;
+
+          // Selection highlight
+          if (isSelected) {
+            ctx.fillStyle = '#EFF6FF';
+            ctx.fillRect(0, y - 2, width, rowHeight - 2);
+          }
+
+          // Topic label
+          ctx.font = isSelected ? '700 11px "JetBrains Mono", monospace' : '500 11px "JetBrains Mono", monospace';
+          ctx.fillStyle = isSelected ? '#1D4ED8' : '#334155';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(t.name, 10, y + rowHeight / 2 - 2);
+
+          // Rate pill
+          ctx.font = '600 9px "JetBrains Mono", monospace';
+          ctx.fillStyle = t.current > 100 ? '#EF4444' : (t.current === 0 ? '#DC2626' : '#059669');
+          ctx.textAlign = 'right';
+          ctx.fillText(`${t.current}Hz`, labelWidth, y + rowHeight / 2 - 2);
+
+          // Cells
+          t.history.forEach((hVal, cIdx) => {
+            const x = gridLeft + cIdx * (colWidth + 3);
+            const color = this.getColor(hVal, t.nominal);
+
+            ctx.fillStyle = color;
+            this.roundRect(ctx, x, y + 2, colWidth, rowHeight - 8, 3);
+            ctx.fill();
+
+            // Subtle border if selected
+            if (isSelected) {
+              ctx.strokeStyle = 'rgba(29, 78, 216, 0.4)';
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          });
+        });
+      },
+
+      handleClick(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const y = e.clientY - rect.top - 15;
+        const rowHeight = (320 - 30) / this.topics.length;
+        const idx = Math.floor(y / rowHeight);
+        if (idx >= 0 && idx < this.topics.length) {
+          this.selectedIndex = idx;
+          this.draw();
+          this.updateInspector();
+          if (typeof gsap !== 'undefined') {
+            gsap.from('#hmTopicName', { scale: 0.95, duration: 0.2, ease: 'power1.out' });
+          }
+        }
+      },
+
+      updateInspector() {
+        const t = this.topics[this.selectedIndex];
+        if (!t) return;
+        const nameEl = document.getElementById('hmTopicName');
+        const typeEl = document.getElementById('hmMsgType');
+        const rateEl = document.getElementById('hmCurrRate');
+        const qosEl = document.getElementById('hmQosContract');
+        const secEl = document.getElementById('hmSecState');
+        const nodesEl = document.getElementById('hmNodes');
+
+        if (nameEl) nameEl.textContent = t.name;
+        if (typeEl) typeEl.textContent = t.type;
+        if (rateEl) {
+          rateEl.textContent = `${t.current}.0 Hz`;
+          rateEl.style.color = t.current > 100 ? '#EF4444' : (t.current === 0 ? '#DC2626' : '#2563EB');
+        }
+        if (qosEl) qosEl.textContent = t.qos;
+        if (secEl) secEl.textContent = t.sec;
+        if (nodesEl) nodesEl.innerHTML = `Pub: <code>${t.pub}</code> → Sub: <code>${t.sub}</code>`;
+      },
+
+      simulateFlood() {
+        this.isFlooding = true;
+        this.selectedIndex = 0; // select /cmd_vel
+        this.tick();
+        logTerminal("⚠️ [BURST-DETECT] Topic /cmd_vel traffic surged to 480 Hz! DoS attack in progress.", "#DC2626");
+        if (typeof gsap !== 'undefined') {
+          gsap.to('#btnHeatmapFlood', { scale: 1.05, yoyo: true, repeat: 1, duration: 0.2 });
+        }
+      },
+
+      simulateStarve() {
+        this.isStarving = true;
+        this.selectedIndex = 1; // select /scan
+        this.tick();
+        logTerminal("⚠️ [QOS-LIVELINESS] Topic /scan dropped to 0 Hz! Sensor publisher starved or disconnected.", "#D97706");
+      },
+
+      resetNominal() {
+        this.isFlooding = false;
+        this.isStarving = false;
+        this.topics.forEach(t => t.current = t.nominal);
+        this.tick();
+        logTerminal("🛡️ [SROS2-CLAMP] Rate-limiting enforced. All DDS topics stabilized at nominal frequency.", "#059669");
+      },
+
+      isolateSelected() {
+        const t = this.topics[this.selectedIndex];
+        t.current = 0;
+        this.tick();
+        logTerminal(`🔒 [QUARANTINE] Topic ${t.name} access token revoked. Node traffic clamped to 0 Hz.`, "#1D4ED8");
+      },
+
+      roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+      }
+    };
+
+    /* ==========================================================================
+       FLEET INCIDENT HORIZON & THREAT STREAM ENGINE
+       ========================================================================== */
+    const ThreatTimeline = {
+      filter: 'ALL',
+      incidents: [
+        {
+          id: 'INC-2026-081',
+          time: '10:15:32.410',
+          cat: 'SECURITY',
+          sev: 'CRITICAL',
+          title: 'Unauthenticated /cmd_vel Velocity Override Injection',
+          desc: 'Rogue participant on DDS domain 0 transmitted unauthorized Twist commands without SROS2 X.509 certificate.',
+          affected: 'Node: /teleop_twist_keyboard · Topic: /cmd_vel',
+          status: 'PENDING',
+          action: 'Quarantine Rogue Node'
+        },
+        {
+          id: 'INC-2026-080',
+          time: '10:15:28.105',
+          cat: 'QOS',
+          sev: 'HIGH',
+          title: 'QoS Reliability Contract Incompatibility',
+          desc: 'Subscriber /costmap_2d requested RELIABLE durability, but publisher offers BEST_EFFORT. Packet loss silently occurring.',
+          affected: 'Topic: /scan · Reliability Policy Mismatch',
+          status: 'PENDING',
+          action: 'Apply QoS Hotpatch'
+        },
+        {
+          id: 'INC-2026-079',
+          time: '10:15:21.840',
+          cat: 'SECURITY',
+          sev: 'CRITICAL',
+          title: 'LiDAR Sensor Spoofing & Obstacle Phantom Injection',
+          desc: 'Synthetic scan arrays injected causing false-positive obstacle detection and AMR emergency halt.',
+          affected: 'Node: /rplidar_node · Topic: /scan',
+          status: 'PENDING',
+          action: 'Enforce Cryptographic Auth'
+        },
+        {
+          id: 'INC-2026-078',
+          time: '10:15:15.020',
+          cat: 'HARDWARE',
+          sev: 'WARNING',
+          title: 'REP-105 Coordinate Frame Latency Warning',
+          desc: 'Transform broadcast between odom and base_link delayed by 92ms due to high CPU load on controller server.',
+          affected: 'TF Tree: odom → base_link',
+          status: 'RESOLVED',
+          action: 'Optimized'
+        },
+        {
+          id: 'INC-2026-077',
+          time: '10:15:02.110',
+          cat: 'ROSBAG',
+          sev: 'INFO',
+          title: 'ROSBAG Attack Scenario Playback Initialized',
+          desc: 'Scenario attack_replay_03.db3 loaded for deterministic offline threat verification.',
+          affected: 'Replay Session: #03',
+          status: 'RESOLVED',
+          action: 'Verified'
+        }
+      ],
+
+      setFilter(f) {
+        this.filter = f;
+        const btns = document.querySelectorAll('#timelineFilters .hud-btn');
+        btns.forEach(b => {
+          b.style.background = '#FFFFFF';
+          b.style.color = 'var(--text-main)';
+        });
+        if (event && event.target) {
+          event.target.style.background = 'var(--primary)';
+          event.target.style.color = '#FFFFFF';
+        }
+        this.render();
+      },
+
+      render() {
+        const container = document.getElementById('timelineContainer');
+        if (!container) return;
+
+        let filtered = this.incidents;
+        if (this.filter === 'CRITICAL') filtered = this.incidents.filter(i => i.sev === 'CRITICAL');
+        else if (this.filter === 'SECURITY') filtered = this.incidents.filter(i => i.cat === 'SECURITY');
+        else if (this.filter === 'QOS') filtered = this.incidents.filter(i => i.cat === 'QOS');
+
+        // Update counts
+        const cntAll = document.getElementById('countAll');
+        const cntCrit = document.getElementById('countCrit');
+        const cntSec = document.getElementById('countSec');
+        const cntQos = document.getElementById('countQos');
+        if (cntAll) cntAll.textContent = this.incidents.length;
+        if (cntCrit) cntCrit.textContent = this.incidents.filter(i => i.sev === 'CRITICAL' && i.status === 'PENDING').length;
+        if (cntSec) cntSec.textContent = this.incidents.filter(i => i.cat === 'SECURITY').length;
+        if (cntQos) cntQos.textContent = this.incidents.filter(i => i.cat === 'QOS').length;
+
+        container.innerHTML = '';
+        if (filtered.length === 0) {
+          container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No events found matching active filter.</div>';
+          return;
+        }
+
+        filtered.forEach(inc => {
+          const isCrit = inc.sev === 'CRITICAL';
+          const isResolved = inc.status === 'RESOLVED';
+          const pillClass = isResolved ? 'pill-green' : (isCrit ? 'pill-red' : 'pill-cyan');
+          const borderStyle = isResolved ? '1px solid var(--emerald-border)' : (isCrit ? '1px solid var(--rose-border)' : '1px solid var(--border-subtle)');
+
+          const card = document.createElement('div');
+          card.id = `card-${inc.id}`;
+          card.style.cssText = `background: #FFFFFF; border: ${borderStyle}; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; gap: 1rem; transition: all 0.2s ease;`;
+
+          card.innerHTML = `
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">${inc.time}</span>
+                <span class="stat-pill ${pillClass}">${inc.sev}</span>
+                <span style="font-family: var(--font-mono); font-size: 0.68rem; background: var(--bg-elevated); padding: 0.15rem 0.45rem; border-radius: 4px; color: var(--text-secondary); font-weight: 700;">${inc.id}</span>
+                <span style="font-size: 0.72rem; color: var(--primary); font-weight: 700;">[${inc.cat}]</span>
+              </div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main); margin-bottom: 0.25rem;">
+                ${inc.title}
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 0.4rem;">
+                ${inc.desc}
+              </div>
+              <div style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);">
+                ${inc.affected}
+              </div>
+            </div>
+            <div style="flex-shrink: 0; text-align: right;">
+              ${isResolved ? `
+                <span class="stat-pill pill-green" style="font-size: 0.75rem; padding: 0.4rem 0.85rem;">
+                  ✓ MITIGATED &amp; ENFORCED
+                </span>
+              ` : `
+                <button class="tackle-btn" style="padding: 0.45rem 0.85rem; font-size: 0.75rem;" onclick="ThreatTimeline.resolveIncident('${inc.id}')">
+                  🛡️ ${inc.action}
+                </button>
+              `}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      },
+
+      resolveIncident(id) {
+        const inc = this.incidents.find(i => i.id === id);
+        if (!inc) return;
+        inc.status = 'RESOLVED';
+        this.render();
+        logTerminal(`🛡️ [REMEDIATED] Incident ${id} resolved via SROS2 policy governance. Threat neutralized.`, '#059669');
+
+        const card = document.getElementById(`card-${id}`);
+        if (card && typeof gsap !== 'undefined') {
+          gsap.from(card, { backgroundColor: '#ECFDF5', duration: 0.8, ease: 'power2.out' });
+        }
+      },
+
+      resolveAll() {
+        this.incidents.forEach(i => i.status = 'RESOLVED');
+        this.render();
+        logTerminal("🛡️ [GLOBAL-SROS2] All 14 security incidents auto-remediated and enclaves locked down.", "#059669");
+      },
+
+      injectIncident() {
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+        const newId = `INC-2026-0${82 + Math.floor(Math.random() * 90)}`;
+        const newInc = {
+          id: newId,
+          time: timeStr,
+          cat: 'SECURITY',
+          sev: 'CRITICAL',
+          title: 'Rogue Node Unauthorized DDS Discovery Injection',
+          desc: 'External participant attempting unauthenticated DDS domain 0 subscription to /robot_pose.',
+          affected: 'Node: /rogue_eavesdropper · Topic: /robot_pose',
+          status: 'PENDING',
+          action: 'Block Domain Entry'
+        };
+        this.incidents.unshift(newInc);
+        this.render();
+        logTerminal(`🚨 [NEW-ALERT] Incident ${newId} logged! Rogue participant detected on DDS topic /robot_pose.`, '#DC2626');
+
+        const card = document.getElementById(`card-${newId}`);
+        if (card && typeof gsap !== 'undefined') {
+          gsap.from(card, { y: -20, opacity: 0, duration: 0.4, ease: 'back.out(1.5)' });
+        }
+      },
+
+      exportAuditLog() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.incidents, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", `roboguard_incident_audit_${Date.now()}.json`);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        dlAnchor.remove();
+        logTerminal("📋 [AUDIT-EXPORT] Complete SOC incident audit log exported as JSON.", "#1D4ED8");
+      }
+    };
+
     // Boot engines independently: a WebGL failure must never blank the 2D graph
     window.addEventListener('DOMContentLoaded', () => {
       try { DynamicGraphSim.init(); } catch (err) { console.error('Graph init failed', err); }
@@ -2433,6 +2978,8 @@
         if (box) box.insertAdjacentHTML('beforeend',
           '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;color:#334155;font-weight:600">WebGL is unavailable in this browser. Enable hardware acceleration to view the 3D digital twin.</div>');
       }
+      try { TelemetryHeatmap.init(); } catch (err) { console.error('Heatmap init failed', err); }
+      try { ThreatTimeline.render(); } catch (err) { console.error('Timeline init failed', err); }
     });
   </script>
 </body>

@@ -39,8 +39,17 @@ if "selected_model" not in st.session_state:
     st.session_state["selected_model"] = "qwen2.5-coder:3b"
 if "force_offline" not in st.session_state:
     st.session_state["force_offline"] = False
-if "nav_selection" not in st.session_state:
-    st.session_state["nav_selection"] = "📖 Mission Story & 3D Twin"
+
+# Robust Query Parameter & Default Landing Resolution
+if "nav" in st.query_params:
+    qp = str(st.query_params["nav"]).lower()
+    if "soc" in qp:
+        st.session_state["nav_selection"] = "🛡️ 3D Robotics SOC"
+    elif "story" in qp or "hero" in qp:
+        st.session_state["nav_selection"] = "📖 Mission Story & 3D Twin"
+elif "nav_selection" not in st.session_state:
+    st.session_state["nav_selection"] = "🛡️ 3D Robotics SOC"
+
 if "active_attack_event" not in st.session_state:
     st.session_state["active_attack_event"] = None
 
@@ -125,6 +134,19 @@ with st.sidebar:
         label_visibility="collapsed"
     )
     st.session_state["nav_selection"] = selected_nav
+
+    hero_url = os.getenv("ROBOGUARD_HERO_URL", "http://localhost:8000")
+    st.markdown(f"""
+    <a href="{hero_url}" target="_blank" style="text-decoration: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.75rem; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; margin-top: 0.45rem; transition: all 0.2s ease;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+                <span style="font-size: 0.85rem;">🌐</span>
+                <span style="font-size: 0.73rem; font-weight: 700; color: #1D4ED8;">Fullscreen Hero Page</span>
+            </div>
+            <span style="font-size: 0.7rem; color: #2563EB; font-family: monospace;">:8000 ↗</span>
+        </div>
+    </a>
+    """, unsafe_allow_html=True)
 
     st.markdown("---")
 
