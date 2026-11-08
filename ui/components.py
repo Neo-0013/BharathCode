@@ -253,7 +253,7 @@ def render_live_floating_copilot(explanation_engine):
         """, unsafe_allow_html=True)
 
     # 2. Floating AI Sentinel Popover
-    popover_label = "🚨 AI Sentinel Alert" if active_attack else "🤖 AI Sentinel Live"
+    popover_label = "🚨 Sentinel Alert" if active_attack else "🛡️ AI Sentinel"
     with st.popover(popover_label, help="Live Roboguard AI Sentinel Copilot"):
         prov_label = st.session_state.get("selected_provider", "ollama").upper()
         model_name = st.session_state.get("selected_model", "qwen2.5-coder:3b")

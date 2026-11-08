@@ -354,6 +354,9 @@
       gap: 0.4rem;
       z-index: 10;
     }
+    .hud-btn.active { background: #EFF6FF !important; border-color: #2563EB !important; color: #1D4ED8 !important; }
+    .panel-head { flex-wrap: wrap; gap: 0.6rem; }
+    .panel-head > div[style*="display: flex"] { flex-wrap: wrap; }
     .hud-btn {
       background: rgba(255, 255, 255, 0.94);
       border: 1px solid var(--border-strong);
@@ -532,7 +535,7 @@
     /* Force-Directed Graph Layout */
     .graph-viewport-box {
       width: 100%;
-      height: 520px;
+      height: 580px;
       background: #FFFFFF;
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
@@ -976,11 +979,12 @@
         <div class="panel-head">
           <div class="panel-title">
             <span>🌐 Dynamic Physics-Driven ROS 2 Computational Graph</span>
-            <span class="panel-sub">Spring-force simulation computed via Python NetworkX engine</span>
+            <span class="panel-sub" id="graphStatLine">Graph computed by the Python NetworkX engine</span>
           </div>
           <div style="display: flex; gap: 0.5rem;">
-            <button class="hud-btn" onclick="DynamicGraphSim.resetForces()">🔄 Recenter Physics</button>
-            <button class="hud-btn" onclick="DynamicGraphSim.toggleErrorsOnly()">⚠️ Toggle Incompatible Edges</button>
+            <button class="hud-btn" onclick="DynamicGraphSim.resetForces()">🔄 Recenter Layout</button>
+            <button class="hud-btn" id="btnGraphPhysics" onclick="DynamicGraphSim.togglePhysics()">⚛ Physics: OFF</button>
+            <button class="hud-btn" id="btnGraphErrors" onclick="DynamicGraphSim.toggleErrorsOnly()">⚠️ Incompatible Edges Only</button>
           </div>
         </div>
         <div class="panel-body" style="padding: 0.75rem;">
@@ -1183,10 +1187,10 @@
         document.querySelectorAll('.nav-tab-btn')[idx].classList.add('active');
       }
 
-      if (tabId === 'tab-hero3d' && window.Robot3D) {
+      if (tabId === 'tab-hero3d' && typeof Robot3D !== 'undefined' && Robot3D.renderer) {
         setTimeout(() => Robot3D.onWindowResize(), 50);
       }
-      if (tabId === 'tab-dynamic-graph' && window.DynamicGraphSim) {
+      if (tabId === 'tab-dynamic-graph' && typeof DynamicGraphSim !== 'undefined' && DynamicGraphSim.ready) {
         setTimeout(() => DynamicGraphSim.resize(), 50);
       }
     }
@@ -2014,265 +2018,421 @@
     };
 
     /* ==========================================================================
-       DYNAMIC FORCE-DIRECTED PYTHON COMPUTATIONAL GRAPH SIMULATION (LIGHT THEME)
+       DYNAMIC ROS 2 COMPUTATIONAL GRAPH
+       - Data is computed by Python (NetworkX) and injected as JSON at load time
+       - Deterministic layered layout (publishers -> topics -> consumers) with
+         optional live physics; HiDPI-aware canvas + ResizeObserver
        ========================================================================== */
+    const GRAPH_DATA = /*__ROBOGUARD_GRAPH_DATA__*/null;
+
+    const FALLBACK_GRAPH = {
+      nodes: [
+        { id: "node:/teleop_keyboard", label: "/teleop_keyboard", type: "node", color: "#059669" },
+        { id: "node:/planner_server", label: "/planner_server", type: "node", color: "#059669" },
+        { id: "node:/controller_server", label: "/controller_server", type: "node", color: "#D97706" },
+        { id: "node:/diff_drive_base", label: "/diff_drive_base", type: "node", color: "#059669" },
+        { id: "node:/lidar_driver", label: "/lidar_driver", type: "node", color: "#059669" },
+        { id: "topic:/cmd_vel", label: "/cmd_vel", type: "topic", color: "#0284C7", msg_type: "geometry_msgs/msg/Twist" },
+        { id: "topic:/scan", label: "/scan", type: "topic", color: "#0284C7", msg_type: "sensor_msgs/msg/LaserScan" },
+        { id: "topic:/tf", label: "/tf", type: "topic", color: "#0284C7", msg_type: "tf2_msgs/msg/TFMessage" }
+      ],
+      edges: [
+        { from: "node:/teleop_keyboard", to: "topic:/cmd_vel", error: false },
+        { from: "node:/planner_server", to: "topic:/cmd_vel", error: false },
+        { from: "topic:/cmd_vel", to: "node:/controller_server", error: true },
+        { from: "topic:/cmd_vel", to: "node:/diff_drive_base", error: true },
+        { from: "node:/lidar_driver", to: "topic:/scan", error: false },
+        { from: "topic:/scan", to: "node:/planner_server", error: false },
+        { from: "node:/diff_drive_base", to: "topic:/tf", error: false },
+        { from: "topic:/tf", to: "node:/planner_server", error: false }
+      ]
+    };
+
     const DynamicGraphSim = {
-      canvas: null,
-      ctx: null,
-      nodes: [],
-      edges: [],
-      draggedNode: null,
-      packets: [],
-      showErrorsOnly: false,
+      canvas: null, ctx: null, wrap: null,
+      W: 800, H: 520, dpr: 1,
+      nodes: [], edges: [], byId: {}, packets: [],
+      draggedNode: null, hoverNode: null, selectedNode: null,
+      showErrorsOnly: false, physicsOn: false,
+      ready: false,
 
       init() {
         this.canvas = document.getElementById('dynamicGraphCanvas');
+        if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
+        this.wrap = this.canvas.parentElement;
+
+        const data = (GRAPH_DATA && GRAPH_DATA.nodes && GRAPH_DATA.nodes.length) ? GRAPH_DATA : FALLBACK_GRAPH;
+        this.load(data);
         this.resize();
-
-        // Nodes & Topic Data (Sourced from Python NetworkX Model)
-        this.nodes = [
-          { id: "node:teleop", label: "/teleop_keyboard", type: "node", x: 140, y: 120, vx: 0, vy: 0, color: "#059669" },
-          { id: "node:planner", label: "/planner_server", type: "node", x: 260, y: 240, vx: 0, vy: 0, color: "#059669" },
-          { id: "node:controller", label: "/controller_server", type: "node", x: 380, y: 360, vx: 0, vy: 0, color: "#D97706" },
-          { id: "node:diff_drive", label: "/diff_drive_base", type: "node", x: 620, y: 260, vx: 0, vy: 0, color: "#059669" },
-          { id: "node:lidar", label: "/lidar_driver", type: "node", x: 120, y: 340, vx: 0, vy: 0, color: "#059669" },
-          { id: "node:camera", label: "/camera_driver", type: "node", x: 120, y: 460, vx: 0, vy: 0, color: "#059669" },
-          { id: "topic:cmd_vel", label: "/cmd_vel", type: "topic", x: 480, y: 160, vx: 0, vy: 0, color: "#0284C7", msg: "geometry_msgs/Twist" },
-          { id: "topic:scan", label: "/scan", type: "topic", x: 200, y: 300, vx: 0, vy: 0, color: "#0284C7", msg: "sensor_msgs/LaserScan" },
-          { id: "topic:tf", label: "/tf", type: "topic", x: 500, y: 380, vx: 0, vy: 0, color: "#0284C7", msg: "tf2_msgs/TFMessage" }
-        ];
-
-        this.edges = [
-          { from: "node:teleop", to: "topic:cmd_vel", error: false },
-          { from: "node:planner", to: "topic:cmd_vel", error: false },
-          { from: "topic:cmd_vel", to: "node:controller", error: true }, // QoS Mismatch
-          { from: "topic:cmd_vel", to: "node:diff_drive", error: true }, // QoS Mismatch
-          { from: "node:lidar", to: "topic:scan", error: false },
-          { from: "topic:scan", to: "node:planner", error: false },
-          { from: "node:diff_drive", to: "topic:tf", error: false },
-          { from: "topic:tf", to: "node:planner", error: false }
-        ];
-
-        for (let i = 0; i < 14; i++) {
-          this.packets.push({
-            edgeIdx: Math.floor(Math.random() * this.edges.length),
-            progress: Math.random(),
-            speed: 0.006 + Math.random() * 0.008
-          });
-        }
-
-        this.setupEvents();
-        this.animate();
+        this.layoutLayered(true);
+        this.bindEvents();
+        this.updateStats(data);
+        this.ready = true;
+        requestAnimationFrame(() => this.frame());
       },
 
-      resize() {
-        const rect = this.canvas.parentElement.getBoundingClientRect();
-        this.canvas.width = rect.width;
-        this.canvas.height = rect.height;
-      },
-
-      setupEvents() {
-        window.addEventListener('resize', () => this.resize());
-
-        this.canvas.addEventListener('mousedown', (e) => {
-          const rect = this.canvas.getBoundingClientRect();
-          const mx = e.clientX - rect.left;
-          const my = e.clientY - rect.top;
-          this.draggedNode = this.nodes.find(n => Math.hypot(n.x - mx, n.y - my) < 24);
-          
-          if (this.draggedNode) {
-            this.showInspector(this.draggedNode);
+      load(data) {
+        this.nodes = data.nodes.map(n => ({
+          ...n, x: 0, y: 0, tx: 0, ty: 0, vx: 0, vy: 0,
+          r: n.type === 'topic' ? 13 : 17
+        }));
+        this.byId = {};
+        this.nodes.forEach(n => this.byId[n.id] = n);
+        this.edges = data.edges.filter(e => this.byId[e.from] && this.byId[e.to]);
+        this.packets = [];
+        this.edges.forEach((e, i) => {
+          const count = e.error ? 2 : 1;
+          for (let k = 0; k < count; k++) {
+            this.packets.push({ edge: i, t: Math.random(), speed: 0.004 + Math.random() * 0.004 });
           }
         });
+      },
 
-        window.addEventListener('mousemove', (e) => {
-          if (!this.draggedNode) return;
-          const rect = this.canvas.getBoundingClientRect();
-          this.draggedNode.x = e.clientX - rect.left;
-          this.draggedNode.y = e.clientY - rect.top;
+      updateStats(data) {
+        const st = data.stats;
+        if (!st) return;
+        const el = document.getElementById('graphStatLine');
+        if (el) el.textContent = `${st.total_nodes} nodes · ${st.total_topics} topics · ${st.total_edges} edges · ${st.error_edges} QoS-incompatible`;
+      },
+
+      /* ---------- sizing (HiDPI + ResizeObserver) ---------- */
+      resize() {
+        if (!this.canvas) return;
+        const rect = this.wrap.getBoundingClientRect();
+        const w = Math.max(320, Math.floor(rect.width));
+        const h = Math.max(320, Math.floor(rect.height));
+        this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+        this.canvas.width = Math.floor(w * this.dpr);
+        this.canvas.height = Math.floor(h * this.dpr);
+        this.W = w; this.H = h;
+        if (this.nodes.length) this.layoutLayered(false);
+      },
+
+      bindEvents() {
+        if (window.ResizeObserver) {
+          new ResizeObserver(() => this.resize()).observe(this.wrap);
+        } else {
+          window.addEventListener('resize', () => this.resize());
+        }
+        const pt = (e) => {
+          const r = this.canvas.getBoundingClientRect();
+          return { x: e.clientX - r.left, y: e.clientY - r.top };
+        };
+        this.canvas.addEventListener('pointerdown', (e) => {
+          const p = pt(e);
+          const n = this.hit(p.x, p.y);
+          if (n) {
+            this.draggedNode = n; this.selectedNode = n;
+            this.canvas.setPointerCapture(e.pointerId);
+            this.showInspector(n);
+          } else {
+            this.selectedNode = null;
+            const ins = document.getElementById('graphInspector');
+            if (ins) ins.style.display = 'none';
+          }
         });
+        this.canvas.addEventListener('pointermove', (e) => {
+          const p = pt(e);
+          if (this.draggedNode) {
+            const n = this.draggedNode;
+            n.x = n.tx = Math.max(30, Math.min(this.W - 30, p.x));
+            n.y = n.ty = Math.max(30, Math.min(this.H - 30, p.y));
+            n.vx = n.vy = 0;
+          } else {
+            this.hoverNode = this.hit(p.x, p.y);
+            this.canvas.style.cursor = this.hoverNode ? 'pointer' : 'grab';
+          }
+        });
+        const up = () => { this.draggedNode = null; };
+        this.canvas.addEventListener('pointerup', up);
+        this.canvas.addEventListener('pointercancel', up);
+        this.canvas.addEventListener('pointerleave', () => { this.hoverNode = null; });
+      },
 
-        window.addEventListener('mouseup', () => {
-          this.draggedNode = null;
+      hit(x, y) {
+        let best = null, bd = 1e9;
+        for (const n of this.nodes) {
+          const d = Math.hypot(n.x - x, n.y - y);
+          if (d < n.r + 12 && d < bd) { best = n; bd = d; }
+        }
+        return best;
+      },
+
+      /* ---------- layout: publishers -> topics -> consumers ---------- */
+      layoutLayered(snap) {
+        const inbound = {}, outbound = {};
+        this.edges.forEach(e => {
+          outbound[e.from] = (outbound[e.from] || 0) + 1;
+          inbound[e.to] = (inbound[e.to] || 0) + 1;
+        });
+        const cols = [[], [], []];
+        this.nodes.forEach(n => {
+          if (n.type === 'topic') cols[1].push(n);
+          else if (!inbound[n.id]) cols[0].push(n);     // pure publisher / driver
+          else cols[2].push(n);                          // consumer / mixed
+        });
+        // Barycentre ordering to reduce edge crossings (2 sweeps)
+        const order = (col, ref) => {
+          col.sort((a, b) => this.bary(a, ref) - this.bary(b, ref));
+        };
+        cols[0].forEach((n, i) => n._o = i);
+        cols[1].forEach((n, i) => n._o = i);
+        cols[2].forEach((n, i) => n._o = i);
+        for (let s = 0; s < 2; s++) {
+          order(cols[1], 0); cols[1].forEach((n, i) => n._o = i);
+          order(cols[2], 1); cols[2].forEach((n, i) => n._o = i);
+          order(cols[0], 1); cols[0].forEach((n, i) => n._o = i);
+        }
+        const padX = Math.max(90, this.W * 0.12), padTop = 56, padBot = 128;
+        const xs = [padX, this.W / 2, this.W - padX];
+        cols.forEach((col, ci) => {
+          const n = col.length;
+          const span = this.H - padTop - padBot;
+          col.forEach((node, i) => {
+            node.tx = xs[ci];
+            node.ty = padTop + (n === 1 ? span / 2 : (span * i) / (n - 1));
+            if (snap) { node.x = node.tx; node.y = node.ty; }
+          });
         });
       },
 
-      showInspector(node) {
-        const ins = document.getElementById('graphInspector');
-        document.getElementById('inspectName').textContent = node.label;
-        document.getElementById('inspectDetails').innerHTML = `
-          Category: <b>${node.type.toUpperCase()}</b><br>
-          Runtime State: <span style="color: ${node.color}; font-weight: 700;">ACTIVE</span><br>
-          Message Interface: <code>${node.msg || 'rclcpp::Node'}</code><br>
-          QoS Compatibility: ${node.id.includes('cmd_vel') ? '<span style="color: var(--rose); font-weight: 700;">FAIL (BEST_EFFORT vs RELIABLE)</span>' : '<span style="color: var(--emerald); font-weight: 700;">PASSED (COMPATIBLE)</span>'}
-        `;
-        ins.style.display = 'block';
+      bary(n, _ref) {
+        const ys = [];
+        this.edges.forEach(e => {
+          if (e.from === n.id) ys.push(this.byId[e.to]._o);
+          else if (e.to === n.id) ys.push(this.byId[e.from]._o);
+        });
+        return ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : (n._o || 0);
       },
 
       resetForces() {
-        this.nodes.forEach(n => {
-          n.x = 100 + Math.random() * (this.canvas.width - 200);
-          n.y = 100 + Math.random() * (this.canvas.height - 200);
-          n.vx = 0; n.vy = 0;
-        });
+        this.physicsOn = false;
+        this.updatePhysicsButton();
+        this.nodes.forEach(n => { n.vx = n.vy = 0; });
+        this.layoutLayered(false);
+      },
+
+      togglePhysics() {
+        this.physicsOn = !this.physicsOn;
+        this.updatePhysicsButton();
+      },
+      updatePhysicsButton() {
+        const b = document.getElementById('btnGraphPhysics');
+        if (b) b.textContent = this.physicsOn ? '⏸ Physics: ON' : '⚛ Physics: OFF';
       },
 
       toggleErrorsOnly() {
         this.showErrorsOnly = !this.showErrorsOnly;
+        const b = document.getElementById('btnGraphErrors');
+        if (b) b.classList.toggle('active', this.showErrorsOnly);
       },
 
-      updatePhysics() {
-        const repulsion = 1200;
-        const springLen = 140;
-        const k = 0.003;
+      /* ---------- inspector (computed from real edges) ---------- */
+      showInspector(n) {
+        const ins = document.getElementById('graphInspector');
+        if (!ins) return;
+        const incoming = this.edges.filter(e => e.to === n.id);
+        const outgoing = this.edges.filter(e => e.from === n.id);
+        const lab = id => this.byId[id].label;
+        const bad = incoming.concat(outgoing).some(e => e.error);
+        document.getElementById('inspectName').textContent = n.label;
+        let rows = `Category: <b>${n.type.toUpperCase()}</b><br>`;
+        if (n.type === 'topic') {
+          rows += `Message type: <code>${n.msg_type || 'unknown'}</code><br>`;
+          if (n.rate_hz) rows += `Rate: <b>${n.rate_hz} Hz</b><br>`;
+          rows += `Publishers: ${incoming.map(e => lab(e.from)).join(', ') || '<b style="color:#DC2626">none (starved)</b>'}<br>`;
+          rows += `Subscribers: ${outgoing.map(e => lab(e.to)).join(', ') || '<b style="color:#DC2626">none (unconsumed)</b>'}<br>`;
+        } else {
+          rows += `Publishes: ${outgoing.map(e => lab(e.to)).join(', ') || '—'}<br>`;
+          rows += `Subscribes: ${incoming.map(e => lab(e.from)).join(', ') || '—'}<br>`;
+          if (n.enclave) rows += `Enclave: <code>${n.enclave}</code><br>`;
+        }
+        rows += `QoS contract: ${bad
+          ? '<span style="color:#DC2626;font-weight:700">INCOMPATIBLE (BEST_EFFORT offered vs RELIABLE requested)</span>'
+          : '<span style="color:#059669;font-weight:700">PASSED (COMPATIBLE)</span>'}`;
+        document.getElementById('inspectDetails').innerHTML = rows;
+        ins.style.display = 'block';
+      },
 
-        for (let i = 0; i < this.nodes.length; i++) {
-          for (let j = i + 1; j < this.nodes.length; j++) {
-            const n1 = this.nodes[i];
-            const n2 = this.nodes[j];
-            const dx = n2.x - n1.x;
-            const dy = n2.y - n1.y;
-            const dist = Math.hypot(dx, dy) || 1;
-            const force = repulsion / (dist * dist);
-            const fx = (dx / dist) * force;
-            const fy = (dy / dist) * force;
-
-            if (n1 !== this.draggedNode) { n1.vx -= fx; n1.vy -= fy; }
-            if (n2 !== this.draggedNode) { n2.vx += fx; n2.vy += fy; }
+      /* ---------- physics (optional) ---------- */
+      stepPhysics() {
+        const N = this.nodes;
+        for (let i = 0; i < N.length; i++) {
+          for (let j = i + 1; j < N.length; j++) {
+            const a = N[i], b = N[j];
+            let dx = b.x - a.x, dy = b.y - a.y;
+            const d = Math.hypot(dx, dy) || 1;
+            const f = Math.min(40, 5200 / (d * d));
+            dx /= d; dy /= d;
+            if (a !== this.draggedNode) { a.vx -= dx * f; a.vy -= dy * f; }
+            if (b !== this.draggedNode) { b.vx += dx * f; b.vy += dy * f; }
           }
         }
-
         this.edges.forEach(e => {
-          const n1 = this.nodes.find(n => n.id === e.from);
-          const n2 = this.nodes.find(n => n.id === e.to);
-          if (!n1 || !n2) return;
-
-          const dx = n2.x - n1.x;
-          const dy = n2.y - n1.y;
-          const dist = Math.hypot(dx, dy) || 1;
-          const springForce = (dist - springLen) * k;
-          const fx = (dx / dist) * springForce;
-          const fy = (dy / dist) * springForce;
-
-          if (n1 !== this.draggedNode) { n1.vx -= fx; n1.vy -= fy; }
-          if (n2 !== this.draggedNode) { n2.vx += fx; n2.vy += fy; }
+          const a = this.byId[e.from], b = this.byId[e.to];
+          const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1;
+          const f = (d - 170) * 0.01;
+          if (a !== this.draggedNode) { a.vx += (dx / d) * f; a.vy += (dy / d) * f; }
+          if (b !== this.draggedNode) { b.vx -= (dx / d) * f; b.vy -= (dy / d) * f; }
         });
-
-        this.nodes.forEach(n => {
+        N.forEach(n => {
           if (n === this.draggedNode) return;
-          n.x += n.vx;
-          n.y += n.vy;
-          n.vx *= 0.85;
-          n.vy *= 0.85;
-
-          n.x = Math.max(40, Math.min(this.canvas.width - 40, n.x));
-          n.y = Math.max(40, Math.min(this.canvas.height - 40, n.y));
+          n.vx += (this.W / 2 - n.x) * 0.002;   // centre gravity: nodes never pile on an edge
+          n.vy += (this.H / 2 - n.y) * 0.002;
+          n.vx *= 0.82; n.vy *= 0.82;
+          n.x = Math.max(40, Math.min(this.W - 40, n.x + n.vx));
+          n.y = Math.max(40, Math.min(this.H - 52, n.y + n.vy));
+          n.tx = n.x; n.ty = n.y;
         });
       },
 
-      animate() {
-        requestAnimationFrame(() => this.animate());
-        this.updatePhysics();
+      /* ---------- render ---------- */
+      neighbors(n) {
+        const s = new Set([n.id]);
+        this.edges.forEach(e => {
+          if (e.from === n.id) s.add(e.to);
+          if (e.to === n.id) s.add(e.from);
+        });
+        return s;
+      },
+
+      curve(a, b) {
+        const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+        const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1;
+        const bend = Math.min(36, d * 0.12);
+        return { cx: mx - (dy / d) * bend, cy: my + (dx / d) * bend };
+      },
+      pointOn(a, b, c, t) {
+        const u = 1 - t;
+        return { x: u * u * a.x + 2 * u * t * c.cx + t * t * b.x,
+                 y: u * u * a.y + 2 * u * t * c.cy + t * t * b.y };
+      },
+
+      frame() {
+        requestAnimationFrame(() => this.frame());
+        if (!this.ready || !this.ctx) return;
+        // Skip rendering while the tab is hidden (no size)
+        if (this.wrap.offsetParent === null) return;
+
+        if (this.physicsOn) this.stepPhysics();
+        else this.nodes.forEach(n => {
+          if (n === this.draggedNode) return;
+          n.x += (n.tx - n.x) * 0.18; n.y += (n.ty - n.y) * 0.18;
+        });
 
         const ctx = this.ctx;
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+        ctx.clearRect(0, 0, this.W, this.H);
 
-        // Draw Edges
+        // Column captions
+        ctx.font = '700 10px "JetBrains Mono", ui-monospace, monospace';
+        ctx.fillStyle = '#94A3B8'; ctx.textAlign = 'center';
+        if (!this.physicsOn) {
+          const padX = Math.max(90, this.W * 0.12);
+          ctx.fillText('PUBLISHERS / DRIVERS', padX, 24);
+          ctx.fillText('TOPICS (DDS)', this.W / 2, 24);
+          ctx.fillText('SUBSCRIBERS / CONSUMERS', this.W - padX, 24);
+        }
+
+        const focus = this.draggedNode || this.hoverNode || this.selectedNode;
+        const near = focus ? this.neighbors(focus) : null;
+
+        // Edges
         this.edges.forEach(e => {
           if (this.showErrorsOnly && !e.error) return;
-
-          const n1 = this.nodes.find(n => n.id === e.from);
-          const n2 = this.nodes.find(n => n.id === e.to);
-          if (!n1 || !n2) return;
-
+          const a = this.byId[e.from], b = this.byId[e.to];
+          const lit = !near || (near.has(a.id) && near.has(b.id) && (a === focus || b === focus));
+          const c = this.curve(a, b);
+          ctx.globalAlpha = lit ? 1 : 0.14;
           ctx.beginPath();
-          ctx.moveTo(n1.x, n1.y);
-          ctx.lineTo(n2.x, n2.y);
+          ctx.moveTo(a.x, a.y);
+          ctx.quadraticCurveTo(c.cx, c.cy, b.x, b.y);
+          ctx.strokeStyle = e.error ? '#DC2626' : '#94A3B8';
+          ctx.lineWidth = e.error ? 2.4 : 1.6;
+          ctx.setLineDash(e.error ? [7, 5] : []);
+          ctx.stroke(); ctx.setLineDash([]);
 
-          if (e.error) {
-            ctx.strokeStyle = '#DC2626';
-            ctx.lineWidth = 2.5;
-            ctx.setLineDash([6, 6]);
-          } else {
-            ctx.strokeStyle = '#CBD5E1';
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([]);
+          // Arrowhead at the target's boundary
+          const tp = this.pointOn(a, b, c, 1 - (b.r + 6) / (Math.hypot(b.x - a.x, b.y - a.y) || 1));
+          const tp2 = this.pointOn(a, b, c, 1 - (b.r + 7) / (Math.hypot(b.x - a.x, b.y - a.y) || 1) - 0.02);
+          const ang = Math.atan2(tp.y - tp2.y, tp.x - tp2.x);
+          ctx.save(); ctx.translate(tp.x, tp.y); ctx.rotate(ang);
+          ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-9, -4.5); ctx.lineTo(-9, 4.5); ctx.closePath();
+          ctx.fillStyle = e.error ? '#DC2626' : '#94A3B8'; ctx.fill(); ctx.restore();
+
+          // QoS badge on error edges
+          if (e.error && lit) {
+            const m = this.pointOn(a, b, c, 0.5);
+            ctx.font = '700 10px "JetBrains Mono", ui-monospace, monospace';
+            const t = 'QoS ✕';
+            const w = ctx.measureText(t).width + 12;
+            ctx.fillStyle = '#FEF2F2'; ctx.strokeStyle = '#FECACA'; ctx.lineWidth = 1;
+            this.roundRect(ctx, m.x - w / 2, m.y - 9, w, 18, 9); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#B91C1C'; ctx.textAlign = 'center'; ctx.fillText(t, m.x, m.y + 3.5);
           }
-          ctx.stroke();
-          ctx.setLineDash([]);
         });
+        ctx.globalAlpha = 1;
 
-        // Draw Animated Data Packets
+        // Packets
         this.packets.forEach(p => {
-          const edge = this.edges[p.edgeIdx];
-          if (!edge) return;
-          if (this.showErrorsOnly && !edge.error) return;
-
-          const n1 = this.nodes.find(n => n.id === edge.from);
-          const n2 = this.nodes.find(n => n.id === edge.to);
-          if (!n1 || !n2) return;
-
-          p.progress += p.speed;
-          if (p.progress >= 1.0) p.progress = 0;
-
-          const px = n1.x + (n2.x - n1.x) * p.progress;
-          const py = n1.y + (n2.y - n1.y) * p.progress;
-
-          ctx.beginPath();
-          ctx.arc(px, py, edge.error ? 4 : 3, 0, Math.PI * 2);
-          ctx.fillStyle = edge.error ? '#DC2626' : '#2563EB';
-          ctx.shadowColor = edge.error ? '#DC2626' : '#2563EB';
-          ctx.shadowBlur = 6;
-          ctx.fill();
-          ctx.shadowBlur = 0;
+          const e = this.edges[p.edge];
+          if (!e || (this.showErrorsOnly && !e.error)) return;
+          p.t += p.speed; if (p.t >= 1) p.t = 0;
+          const a = this.byId[e.from], b = this.byId[e.to];
+          const q = this.pointOn(a, b, this.curve(a, b), p.t);
+          const lit = !near || (near.has(a.id) && near.has(b.id));
+          ctx.globalAlpha = lit ? 1 : 0.15;
+          ctx.beginPath(); ctx.arc(q.x, q.y, e.error ? 3.8 : 3, 0, 6.2832);
+          ctx.fillStyle = e.error ? '#DC2626' : '#2563EB'; ctx.fill();
         });
+        ctx.globalAlpha = 1;
 
-        // Draw Nodes
+        // Nodes + labels
         this.nodes.forEach(n => {
-          ctx.save();
-          ctx.translate(n.x, n.y);
-
-          if (n.type === 'node') {
-            ctx.beginPath();
-            ctx.arc(0, 0, 16, 0, Math.PI * 2);
-            ctx.fillStyle = n.color;
-            ctx.shadowColor = n.color;
-            ctx.shadowBlur = 8;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-          } else {
-            ctx.beginPath();
-            ctx.rotate(Math.PI / 4);
-            ctx.rect(-12, -12, 24, 24);
-            ctx.fillStyle = n.color;
-            ctx.shadowColor = n.color;
-            ctx.shadowBlur = 8;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+          const dim = near && !near.has(n.id);
+          ctx.globalAlpha = dim ? 0.25 : 1;
+          ctx.save(); ctx.translate(n.x, n.y);
+          if (n === focus || n === this.selectedNode) {
+            ctx.beginPath(); ctx.arc(0, 0, n.r + 7, 0, 6.2832);
+            ctx.fillStyle = 'rgba(37,99,235,0.12)'; ctx.fill();
           }
-
+          if (n.type === 'topic') ctx.rotate(Math.PI / 4);
+          ctx.beginPath();
+          if (n.type === 'topic') ctx.rect(-n.r * 0.85, -n.r * 0.85, n.r * 1.7, n.r * 1.7);
+          else ctx.arc(0, 0, n.r, 0, 6.2832);
+          ctx.fillStyle = n.color; ctx.fill();
+          ctx.lineWidth = 2.5; ctx.strokeStyle = '#FFFFFF'; ctx.stroke();
           ctx.restore();
 
-          // High Contrast Slate Text Label
-          ctx.font = '700 11px JetBrains Mono';
-          ctx.fillStyle = '#0F172A';
-          ctx.textAlign = 'center';
-          ctx.fillText(n.label, n.x, n.y + 28);
+          ctx.font = '700 11px "JetBrains Mono", ui-monospace, monospace';
+          const tw = ctx.measureText(n.label).width + 12;
+          const ly = n.y + n.r + 20;
+          ctx.fillStyle = 'rgba(255,255,255,0.94)'; ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 1;
+          this.roundRect(ctx, n.x - tw / 2, ly - 11, tw, 18, 6); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#0F172A'; ctx.textAlign = 'center';
+          ctx.fillText(n.label, n.x, ly + 2);
         });
+        ctx.globalAlpha = 1;
+      },
+
+      roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
       }
     };
 
-    // Auto-boot both 3D scene and Dynamic Graph on load
+    // Boot engines independently: a WebGL failure must never blank the 2D graph
     window.addEventListener('DOMContentLoaded', () => {
-      Robot3D.init();
-      DynamicGraphSim.init();
+      try { DynamicGraphSim.init(); } catch (err) { console.error('Graph init failed', err); }
+      try { Robot3D.init(); } catch (err) {
+        console.error('3D init failed', err);
+        const box = document.querySelector('.canvas-3d-container');
+        if (box) box.insertAdjacentHTML('beforeend',
+          '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;color:#334155;font-weight:600">WebGL is unavailable in this browser. Enable hardware acceleration to view the 3D digital twin.</div>');
+      }
     });
   </script>
 </body>

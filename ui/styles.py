@@ -649,6 +649,67 @@ def inject_custom_styles():
         background-color: #0F172A !important;
         color: #38BDF8 !important;
     }
+    /* ==========================================================================
+       FIXES: Material icon ligatures, hero CTA proxy, sentinel dock polish
+       ========================================================================== */
+    /* The global font rules above must NOT override Streamlit's icon font,
+       otherwise ligature names ("expand_more", "keyboard_double_arrow_left")
+       render as raw text. */
+    [data-testid="stIconMaterial"],
+    [data-testid="stIconMaterial"] *,
+    span[class*="material-symbols"], span[class*="material-icons"],
+    [data-testid="stExpanderToggleIcon"] *,
+    [data-testid="stSidebarCollapseButton"] span,
+    [data-testid="stSidebarCollapsedControl"] span,
+    [data-testid="collapsedControl"] span {
+        font-family: "Material Symbols Rounded", "Material Symbols Outlined", "Material Icons" !important;
+        font-feature-settings: "liga" !important;
+        -webkit-font-feature-settings: "liga" !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        font-style: normal !important;
+    }
+    /* Popover chevron: hidden in the floating dock so it never overlaps the label */
+    div[data-testid="stPopover"] button [data-testid="stIconMaterial"] { display: none !important; }
+
+    /* Hero CTA proxy: kept in the DOM (the iframe clicks it) but visually collapsed */
+    .st-key-hero_cta_proxy {
+        position: absolute !important; width: 1px; height: 1px;
+        overflow: hidden; clip: rect(0 0 0 0); opacity: 0; pointer-events: none;
+    }
+    /* Keep content clear of the floating dock + tighten page chrome */
+    .block-container { padding-top: 2.2rem !important; padding-bottom: 6rem !important; max-width: 1280px !important; }
+    [data-testid="stMetric"] {
+        background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px;
+        padding: 0.7rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    [data-testid="stMetricLabel"] * { font-size: 0.7rem !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0.04em; color: #475569 !important; }
+    [data-testid="stMetricValue"] * { font-size: 1.25rem !important; font-weight: 800 !important; color: #0F172A !important; }
+    iframe[title="streamlit_component"], iframe { border: 1px solid #E2E8F0 !important; border-radius: 12px !important; background: #FFFFFF; }
+
+    /* Sidebar nav — newer Streamlit radio DOM (label[data-testid="stRadioOption"]) */
+    [data-testid="stSidebar"] label[data-testid="stRadioOption"] {
+        background: #FFFFFF !important; border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important; padding: 0.55rem 0.85rem !important;
+        width: 100% !important; transition: all 0.18s ease !important;
+    }
+    [data-testid="stSidebar"] label[data-testid="stRadioOption"]:hover {
+        background: #F8FAFC !important; border-color: #CBD5E1 !important;
+    }
+    [data-testid="stSidebar"] label[data-testid="stRadioOption"] > div > div:first-child { display: none !important; }
+    [data-testid="stSidebar"] label[data-testid="stRadioOption"] p {
+        font-size: 0.85rem !important; font-weight: 600 !important; color: #334155 !important; margin: 0 !important;
+    }
+    [data-testid="stSidebar"] label[data-testid="stRadioOption"][data-selected="true"] {
+        background: #EFF6FF !important; border-color: #2563EB !important;
+        border-left: 4px solid #2563EB !important; box-shadow: 0 2px 6px rgba(37,99,235,0.12) !important;
+    }
+    [data-testid="stSidebar"] label[data-testid="stRadioOption"][data-selected="true"] p { color: #1D4ED8 !important; font-weight: 700 !important; }
+    [data-testid="stSidebar"] [data-testid="stRadioGroup"] { gap: 6px !important; }
+    :focus-visible { outline: 2px solid #2563EB !important; outline-offset: 2px !important; }
+    @media (prefers-reduced-motion: reduce) {
+        button[data-testid="stPopoverButton"], div[data-testid="stPopover"] button { animation: none !important; }
+    }
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)

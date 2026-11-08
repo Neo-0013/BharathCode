@@ -81,7 +81,9 @@ class DynamicGraphGenerator:
                 
                 # Check for QoS incompatibility on this topic
                 has_qos_error = any(
-                    q.get("topic") == topic["name"] and q.get("status") == "INCOMPATIBLE"
+                    q.get("topic") == topic["name"]
+                    and q.get("status") == "INCOMPATIBLE"
+                    and q.get("subscriber") in (None, sub)
                     for q in qos_evals
                 )
                 G.add_edge(
@@ -93,6 +95,34 @@ class DynamicGraphGenerator:
                 )
 
         return G
+
+    @staticmethod
+    def normalize_scenario(scenario_data: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+        """
+        Converts a demo-scenario / analysis payload (which carries raw `qos_pairs`
+        with pub_qos / sub_qos) into the `qos_evaluations` schema used by the graph
+        builder, applying the DDS request-vs-offer rules per publisher/subscriber pair.
+        Returns None when the payload has no usable topology.
+        """
+        if not scenario_data or not (scenario_data.get("nodes") or scenario_data.get("topics")):
+            return None
+        data = dict(scenario_data)
+        if "qos_evaluations" not in data:
+            evals = []
+            for q in data.get("qos_pairs", []):
+                pub, sub = q.get("pub_qos", {}), q.get("sub_qos", {})
+                rel_bad = pub.get("reliability") == "BEST_EFFORT" and sub.get("reliability") == "RELIABLE"
+                dur_bad = pub.get("durability") == "VOLATILE" and sub.get("durability") == "TRANSIENT_LOCAL"
+                if rel_bad or dur_bad:
+                    evals.append({
+                        "topic": q.get("topic"),
+                        "subscriber": q.get("subscriber"),
+                        "offered_reliability": pub.get("reliability"),
+                        "requested_reliability": sub.get("reliability"),
+                        "status": "INCOMPATIBLE",
+                    })
+            data["qos_evaluations"] = evals
+        return data
 
     def compute_spring_layout(self, G: nx.DiGraph) -> Dict[str, List[float]]:
         """Calculates 2D spring force-directed layout coordinates for graph vertices."""

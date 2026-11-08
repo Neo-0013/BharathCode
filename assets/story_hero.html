@@ -1020,7 +1020,7 @@
         try {
           if (window.parent) {
             window.parent.postMessage({ type: 'ROBOGUARD_NAVIGATE', page: 'soc' }, '*');
-            const topBtn = window.parent.document.querySelector('button[kind="primary"]');
+            const topBtn = window.parent.document.querySelector('.st-key-hero_cta_proxy button') || window.parent.document.querySelector('button[kind="primary"]');
             if (topBtn) {
               topBtn.click();
               return;

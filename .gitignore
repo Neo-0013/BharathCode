@@ -47,6 +47,9 @@ htmlcov/
 # Operating System
 .DS_Store
 Thumbs.db
+BharathCode_final.zip
+.agents/
+.claude/
 
 # Generated Exports / Temporary reports
 reports/*.pdf
